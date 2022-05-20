@@ -3,9 +3,28 @@ import { useState } from 'react'
 // https://fullstackopen.com/en/part1/a_more_complex_state_debugging_react_apps#exercises-1-6-1-14
 
 const voteAndReturnNewArray = (voteArray, index) => {
-  const retVal = [...voteArray];
-  retVal[index]++;
-  return retVal;
+  const retVal = [...voteArray]
+  retVal[index]++
+  return retVal
+}
+
+const getIdxOfMax = (arr) => {
+  let maxIdx = 0
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > arr[maxIdx]) {
+      maxIdx = i
+    }
+  }
+  return maxIdx
+}
+
+const DisplayAnecdote = ({anecdotes, votes, selected}) => {
+  return (
+    <>
+    <p>{anecdotes[selected]}</p>
+    <p>has {votes[selected]} votes</p>
+    </>
+  )
 }
 
 const App = () => {
@@ -19,19 +38,19 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
   ]
 
-  const votes = []
-  anecdotes.forEach(() => votes.push(0))
-
-
   const [selected, setSelected] = useState(0)
-  const [voteArray, setVoteArray] = useState(votes)
+  const [votes, setVoteArray] = useState(new Uint16Array(anecdotes.length))
+
+  const mostPopularIdx = getIdxOfMax(votes)
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>has {voteArray[selected]} votes</p>
-      <button onClick={() => setVoteArray(voteAndReturnNewArray(voteArray, selected))}> vote </button>
+      <h1>Anecdote of the day</h1>
+      <DisplayAnecdote anecdotes={anecdotes} votes={votes} selected={selected} />
+      <button onClick={() => setVoteArray(voteAndReturnNewArray(votes, selected))}> vote </button>
       <button onClick={() => setSelected(Math.floor(Math.random()*anecdotes.length))}>next anecdote</button>
+      <h1>Anecdote with most votes:</h1>
+      <DisplayAnecdote anecdotes={anecdotes} votes={votes} selected={mostPopularIdx} />
     </div>
   )
 }
