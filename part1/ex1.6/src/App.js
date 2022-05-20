@@ -38,7 +38,9 @@ const RenderFeedback = ({goodCount, setGoodCount, neutralCount, setNeutralCount,
 const StatisticLine = ({text, value}) => {
   return (
     <>
-    <p> {text}: {value} </p>
+    <tr>
+     <td>{text}</td><td>{value}</td>
+    </tr>
     </>
   )
 }
@@ -50,12 +52,16 @@ const RenderStatistics = ({good, neutral, bad}) => {
     return (
       <>
       <h1>statistics</h1>
+
+      <table> <tbody>
       <StatisticLine text="good" value={good} />
       <StatisticLine text="neutral" value={neutral} />
       <StatisticLine text="bad" value={bad} />
       <StatisticLine text="all" value={totalCount} />
       <StatisticLine text="average" value={averageScore} />
       <StatisticLine text="positive" value={percentPositive + "%"} />
+      </tbody>
+      </table>
       </>
     )
   } else {
