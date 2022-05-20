@@ -30,17 +30,26 @@ const RenderFeedback = (props) => {
 const RenderStatistics = ({good, neutral, bad}) => {
   
   const {totalCount, averageScore, percentPositive} = calculateMoreStats(good, neutral, bad)
-  return (
-    <>
-    <h1>statistics</h1>
-    <p> good: {good} </p>
-    <p> neutral: {neutral} </p>
-    <p> bad: {bad}</p>
-    <p> all: {totalCount}</p>
-    <p> average: {averageScore}</p>
-    <p> positive: {percentPositive}%</p>
-    </>
-  )
+  if (totalCount > 0) {
+    return (
+      <>
+      <h1>statistics</h1>
+      <p> good: {good} </p>
+      <p> neutral: {neutral} </p>
+      <p> bad: {bad}</p>
+      <p> all: {totalCount}</p>
+      <p> average: {averageScore}</p>
+      <p> positive: {percentPositive}%</p>
+      </>
+    )
+  } else {
+    return (
+      <>
+      <h1>statistics</h1>
+      <p> no feedback given</p>
+      </>
+    )
+  }
 }
 
 const App = () => {
