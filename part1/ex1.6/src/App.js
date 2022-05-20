@@ -6,6 +6,16 @@ const incrementVariable = (curVal, setFun) => {
   setFun(curVal + 1)
 }
 
+
+
+const calculateMoreStats = (g, n, b) => {
+  let retVal = {}
+  retVal.totalCount = g + n + b
+  retVal.averageScore = (g*1 + b*-1) / retVal.totalCount
+  retVal.percentPositive = g / retVal.totalCount * 100
+  return retVal
+}
+
 const RenderFeedback = (props) => {
   return (
     <>
@@ -17,13 +27,18 @@ const RenderFeedback = (props) => {
   )
 }
 
-const RenderStatistics = (props) => {
+const RenderStatistics = ({good, neutral, bad}) => {
+  
+  const {totalCount, averageScore, percentPositive} = calculateMoreStats(good, neutral, bad)
   return (
     <>
     <h1>statistics</h1>
-    <p> good: {props.good} </p>
-    <p> neutral: {props.neutral} </p>
-    <p> bad: {props.bad}</p>
+    <p> good: {good} </p>
+    <p> neutral: {neutral} </p>
+    <p> bad: {bad}</p>
+    <p> all: {totalCount}</p>
+    <p> average: {averageScore}</p>
+    <p> positive: {percentPositive}%</p>
     </>
   )
 }
