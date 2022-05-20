@@ -2,7 +2,11 @@ import { useState } from 'react'
 
 // https://fullstackopen.com/en/part1/a_more_complex_state_debugging_react_apps#exercises-1-6-1-14
 
-
+const voteAndReturnNewArray = (voteArray, index) => {
+  const retVal = [...voteArray];
+  retVal[index]++;
+  return retVal;
+}
 
 const App = () => {
   const anecdotes = [
@@ -15,11 +19,18 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients'
   ]
 
+  const votes = []
+  anecdotes.forEach(() => votes.push(0))
+
+
   const [selected, setSelected] = useState(0)
+  const [voteArray, setVoteArray] = useState(votes)
 
   return (
     <div>
       <p>{anecdotes[selected]}</p>
+      <p>has {voteArray[selected]} votes</p>
+      <button onClick={() => setVoteArray(voteAndReturnNewArray(voteArray, selected))}> vote </button>
       <button onClick={() => setSelected(Math.floor(Math.random()*anecdotes.length))}>next anecdote</button>
     </div>
   )
