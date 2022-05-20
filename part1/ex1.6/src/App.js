@@ -16,13 +16,29 @@ const calculateMoreStats = (g, n, b) => {
   return retVal
 }
 
-const RenderFeedback = (props) => {
+const Button = ({count, setter, text}) => {
+  return ( 
+    <>
+    <button onClick={() => incrementVariable(count, setter)}>{text}</button>
+    </>
+  )
+}
+
+const RenderFeedback = ({goodCount, setGoodCount, neutralCount, setNeutralCount, badCount, setBadCount}) => {
   return (
     <>
     <h1>give feedback</h1>
-    <button onClick={() => incrementVariable(props.goodCount, props.setGoodCount)}>good</button>
-    <button onClick={() => incrementVariable(props.neutralCount, props.setNeutralCount)}>neutral</button>
-    <button onClick={() => incrementVariable(props.badCount, props.setBadCount)}>bad</button>
+    <Button count={goodCount} setter={setGoodCount} text="good" />
+    <Button count={neutralCount} setter={setNeutralCount} text="neutral" />
+    <Button count={badCount} setter={setBadCount} text="bad" />
+    </>
+  )
+}
+
+const StatisticLine = ({text, value}) => {
+  return (
+    <>
+    <p> {text}: {value} </p>
     </>
   )
 }
@@ -34,12 +50,12 @@ const RenderStatistics = ({good, neutral, bad}) => {
     return (
       <>
       <h1>statistics</h1>
-      <p> good: {good} </p>
-      <p> neutral: {neutral} </p>
-      <p> bad: {bad}</p>
-      <p> all: {totalCount}</p>
-      <p> average: {averageScore}</p>
-      <p> positive: {percentPositive}%</p>
+      <StatisticLine text="good" value={good} />
+      <StatisticLine text="neutral" value={neutral} />
+      <StatisticLine text="bad" value={bad} />
+      <StatisticLine text="all" value={totalCount} />
+      <StatisticLine text="average" value={averageScore} />
+      <StatisticLine text="positive" value={percentPositive + "%"} />
       </>
     )
   } else {
