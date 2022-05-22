@@ -12,6 +12,50 @@ const Entry = ({person}) => {
   )
 }
 
+const handleInputChange = (changeFn) => {
+  const changeHandler = (event) => {
+    changeFn(event.target.value)
+  }
+  return changeHandler
+}
+
+const AddNewEntryForm = ({persons, personsSet, name, nameSet, number, numberSet}) => {
+  
+
+  const addNewEntry = (event) => {
+    event.preventDefault();
+    if (persons.some(item => item.name === name)) {
+      alert(`${name} is already in the phonebook`)
+    } else {
+      personsSet(persons.concat({ name: name, number: number}))
+    }
+    nameSet('')
+    numberSet('')
+  }
+
+  return (
+  <form onSubmit={addNewEntry}>
+    <div>
+      name:
+      <input
+        value={name}
+        onChange={handleInputChange(nameSet)}
+      />
+    </div>
+    <div>
+      number:
+      <input
+        value={number}
+        onChange={handleInputChange(numberSet)}
+      />
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -23,24 +67,6 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
-
-  const handleInputChange = (changeFn) => {
-    const changeHandler = (event) => {
-      changeFn(event.target.value)
-    }
-    return changeHandler
-  }
-
-  const addNewEntry = (event) => {
-    event.preventDefault();
-    if (persons.some(item => item.name === newName)) {
-      alert(`${newName} is already in the phonebook`)
-    } else {
-      setPersons(persons.concat({ name: newName, number: newNumber}))
-    }
-    setNewName('')
-    setNewNumber('')
-  }
 
   const personsToShow = persons.filter(
     person => person.name.toLowerCase().includes(filterString.toLowerCase()))
@@ -55,27 +81,9 @@ const App = () => {
         onChange={handleInputChange(setFilterString)}
         />
       </div>
-      <h2>add a new</h2>
-      <form onSubmit={addNewEntry}>
-        <div>
-          name: 
-            <input 
-            value={newName}
-            onChange={handleInputChange(setNewName)} 
-            />
-        </div>
-        <div>
-          number:
-            <input
-            value={newNumber}
-            onChange={handleInputChange(setNewNumber)}
-            />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
+      <h3>add a new</h3>
+      <AddNewEntryForm persons={persons} personsSet={setPersons} name={newName} nameSet={setNewName} number={newNumber} numberSet={setNewNumber}/>
+      <h3>Numbers</h3>
       <Entries persons={personsToShow}/>
     </div>
   )
