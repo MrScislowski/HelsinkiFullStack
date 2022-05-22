@@ -8,40 +8,52 @@ const Entries = ({persons}) => {
 
 const Entry = ({person}) => {
   return (
-    <p>{person.name}</p>
+    <p>{person.name} {person.number}</p>
   )
 }
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '040-1234567' }
   ]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
-  const handleInputChange = (event) => {
-    setNewName(event.target.value)
+  const handleInputChange = (changeFn) => {
+    const changeHandler = (event) => {
+      changeFn(event.target.value)
+    }
+    return changeHandler
   }
 
-  const addNewName = (event) => {
+  const addNewEntry = (event) => {
     event.preventDefault();
     if (persons.some(item => item.name === newName)) {
       alert(`${newName} is already in the phonebook`)
     } else {
-      setPersons(persons.concat({ name: newName}))
+      setPersons(persons.concat({ name: newName, number: newNumber}))
     }
     setNewName('')
+    setNewNumber('')
     
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form onSubmit={addNewName}>
+      <form onSubmit={addNewEntry}>
         <div>
           name: 
             <input 
             value={newName}
-            onChange={handleInputChange} 
+            onChange={handleInputChange(setNewName)} 
+            />
+        </div>
+        <div>
+          number:
+            <input
+            value={newNumber}
+            onChange={handleInputChange(setNewNumber)}
             />
         </div>
         <div>
