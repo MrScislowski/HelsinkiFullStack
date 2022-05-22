@@ -1,4 +1,13 @@
 
+const ExerciseSum = ({course}) => {
+  const total = course.parts.reduce((sum, part) => sum + part.exercises, 0)
+  return (
+    <strong>
+      total of {total} exercises
+    </strong>
+  )
+}
+
 const Course = ({course}) => {
   return (
     <>
@@ -15,7 +24,6 @@ const Header = ({name}) => {
 }
 
 const PartCollection = ({parts}) => {
-  console.log('parts=', parts);
   return (
     <div>
     {parts.map(part => <Part key={part.id} part={part} />)}
@@ -51,10 +59,20 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
-  return <Course course={course} />
+  return (
+  <>
+  <Course course={course} />
+  <ExerciseSum course={course} />
+  </>
+  )
 }
 
 export default App
