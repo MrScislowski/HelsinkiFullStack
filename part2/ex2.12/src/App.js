@@ -52,7 +52,6 @@ const CountrySelectButton = ({country, setCountrySearchKey}) => {
 }
 
 const DisplayCountryStats = ({country}) => {
-  
   return (
     <div>
       <h2>{country.name.common}</h2>
@@ -66,11 +65,20 @@ const DisplayCountryStats = ({country}) => {
       })}
       </ul>
       <img src={country.flags.png} alt="country flag"/>
+      <h3>Weather in {country.capital}</h3>
+      {/* Todo: https://fullstackopen.com/en/part2/getting_data_from_server
+      (make sure to do the right thing when it comes to API keys etc)
+       */}
+      <DisplayWeather />
     </div>
   )
-
-
 }
+
+const DisplayWeather = () => {
+  // TODO: 
+}
+
+
 
 
 
@@ -95,6 +103,7 @@ const App = () => {
     <div>
     <CountryInput countrySearchKey={countrySearchKey} setCountrySearchKey={setCountrySearchKey} />
     <DisplayCountrySearchInfo countries={countriesToDisplay} setCountrySearchKey={setCountrySearchKey} />
+    <DisplayWeather countries={countriesToDisplay}/>
     </div>
   );
 }
