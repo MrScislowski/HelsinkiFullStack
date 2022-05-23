@@ -12,22 +12,42 @@ const CountryInput = ({countrySearchKey, setCountrySearchKey}) => {
   )
 }
 
-const DisplayCountrySearchInfo = ({countries}) => {
+const DisplayCountrySearchInfo = ({countries, setCountrySearchKey}) => {
   if (countries.length >= 10) {
     return "Too many matches, specify another filter"
   }
   else if (countries.length === 1) {
     return <DisplayCountryStats country={countries[0]} />
   } else {
-    return <DisplayAbbreviatedResults countries={countries} />
+    return <DisplayAbbreviatedResults countries={countries} setCountrySearchKey={setCountrySearchKey}/>
   }
 }
   
-const DisplayAbbreviatedResults = ({countries}) => {
+const DisplayAbbreviatedResults = ({countries, setCountrySearchKey}) => {
   return (
     <>
-    {countries.map(c => <p key={c.ccn3}>{c.name.common}</p>)}
+    {countries.map(c => <CountrySelectionRow key={c.ccn3} 
+      country={c} 
+      setCountrySearchKey={setCountrySearchKey} />)}
     </>
+  )
+}
+
+const CountrySelectionRow = ({country, setCountrySearchKey}) => {
+  return (
+    <p>
+      {country.name.common} <CountrySelectButton country={country} setCountrySearchKey={setCountrySearchKey} />
+    </p>
+  )
+}
+
+const CountrySelectButton = ({country, setCountrySearchKey}) => {
+  return (
+  <>
+  <button onClick={() => setCountrySearchKey(country.name.common) }>
+    show
+  </button>
+  </>
   )
 }
 
@@ -74,7 +94,7 @@ const App = () => {
   return (
     <div>
     <CountryInput countrySearchKey={countrySearchKey} setCountrySearchKey={setCountrySearchKey} />
-    <DisplayCountrySearchInfo countries={countriesToDisplay} />
+    <DisplayCountrySearchInfo countries={countriesToDisplay} setCountrySearchKey={setCountrySearchKey} />
     </div>
   );
 }
