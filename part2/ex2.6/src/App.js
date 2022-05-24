@@ -21,14 +21,16 @@ const handleInputChange = (changeFn) => {
 }
 
 const AddNewEntryForm = ({persons, personsSet, name, nameSet, number, numberSet}) => {
-  
-
   const addNewEntry = (event) => {
     event.preventDefault();
     if (persons.some(item => item.name === name)) {
       alert(`${name} is already in the phonebook`)
     } else {
-      personsSet(persons.concat({ name: name, number: number}))
+      axios
+        .post(`http://localhost:3001/persons`, {name: name, number: number})
+        .then(response => {
+          personsSet(persons.concat(response.data))
+        })
     }
     nameSet('')
     numberSet('')
