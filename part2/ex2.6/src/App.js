@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import entryService from './services/phonebookEntries'
 
 const Entries = ({persons}) => {
   return (
@@ -20,16 +21,17 @@ const handleInputChange = (changeFn) => {
   return changeHandler
 }
 
-const AddNewEntryForm = ({persons, personsSet, name, nameSet, number, numberSet}) => {
+const AddNewEntryForm = ({persons, personsSet, newEntry}) => {
+  const {name: [name, nameSet], number: [number, numberSet]} = newEntry
   const addNewEntry = (event) => {
     event.preventDefault();
     if (persons.some(item => item.name === name)) {
       alert(`${name} is already in the phonebook`)
     } else {
-      axios
-        .post(`http://localhost:3001/persons`, {name: name, number: number})
-        .then(response => {
-          personsSet(persons.concat(response.data))
+      entryService
+        .create({name: name, number: number})
+        .then(returnedEntry => {
+          personsSet(persons.concat(returnedEntry))
         })
     }
     nameSet('')
@@ -67,11 +69,10 @@ const App = () => {
   const [filterString, setFilterString] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        // console.log('got', response.data)
-        setPersons(response.data)
+    entryService
+      .getAll()
+      .then(allPersons => {
+        setPersons(allPersons)
       })
   }, [])
 
@@ -89,7 +90,7 @@ const App = () => {
         />
       </div>
       <h3>add a new</h3>
-      <AddNewEntryForm persons={persons} personsSet={setPersons} name={newName} nameSet={setNewName} number={newNumber} numberSet={setNewNumber}/>
+      <AddNewEntryForm persons={persons} personsSet={setPersons} newEntry={{name: [newName, setNewName], number:[newNumber, setNewNumber]}} />
       <h3>Numbers</h3>
       <Entries persons={personsToShow}/>
     </div>
