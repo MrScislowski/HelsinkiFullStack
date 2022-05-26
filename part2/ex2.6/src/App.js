@@ -9,11 +9,13 @@ const Entries = ({persons, personsSet}) => {
 
 const Entry = ({person, persons, personsSet}) => {
   const removeEntry = (entry) => {
+    if (window.confirm(`Delete ${entry.name}?`)) {
     entryService
       .deleteEntry(entry)
       .then(response => {
         personsSet(persons.filter(p => p.id !== person.id))
       })
+    }
   }
 
   return (
