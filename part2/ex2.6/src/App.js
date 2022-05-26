@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import entryService from './services/phonebookEntries'
 
 const Entries = ({persons}) => {
