@@ -17,4 +17,9 @@ const deleteEntry = (entry) => {
     return request.then(response => response.data)
 }
 
-export default {getAll, create, deleteEntry}
+const updateEntry = (oldVersion, newVersion) => {
+    const request = axios.put(`${baseUrl}/${oldVersion.id}`, newVersion)
+    return request.then(response => response.data)
+}
+
+export default {getAll, create, deleteEntry, updateEntry}

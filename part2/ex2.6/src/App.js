@@ -36,8 +36,16 @@ const AddNewEntryForm = ({persons, personsSet, newEntry}) => {
   const {name: [name, nameSet], number: [number, numberSet]} = newEntry
   const addNewEntry = (event) => {
     event.preventDefault();
-    if (persons.some(item => item.name === name)) {
-      alert(`${name} is already in the phonebook`)
+    const foundEntry = persons.find(item => item.name === name)
+    if (
+      foundEntry &&
+      window.confirm(`${name} is already added to phonebook, replace the old number with a new one?`)
+      ) {
+      entryService
+        .updateEntry(foundEntry, {name: name, number: number})
+        .then(returnedEntry => {
+          personsSet(persons.map(p => p.id !== returnedEntry.id ? p : returnedEntry))
+        })
     } else {
       entryService
         .create({name: name, number: number})
