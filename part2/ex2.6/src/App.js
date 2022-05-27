@@ -1,26 +1,20 @@
 import { useState, useEffect } from 'react'
 import entryService from './services/phonebookEntries'
+import Notification from './components/Notification'
 
-const Entries = ({persons, personsSet}) => {
+const Entries = ({persons, removeFn}) => {
   return (
-    persons.map(person => <Entry key={person.name} person={person} persons={persons} personsSet={personsSet} />)
+    persons.map(person => { 
+    return <Entry key={person.id} person={person} remove={() => removeFn(person)} />
+    }
+    )
   )
 }
 
-const Entry = ({person, persons, personsSet}) => {
-  const removeEntry = (entry) => {
-    if (window.confirm(`Delete ${entry.name}?`)) {
-    entryService
-      .deleteEntry(entry)
-      .then(response => {
-        personsSet(persons.filter(p => p.id !== person.id))
-      })
-    }
-  }
-
+const Entry = ({person, remove}) => {
   return (
     <p>{person.name} {person.number}
-    <button onClick={() => removeEntry(person)}> delete </button>
+    <button onClick={remove}> delete </button>
     </p>
   )
 }
@@ -82,10 +76,10 @@ const AddNewEntryForm = ({persons, personsSet, newEntry}) => {
 
 const App = () => {
   const [persons, setPersons] = useState([])
-
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     entryService
@@ -95,18 +89,21 @@ const App = () => {
       })
   }, [])
 
+  const removeEntry = (entry) => {
+    if (window.confirm(`Delete ${entry.name}?`)) {
+    entryService
+      .deleteEntry(entry)
+      .then(response => {
+        setPersons(persons.filter(p => p.id !== entry.id))
+      })
+    }
+  }
+
   const personsToShow = persons.filter(
     person => person.name.toLowerCase().includes(filterString.toLowerCase()))
 
   return (
     <div>
-      <button onClick={() => {
-        entryService.deleteEntry({id: 6})
-        .then( r => console.log(r))
-      }
-      }>
-        delete entry
-      </button>
       <h2>Phonebook</h2>
       <div>
         filter shown with 
@@ -116,9 +113,10 @@ const App = () => {
         />
       </div>
       <h3>add a new</h3>
+
       <AddNewEntryForm persons={persons} personsSet={setPersons} newEntry={{name: [newName, setNewName], number:[newNumber, setNewNumber]}} />
       <h3>Numbers</h3>
-      <Entries persons={personsToShow} personsSet={setPersons}/>
+      <Entries persons={personsToShow} removeFn={removeEntry}/>
     </div>
   )
 }
