@@ -1,9 +1,8 @@
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
-
-
 app.use(express.json())
+app.use(express.static('build'))
 
 const customMorgan = (tokens, req, res) => {
     const postBody = (tokens.method(req, res) === "POST")
