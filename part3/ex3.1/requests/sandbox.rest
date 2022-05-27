@@ -11,3 +11,19 @@ Content-Type: application/json
     "name": "Albert Einstein",
     "number": "384-283-1184"
 }
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "number": "384-283-1184"
+}
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "broma"
+}

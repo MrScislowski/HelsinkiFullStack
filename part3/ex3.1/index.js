@@ -51,8 +51,20 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
+// creating new entries
 app.post('/api/persons', (req, res) => {
     const {name, number} = req.body
+
+    if (!name) {
+        return res.status(400).json({error: "name is missing"})
+    } else if (!number) {
+        return res.status(400).json({error: "number is missing"})
+    }
+
+    if (persons.find(p => p.name === name)) {
+        return res.status(400).json({error: "name is already in phonebook"})
+    }
+
     const newPerson = {
         id: Math.floor(Math.random()*1e6),
         name: name,
