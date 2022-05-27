@@ -27,3 +27,6 @@ Content-Type: application/json
 {
     "name": "broma"
 }
+
+###
+GET http://localhost:3001/nonexistent
