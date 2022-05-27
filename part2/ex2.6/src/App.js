@@ -26,33 +26,11 @@ const handleInputChange = (changeFn) => {
   return changeHandler
 }
 
-const AddNewEntryForm = ({persons, personsSet, newEntry}) => {
-  const {name: [name, nameSet], number: [number, numberSet]} = newEntry
-  const addNewEntry = (event) => {
-    event.preventDefault();
-    const foundEntry = persons.find(item => item.name === name)
-    if (
-      foundEntry &&
-      window.confirm(`${name} is already added to phonebook, replace the old number with a new one?`)
-      ) {
-      entryService
-        .updateEntry(foundEntry, {name: name, number: number})
-        .then(returnedEntry => {
-          personsSet(persons.map(p => p.id !== returnedEntry.id ? p : returnedEntry))
-        })
-    } else {
-      entryService
-        .create({name: name, number: number})
-        .then(returnedEntry => {
-          personsSet(persons.concat(returnedEntry))
-        })
-    }
-    nameSet('')
-    numberSet('')
-  }
+const AddNewEntryForm = ({formDetails, addNewEntryFunction}) => {
+  const {name: [name, nameSet], number: [number, numberSet]} = formDetails
 
   return (
-  <form onSubmit={addNewEntry}>
+  <form onSubmit={addNewEntryFunction({name: name, number: number})}>
     <div>
       name:
       <input
@@ -89,12 +67,43 @@ const App = () => {
       })
   }, [])
 
+  const addNewEntryFunction = (newEntryDetails) => {
+    const foundEntry = persons.find(item => item.name === newName)
+    return (event) => {
+      event.preventDefault();
+      if (
+        foundEntry &&
+        window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+        ) {
+        entryService
+          .updateEntry(foundEntry, {name: newName, number: newNumber})
+          .then(returnedEntry => {
+            setPersons(persons.map(p => p.id !== returnedEntry.id ? p : returnedEntry))
+          })
+        setNotification(`${newName}'s number replaced`)
+        setTimeout(() => setNotification(null), 5000)
+      } else {
+        entryService
+          .create({name: newName, number: newNumber})
+          .then(returnedEntry => {
+            setPersons(persons.concat(returnedEntry))
+          })
+        setNotification(`${newName} added to phonebook`)
+        setTimeout(() => setNotification(null), 5000)
+      }
+      setNewName('')
+      setNewNumber('')
+    }
+  }
+
   const removeEntry = (entry) => {
     if (window.confirm(`Delete ${entry.name}?`)) {
     entryService
       .deleteEntry(entry)
       .then(response => {
         setPersons(persons.filter(p => p.id !== entry.id))
+        setNotification(`${entry.name} removed from phonebook`)
+        setTimeout(() => setNotification(null), 5000)
       })
     }
   }
@@ -104,6 +113,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification message={notification} />
       <h2>Phonebook</h2>
       <div>
         filter shown with 
@@ -114,7 +124,9 @@ const App = () => {
       </div>
       <h3>add a new</h3>
 
-      <AddNewEntryForm persons={persons} personsSet={setPersons} newEntry={{name: [newName, setNewName], number:[newNumber, setNewNumber]}} />
+      <AddNewEntryForm 
+        formDetails={{name: [newName, setNewName], number:[newNumber, setNewNumber]}} 
+        addNewEntryFunction={addNewEntryFunction} />
       <h3>Numbers</h3>
       <Entries persons={personsToShow} removeFn={removeEntry}/>
     </div>
