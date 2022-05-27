@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import entryService from './services/phonebookEntries'
 import Notification from './components/Notification'
+import Error from './components/Error'
+
 
 const Entries = ({persons, removeFn}) => {
   return (
@@ -58,6 +60,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterString, setFilterString] = useState('')
   const [notification, setNotification] = useState(null)
+  const [error, setError] = useState(null)
+
+
 
   useEffect(() => {
     entryService
@@ -79,9 +84,15 @@ const App = () => {
           .updateEntry(foundEntry, {name: newName, number: newNumber})
           .then(returnedEntry => {
             setPersons(persons.map(p => p.id !== returnedEntry.id ? p : returnedEntry))
+            setNotification(`${newName}'s number replaced`)
+            setTimeout(() => setNotification(null), 5000)
           })
-        setNotification(`${newName}'s number replaced`)
-        setTimeout(() => setNotification(null), 5000)
+          .catch(e => {
+            setError(`Information for ${newName} already removed from server`)
+            setPersons(persons.filter(p => p.id !== foundEntry.id))
+            setTimeout(() => setNotification(null), 5000)
+          })
+
       } else {
         entryService
           .create({name: newName, number: newNumber})
@@ -114,6 +125,7 @@ const App = () => {
   return (
     <div>
       <Notification message={notification} />
+      <Error message={error} />
       <h2>Phonebook</h2>
       <div>
         filter shown with 

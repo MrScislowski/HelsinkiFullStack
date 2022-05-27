@@ -5,3 +5,11 @@
     border-style: solid;
     border-radius: 5px;
 }
+
+.error {
+    background-color: lightgray;
+    color: red;
+    padding: 10px;
+    border-style: solid;
+    border-radius: 5px;
+}
