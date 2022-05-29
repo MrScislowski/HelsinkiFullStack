@@ -9,7 +9,10 @@ mongoose.connect(process.env.DB_URL)
   })
 
 const entrySchema = new mongoose.Schema({
-    name: String,
+    name: {
+      type: String,
+      minlength: 3
+    }, 
     number: String
 })
 

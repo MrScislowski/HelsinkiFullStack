@@ -98,9 +98,15 @@ const App = () => {
           .create({name: newName, number: newNumber})
           .then(returnedEntry => {
             setPersons(persons.concat(returnedEntry))
+            setTimeout(() => setNotification(null), 5000)
+            setNotification(`${newName} added to phonebook`)
+            setTimeout(() => setNotification(null), 5000)
           })
-        setNotification(`${newName} added to phonebook`)
-        setTimeout(() => setNotification(null), 5000)
+          .catch(error => {
+            setError(error.response.data)
+            setTimeout(() => setError(null), 5000)
+          })
+
       }
       setNewName('')
       setNewNumber('')

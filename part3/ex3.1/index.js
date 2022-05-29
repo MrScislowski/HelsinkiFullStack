@@ -76,7 +76,8 @@ app.put('/api/persons/:id', (req, res, next) => {
 
 
 
-    Entry.findByIdAndUpdate(req.params.id, modifiedObj, { new: true })
+    Entry.findByIdAndUpdate(req.params.id, modifiedObj, 
+        { new: true, runValidators: true })
         .then(updatedEntry => {
             res.json(updatedEntry)
         })
@@ -115,6 +116,9 @@ const errorHandler = (error, req, res, next) => {
 
     if (error.name === 'CastError') {
         return res.status(400).send({error: 'malformed id'})
+    }
+    if (error.name === 'ValidationError') {
+        return res.status(400).send(error.message)
     }
     
     next(error)
