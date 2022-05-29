@@ -26,33 +26,14 @@ const customMorgan = (tokens, req, res) => {
 
 app.use(morgan(customMorgan))
 
-// let persons = [
-//     { 
-//       "id": 1,
-//       "name": "Arto Hellas", 
-//       "number": "040-123456"
-//     },
-//     { 
-//       "id": 2,
-//       "name": "Ada Lovelace", 
-//       "number": "39-44-5323523"
-//     },
-//     { 
-//       "id": 3,
-//       "name": "Dan Abramov", 
-//       "number": "12-43-234345"
-//     },
-//     { 
-//       "id": 4,
-//       "name": "Mary Poppendieck", 
-//       "number": "39-23-6423122"
-//     }
-// ]
-
-app.get('/api/persons', (req, res) => {
-    Entry.find({}).then(result => {
-        res.json(result)
+app.get('/api/persons', (req, res, next) => {
+    Entry.find({})
+        .then(result => {
+            res.json(result)
     })
+        .catch(error => {
+            next(error)
+        })
 })
 
 app.get('/info', (req, res) => {
@@ -61,25 +42,30 @@ app.get('/info', (req, res) => {
     res.send(`${phonebookInfo}<br>${dateInfo}`)
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const found = persons.find(p => p.id === id)
-    if (!found) {
-        return res.status(404).end()
-    }
-
-    res.json(found)
+app.get('/api/persons/:id', (req, res, next) => {
+    Entry.findById(req.params.id)
+        .then(entry => {
+            if (note) {
+                res.json(entry)
+            } else {
+                res.status(404).end()
+            }
+        })
+        .catch(error => {
+            next(error)
+        })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Entry.findByIdAndRemove(req.params.id)
         .then(response => {
             res.status(204).end()
         })
+        .catch(error => next(error))
 })
 
 // creating new entries
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const {name, number} = req.body
 
     // if (!name) {
@@ -97,14 +83,26 @@ app.post('/api/persons', (req, res) => {
         number: number
     })
 
-    newPerson.save().then(result => {
-        res.json(result)
-    })
+    newPerson.save()
+        .then(result => {
+            res.json(result)
+        })
+        .catch(error => next(error))
 
 })
+
+const errorHandler = (error, req, res, next) => {
+    console.error(error)
+
+    if (error.name === 'CastError') {
+        return res.status(400).send({error: 'malformed id'})
+    }
+    
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT)
 console.log(`Server running on port ${PORT}`)
-
-// done 3.10 & 3.11!
