@@ -64,6 +64,21 @@ app.delete('/api/persons/:id', (req, res, next) => {
         .catch(error => next(error))
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+    const modifiedObj = {
+        name: req.body.name,
+        number: req.body.number,
+    }
+
+
+
+    Entry.findByIdAndUpdate(req.params.id, modifiedObj, { new: true })
+        .then(updatedEntry => {
+            res.json(updatedEntry)
+        })
+        .catch(err => next(err))
+})
+
 // creating new entries
 app.post('/api/persons', (req, res, next) => {
     const {name, number} = req.body
