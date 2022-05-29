@@ -37,15 +37,19 @@ app.get('/api/persons', (req, res, next) => {
 })
 
 app.get('/info', (req, res) => {
-    const phonebookInfo = `Phonebook has info for ${persons.length} people`
-    const dateInfo = new Date().toString()
-    res.send(`${phonebookInfo}<br>${dateInfo}`)
+    Entry.find({})
+        .then(entries => {
+        const phonebookInfo = `Phonebook has info for ${entries.length} people`
+        const dateInfo = new Date().toString()
+        res.send(`${phonebookInfo}<br>${dateInfo}`)
+    })
+
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
     Entry.findById(req.params.id)
         .then(entry => {
-            if (note) {
+            if (entry) {
                 res.json(entry)
             } else {
                 res.status(404).end()
