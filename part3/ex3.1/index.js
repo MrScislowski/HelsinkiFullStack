@@ -81,23 +81,25 @@ app.delete('/api/persons/:id', (req, res) => {
 app.post('/api/persons', (req, res) => {
     const {name, number} = req.body
 
-    if (!name) {
-        return res.status(400).json({error: "name is missing"})
-    } else if (!number) {
-        return res.status(400).json({error: "number is missing"})
-    }
+    // if (!name) {
+    //     return res.status(400).json({error: "name is missing"})
+    // } else if (!number) {
+    //     return res.status(400).json({error: "number is missing"})
+    // }
 
-    if (persons.find(p => p.name === name)) {
-        return res.status(400).json({error: "name is already in phonebook"})
-    }
+    // if (persons.find(p => p.name === name)) {
+    //     return res.status(400).json({error: "name is already in phonebook"})
+    // }
 
-    const newPerson = {
-        id: Math.floor(Math.random()*1e6),
+    const newPerson = new Entry({
         name: name,
         number: number
-    }
-    persons = persons.concat(newPerson)
-    res.json(newPerson)
+    })
+
+    newPerson.save().then(result => {
+        res.json(result)
+    })
+
 })
 
 const PORT = process.env.PORT || 3001
