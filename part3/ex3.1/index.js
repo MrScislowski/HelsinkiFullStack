@@ -103,12 +103,18 @@ app.post('/api/persons', (req, res, next) => {
         number: number
     })
 
-    newPerson.save()
-        .then(result => {
-            res.json(result)
+    Entry.find({name: name})
+        .then(entries => {
+            if (entries.length > 0) {
+                return res.status(400).json({error: "name is already in phonebook"})
+            } else {
+                newPerson.save()
+                .then(result => {
+                    res.json(result)
+                })
+                .catch(error => next(error))
+            }
         })
-        .catch(error => next(error))
-
 })
 
 const errorHandler = (error, req, res, next) => {

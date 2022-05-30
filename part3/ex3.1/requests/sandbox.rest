@@ -9,7 +9,7 @@ Content-Type: application/json
 
 {
     "name": "Albert Einstein",
-    "number": "384-283-1184"
+    "number": "384-2831234322343321184"
 }
 
 ###
@@ -30,3 +30,13 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3001/nonexistent
+
+
+###
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+    "name": "asdfdssadfdsasdewq",
+    "number": "23-48299-93423"
+}
