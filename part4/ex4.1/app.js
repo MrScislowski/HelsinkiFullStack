@@ -6,10 +6,8 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const Blog = require('./models/blog')
 
-Blog.find({})
 
-const mongoUrl = process.env.DB_URL
-mongoose.connect(mongoUrl)
+
 
 app.use(cors())
 app.use(express.json())
