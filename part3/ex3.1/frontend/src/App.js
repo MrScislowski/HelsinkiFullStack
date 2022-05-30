@@ -65,10 +65,12 @@ const App = () => {
 
 
   useEffect(() => {
+    console.log('about to get all persons...')
     entryService
       .getAll()
       .then(allPersons => {
         setPersons(allPersons)
+        console.log('got all persons')
       })
   }, [])
 
