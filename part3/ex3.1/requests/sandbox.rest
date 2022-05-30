@@ -40,3 +40,17 @@ Content-Type: application/json
     "name": "asdfdssadfdsasdewq",
     "number": "23-48299-93423"
 }
+
+
+###
+GET https://helsinki-fullstack-phonebook.herokuapp.com/api/persons
+
+
+###
+POST https://helsinki-fullstack-phonebook.herokuapp.com/api/persons
+Content-Type: application/json
+
+{
+    "name": "asdfdssadfdsasdewq",
+    "number": "23-4829993423"
+}
