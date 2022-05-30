@@ -1,0 +1,13 @@
+GET http://localhost:3003/api/blogs
+
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "The seven habits of highly effective people",
+  "author": "Stephen Covey",
+  "url": "www.google.com",
+  "likes": 12
+}
