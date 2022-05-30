@@ -1,127 +1,126 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const morgan = require('morgan')
-const Entry = require('./models/entry')
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const Entry = require('./models/entry');
 
-app.use(express.json())
-app.use(express.static('build'))
+const app = express();
+app.use(express.json());
+app.use(express.static('build'));
 
 const customMorgan = (tokens, req, res) => {
-    const postBody = (tokens.method(req, res) === "POST")
-        ? JSON.stringify(req.body)
-        : ""
-    
-    return [
-        tokens.method(req, res),
-        tokens.url(req, res),
-        tokens.status(req, res),
-        tokens.res(req, res, 'content-length'), 
-        '-',
-        tokens["response-time"](req, res),
-        'ms',
-        postBody
-    ].join(' ')
-}
+  const postBody = (tokens.method(req, res) === 'POST')
+    ? JSON.stringify(req.body)
+    : '';
 
-app.use(morgan(customMorgan))
+  return [
+    tokens.method(req, res),
+    tokens.url(req, res),
+    tokens.status(req, res),
+    tokens.res(req, res, 'content-length'),
+    '-',
+    tokens['response-time'](req, res),
+    'ms',
+    postBody,
+  ].join(' ');
+};
+
+app.use(morgan(customMorgan));
 
 app.get('/api/persons', (req, res, next) => {
-    Entry.find({})
-        .then(result => {
-            res.json(result)
+  Entry.find({})
+    .then((result) => {
+      res.json(result);
     })
-        .catch(error => {
-            next(error)
-        })
-})
+    .catch((error) => {
+      next(error);
+    });
+});
 
 app.get('/info', (req, res) => {
-    Entry.find({})
-        .then(entries => {
-        const phonebookInfo = `Phonebook has info for ${entries.length} people`
-        const dateInfo = new Date().toString()
-        res.send(`${phonebookInfo}<br>${dateInfo}`)
-    })
-
-})
+  Entry.find({})
+    .then((entries) => {
+      const phonebookInfo = `Phonebook has info for ${entries.length} people`;
+      const dateInfo = new Date().toString();
+      res.send(`${phonebookInfo}<br>${dateInfo}`);
+    });
+});
 
 app.get('/api/persons/:id', (req, res, next) => {
-    Entry.findById(req.params.id)
-        .then(entry => {
-            if (entry) {
-                res.json(entry)
-            } else {
-                res.status(404).end()
-            }
-        })
-        .catch(error => {
-            next(error)
-        })
-})
+  Entry.findById(req.params.id)
+    .then((entry) => {
+      if (entry) {
+        res.json(entry);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
 
 app.delete('/api/persons/:id', (req, res, next) => {
-    Entry.findByIdAndRemove(req.params.id)
-        .then(response => {
-            res.status(204).end()
-        })
-        .catch(error => next(error))
-})
+  Entry.findByIdAndRemove(req.params.id)
+    .then((_response) => {
+      res.status(204).end();
+    })
+    .catch((error) => next(error));
+});
 
 app.put('/api/persons/:id', (req, res, next) => {
-    const modifiedObj = {
-        name: req.body.name,
-        number: req.body.number,
-    }
+  const modifiedObj = {
+    name: req.body.name,
+    number: req.body.number,
+  };
 
-
-
-    Entry.findByIdAndUpdate(req.params.id, modifiedObj, 
-        { new: true, runValidators: true })
-        .then(updatedEntry => {
-            res.json(updatedEntry)
-        })
-        .catch(err => next(err))
-})
+  Entry.findByIdAndUpdate(
+    req.params.id,
+    modifiedObj,
+    { new: true, runValidators: true },
+  )
+    .then((updatedEntry) => {
+      res.json(updatedEntry);
+    })
+    .catch((err) => next(err));
+});
 
 // creating new entries
 app.post('/api/persons', (req, res, next) => {
-    const {name, number} = req.body
+  const { name, number } = req.body;
 
-    const newPerson = new Entry({
-        name: name,
-        number: number
-    })
+  const newPerson = new Entry({
+    name,
+    number,
+  });
 
-    Entry.find({name: name})
-        .then(entries => {
-            if (entries.length > 0) {
-                return res.status(400).json({error: "name is already in phonebook"})
-            } else {
-                newPerson.save()
-                .then(result => {
-                    res.json(result)
-                })
-                .catch(error => next(error))
-            }
+  Entry.find({ name })
+    .then((entries) => {
+      if (entries.length > 0) {
+        return res.status(400).json({ error: 'name is already in phonebook' });
+      }
+      return newPerson.save()
+        .then((result) => {
+          res.json(result);
         })
-})
+        .catch((error) => next(error));
+    });
+});
 
 const errorHandler = (error, req, res, next) => {
-    console.error(error)
+  console.error(error);
 
-    if (error.name === 'CastError') {
-        return res.status(400).send({error: 'malformed id'})
-    }
-    if (error.name === 'ValidationError') {
-        return res.status(400).send(error.message)
-    }
-    
-    next(error)
-}
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformed id' });
+  }
+  if (error.name === 'ValidationError') {
+    return res.status(400).send(error.message);
+  }
 
-app.use(errorHandler)
+  return next(error);
+};
 
-const PORT = process.env.PORT || 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT}`)
+app.use(errorHandler);
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT);
+console.log(`Server running on port ${PORT}`);
