@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
+const { DB_URL } = require('../utils/config')
 
-const mongoUrl = process.env.DB_URL
-mongoose.connect(mongoUrl)
+mongoose.connect(DB_URL)
 
 const blogSchema = new mongoose.Schema({
   title: String,
