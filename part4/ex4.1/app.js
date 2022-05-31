@@ -6,8 +6,6 @@ const Blog = require('./models/blog')
 const mongoose = require('mongoose')
 const logger = require('./utils/logger')
 
-
-
 app.use(cors())
 app.use(express.json())
 
