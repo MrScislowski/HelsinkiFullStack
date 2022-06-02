@@ -1,3 +1,5 @@
+var _ = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -18,6 +20,19 @@ const favoriteBlog = (blogs) => {
   {title: blogs[0].title, author: blogs[0].author, likes: blogs[0].likes})
 }
 
+const mostBlogs = (blogs) => {
+  const authorHistogram = _.countBy(blogs, (blog) => blog.author)
+  let curMax = {author: "joke", blogs: -1}
+  Object.keys(authorHistogram).forEach(
+    (authorName) => {
+      if (authorHistogram[authorName] > curMax.blogs) {
+        curMax = {author: authorName, blogs: authorHistogram[authorName]}
+      }
+    }
+  )
+  return curMax
+}
+
 module.exports = {
-  dummy, totalLikes, favoriteBlog
+  dummy, totalLikes, favoriteBlog, mostBlogs
 }
