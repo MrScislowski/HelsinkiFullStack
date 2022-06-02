@@ -33,6 +33,23 @@ const mostBlogs = (blogs) => {
   return curMax
 }
 
+const mostLikes = (blogs) => {
+  const byAuthor = _.groupBy(blogs, blog => blog.author)
+
+  const totals = _.mapValues(byAuthor, (authorBlogs) => {
+    return authorBlogs.reduce((likesSoFar, blog) => {
+      return likesSoFar + blog.likes
+    }, 0)
+  })
+
+  const totalsArray = Object.keys(totals).map(author => {
+    return {author: author, likes: totals[author]}
+  })
+
+  return _.maxBy(totalsArray, (entry) => entry.likes)
+
+}
+
 module.exports = {
-  dummy, totalLikes, favoriteBlog, mostBlogs
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
