@@ -44,6 +44,15 @@ const oneExtraBlog = {
 // const blogList = rawBlogList.map((b) => new Blog(b))
 const blogList = rawBlogList
 
+const generateRandomBlog = () => {
+  return {
+    title: Math.random().toString(36).slice(2, 7),
+    author: Math.random().toString(36).slice(2, 7),
+    url: Math.random().toString(36).slice(2, 7),
+    likes: Math.floor(Math.random() * 100),
+  }
+}
+
 module.exports = {
-  blogList, oneExtraBlog
+  blogList, oneExtraBlog, generateRandomBlog
 }
