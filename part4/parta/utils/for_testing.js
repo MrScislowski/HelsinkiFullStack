@@ -10,14 +10,13 @@ const average = (array) => {
     return sum + item
   }
 
+  if (array.length === 0) {
+    return 0
+  }
   return array.reduce(reducer, 0) / array.length
 }
 
 module.exports = {
   reverse,
   average,
-}
-
-const average2 = (array) => {
-  array.reduce((prev, cur) => prev + cur, 0)
 }
