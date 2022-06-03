@@ -34,8 +34,16 @@ const rawBlogList = [
   },
 ]
 
-const blogList = rawBlogList.map((b) => new Blog(b))
+const oneExtraBlog = {
+  title: "extra blog",
+  author: "extra author",
+  url: "extra url",
+  likes: 0,
+}
+
+// const blogList = rawBlogList.map((b) => new Blog(b))
+const blogList = rawBlogList
 
 module.exports = {
-  blogList,
+  blogList, oneExtraBlog
 }

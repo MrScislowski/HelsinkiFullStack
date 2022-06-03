@@ -31,3 +31,26 @@ test('each blog has an "id" property', async () => {
 
   returnedBlogs.body.forEach((blog) => expect(blog.id).toBeDefined())
 })
+
+test.only('posting blog increases # blogs in DB by 1, and saves its content', async () => {
+  const blogsBefore = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const postResponse = await api
+    .post('/api/blogs')
+    .send(helper.oneExtraBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAfter = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  expect(blogsAfter.body).toHaveLength(blogsBefore.body.length + 1)
+
+  const resultBlogsContent = blogsAfter.body.map(b => b.content)
+  expect(resultBlogsContent).toContain(helper.oneExtraBlog.content)
+})
