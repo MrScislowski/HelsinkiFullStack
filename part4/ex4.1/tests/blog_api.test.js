@@ -10,7 +10,7 @@ const api = supertest(app)
 // http get request to /api/blogs; verify the blog list application return the correct amoutn of blog posts in json format
 beforeEach(async () => {
   await Blog.deleteMany({})
-  const allPromises = helper.blogList.map(b => b.save())
+  const allPromises = helper.blogList.map((b) => (new Blog(b)).save())
   await Promise.all(allPromises)
 })
 
@@ -21,4 +21,13 @@ test('gets correct number of blogs in json', async () => {
     .expect('Content-Type', /application\/json/)
   
   expect(returnedBlogs.body).toHaveLength(helper.blogList.length)
+})
+
+test('each blog has an "id" property', async () => {
+  const returnedBlogs = await api
+  .get('/api/blogs')
+  .expect(200)
+  .expect('Content-Type', /application\/json/)
+
+  returnedBlogs.body.forEach((blog) => expect(blog.id).toBeDefined())
 })
