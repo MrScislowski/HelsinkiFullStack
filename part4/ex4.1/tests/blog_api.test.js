@@ -55,7 +55,7 @@ test('posting blog increases # blogs in DB by 1, and saves its content', async (
   expect(resultBlogsContent).toContain(helper.oneExtraBlog.content)
 })
 
-test.only('missing likes in post defaults to zero', async () => {
+test('missing likes in post defaults to zero', async () => {
   const {likes, ...incompleteObject} = helper.oneExtraBlog
   const postResponse = await api
     .post('/api/blogs')
@@ -71,4 +71,19 @@ test.only('missing likes in post defaults to zero', async () => {
   const dbEntry = allBlogs.body.find((blog) => blog.id === postResponse.body.id)
   expect(dbEntry.likes).toBeDefined()
   expect(dbEntry.likes).toBe(0)
+})
+
+test.only('missing title and url constitute Bad Request', async () => {
+  let {title, url, ...missingBoth} = helper.oneExtraBlog
+  await api
+    .post('/api/blogs')
+    .send(missingBoth)
+    .expect(400)
+  
+  const missingOne = helper.oneExtraBlog
+  delete missingOne.title
+  await api
+    .post('/api/blogs')
+    .send(missingOne)
+    .expect(201)
 })
