@@ -14,76 +14,94 @@ beforeEach(async () => {
   await Promise.all(allPromises)
 })
 
-test('gets correct number of blogs in json', async () => {
-  const returnedBlogs = await api
+describe('when getting posts', () => {
+  test('gets correct number of blogs in json', async () => {
+    const returnedBlogs = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    
+    expect(returnedBlogs.body).toHaveLength(helper.blogList.length)
+  })
+  
+  test('each blog has an "id" property', async () => {
+    const returnedBlogs = await api
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/)
   
-  expect(returnedBlogs.body).toHaveLength(helper.blogList.length)
+    returnedBlogs.body.forEach((blog) => expect(blog.id).toBeDefined())
+  })
 })
 
-test('each blog has an "id" property', async () => {
-  const returnedBlogs = await api
-  .get('/api/blogs')
-  .expect(200)
-  .expect('Content-Type', /application\/json/)
-
-  returnedBlogs.body.forEach((blog) => expect(blog.id).toBeDefined())
-})
-
-test('posting blog increases # blogs in DB by 1, and saves its content', async () => {
-  const blogsBefore = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-
-  const postResponse = await api
-    .post('/api/blogs')
-    .send(helper.oneExtraBlog)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
-
-  const blogsAfter = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-
-  expect(blogsAfter.body).toHaveLength(blogsBefore.body.length + 1)
-
-  const resultBlogsContent = blogsAfter.body.map(b => b.content)
-  expect(resultBlogsContent).toContain(helper.oneExtraBlog.content)
-})
-
-test('missing likes in post defaults to zero', async () => {
-  const {likes, ...incompleteObject} = helper.oneExtraBlog
-  const postResponse = await api
-    .post('/api/blogs')
-    .send(incompleteObject)
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+describe('when posting blogs', () => {
+  test('# blogs in DB increases by 1, and saves its content', async () => {
+    const blogsBefore = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   
-  const allBlogs = await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
-
-  const dbEntry = allBlogs.body.find((blog) => blog.id === postResponse.body.id)
-  expect(dbEntry.likes).toBeDefined()
-  expect(dbEntry.likes).toBe(0)
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(helper.oneExtraBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+  
+    const blogsAfter = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  
+    expect(blogsAfter.body).toHaveLength(blogsBefore.body.length + 1)
+  
+    const resultBlogsContent = blogsAfter.body.map(b => b.content)
+    expect(resultBlogsContent).toContain(helper.oneExtraBlog.content)
+  })
+  
+  test('missing likes in post defaults to zero', async () => {
+    const {likes, ...incompleteObject} = helper.oneExtraBlog
+    const postResponse = await api
+      .post('/api/blogs')
+      .send(incompleteObject)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    
+    const allBlogs = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  
+    const dbEntry = allBlogs.body.find((blog) => blog.id === postResponse.body.id)
+    expect(dbEntry.likes).toBeDefined()
+    expect(dbEntry.likes).toBe(0)
+  })
+  
+  test('missing title and url constitute Bad Request', async () => {
+    let {title, url, ...missingBoth} = helper.oneExtraBlog
+    await api
+      .post('/api/blogs')
+      .send(missingBoth)
+      .expect(400)
+    
+    const missingOne = helper.oneExtraBlog
+    delete missingOne.title
+    await api
+      .post('/api/blogs')
+      .send(missingOne)
+      .expect(201)
+  })
 })
 
-test.only('missing title and url constitute Bad Request', async () => {
-  let {title, url, ...missingBoth} = helper.oneExtraBlog
-  await api
-    .post('/api/blogs')
-    .send(missingBoth)
-    .expect(400)
-  
-  const missingOne = helper.oneExtraBlog
-  delete missingOne.title
-  await api
-    .post('/api/blogs')
-    .send(missingOne)
-    .expect(201)
+describe('when deleting a blog', () => {
+  test('correct id => one fewer blog; specified blog no longer there', () => {
+    expect(1).toBe(2)
+  })
+
+  test('incorrect id => fails with status code 400', () => {
+    expect(1).toBe(2)
+  })
+})
+
+afterAll(() => {
+  mongoose.connection.close()
 })
