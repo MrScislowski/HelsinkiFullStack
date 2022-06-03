@@ -93,7 +93,7 @@ describe('when posting blogs', () => {
 })
 
 describe('when deleting a blog', () => {
-  test.only('correct id => one fewer blog; specified blog no longer there', async () => {
+  test('correct id => one fewer blog; specified blog no longer there', async () => {
     let blogsBefore = await api
       .get('/api/blogs')
       .expect(200)
@@ -123,13 +123,23 @@ describe('when deleting a blog', () => {
 
   })
 
-  test('nonexistent id => fails with status code 404', () => {
-    expect(1).toBe(2)
+  test.only('nonexistent id => fails with status code 404', async () => {
+    let blogsBefore = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    blogsBefore = blogsBefore.body
+
+    await api
+      .delete(`/api/blogs/${blogsBefore[0].id}`)
+      .expect(204)
+    
+    await api
+      .delete(`/api/blogs/${blogsBefore[0].id}`)
+      .expect(404)
   })
 
-  test('invalid id => fails with status code 400', () => {
-    expect(1).toBe(2)
-  })
 })
 
 afterAll(() => {
