@@ -32,7 +32,7 @@ test('each blog has an "id" property', async () => {
   returnedBlogs.body.forEach((blog) => expect(blog.id).toBeDefined())
 })
 
-test.only('posting blog increases # blogs in DB by 1, and saves its content', async () => {
+test('posting blog increases # blogs in DB by 1, and saves its content', async () => {
   const blogsBefore = await api
     .get('/api/blogs')
     .expect(200)
@@ -53,4 +53,22 @@ test.only('posting blog increases # blogs in DB by 1, and saves its content', as
 
   const resultBlogsContent = blogsAfter.body.map(b => b.content)
   expect(resultBlogsContent).toContain(helper.oneExtraBlog.content)
+})
+
+test.only('missing likes in post defaults to zero', async () => {
+  const {likes, ...incompleteObject} = helper.oneExtraBlog
+  const postResponse = await api
+    .post('/api/blogs')
+    .send(incompleteObject)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  
+  const allBlogs = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const dbEntry = allBlogs.body.find((blog) => blog.id === postResponse.body.id)
+  expect(dbEntry.likes).toBeDefined()
+  expect(dbEntry.likes).toBe(0)
 })
