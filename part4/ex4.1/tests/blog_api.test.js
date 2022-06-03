@@ -123,7 +123,7 @@ describe('when deleting a blog', () => {
 
   })
 
-  test.only('nonexistent id => fails with status code 404', async () => {
+  test('nonexistent id => fails with status code 404', async () => {
     let blogsBefore = await api
       .get('/api/blogs')
       .expect(200)
@@ -140,6 +140,36 @@ describe('when deleting a blog', () => {
       .expect(404)
   })
 
+})
+
+describe('when updating a blog', () => {
+  test.only('number of blogs the same; content has changed', async () => {
+    let allBlogsV1 = await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    
+    allBlogsV1 = allBlogsV1.body
+
+    const updatedBlog = helper.generateRandomBlog()
+    await api
+      .put(`/api/blogs/${allBlogsV1[0].id}`)
+      .send(updatedBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    let allBlogsV2 = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+  
+    allBlogsV2 = allBlogsV2.body
+
+    expect(allBlogsV2).toHaveLength(allBlogsV1.length)
+    expect(allBlogsV2.find((b) => b.id === allBlogsV1[0].id)).toEqual({id: allBlogsV1[0].id, ...updatedBlog})
+
+
+  })
 })
 
 afterAll(() => {

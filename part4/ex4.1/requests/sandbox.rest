@@ -14,3 +14,16 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3003/api/blogs/6295f7b755e2d0d131635925
+
+###
+PUT http://localhost:3003/api/blogs/629a86b2740f488b09a29c4d
+Content-Type: application/json
+
+{
+  "title": "The nine habits of highly effective people",
+  "author": "Stephen Covey",
+  "url": "www.google.com",
+  "likes": 44,
+  "other": "irrelevant",
+  "stuff": "to be ignored..."
+}
