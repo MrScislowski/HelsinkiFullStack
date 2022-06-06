@@ -4,13 +4,13 @@ GET http://localhost:3003/api/blogs
 ###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImEiLCJpZCI6IjYyOWRmMTE3YTVhZGNjM2VmN2FlNjgyYSIsImlhdCI6MTY1NDUyMzQ4MH0.VuwWgFKCNIBCM3D57ipXCg7Alo7YrfhTem39aropY1o
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4YW1wbGUxIiwiaWQiOiI2MjllMDc3YWZiMmQ1MmQ2MGMyZjcwZGMiLCJpYXQiOjE2NTQ1Mzk4NTF9.UaJEaNjeg9QVkEdZBq_TyAVX-egY74Dsary-9y5i84w
 
 {
-  "title": "The eight habits of highly effective people",
-  "author": "Stephen Covey",
-  "url": "www.google.com",
-  "likes": 12
+  "title": "hewo",
+  "author": "jskdfa",
+  "url": "www.goodasdfgle.com",
+  "likes": 13
 }
 
 ###
