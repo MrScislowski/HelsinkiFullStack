@@ -13,6 +13,10 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(400).end()
   }
 
+  if (!request.token) {
+    return response.status(401).json({error: 'token missing or invalid'})
+  }
+
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
   if (!decodedToken.id) {

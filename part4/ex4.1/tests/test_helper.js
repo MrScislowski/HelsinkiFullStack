@@ -58,6 +58,12 @@ const oneExtraUser = {
   password: 'password4',
 }
 
+const testUser = {
+  username: "test_user",
+  name: "test_user",
+  password: 'test_password',
+}
+
 const oneExtraBlog = {
   title: "extra blog",
   author: "extra author",
@@ -78,5 +84,5 @@ const generateRandomBlog = () => {
 }
 
 module.exports = {
-  blogList, oneExtraBlog, generateRandomBlog, userList, oneExtraUser
+  blogList, oneExtraBlog, generateRandomBlog, userList, oneExtraUser, testUser
 }

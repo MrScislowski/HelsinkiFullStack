@@ -1,13 +1,23 @@
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const app = require('../app')
 const helper = require('./test_helper')
 const api = supertest(app)
 
-
 beforeEach(async () => {
+  await User.deleteMany({})
+  const createUserResponse = await api
+    .post('/api/users')
+    .send({
+      username: helper.testUser.username,
+      name: helper.testUser.name,
+      password: helper.testUser.password,
+    })
+
   await Blog.deleteMany({})
+  
   const allPromises = helper.blogList.map((b) => (new Blog(b)).save())
   await Promise.all(allPromises)
 })
@@ -33,15 +43,37 @@ describe('when getting posts', () => {
 })
 
 describe('when posting blogs', () => {
+  test('missing authorization token results in 401 error', async () => {
+    await api
+      .post('/api/blogs')
+      .send(helper.oneExtraBlog)
+      .expect(401)
+  })
+
+
   test('# blogs in DB increases by 1, and saves its content', async () => {
     const blogsBefore = await api
       .get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
   
+    const loginResponse = await api
+    .post('/api/login')
+    .send({
+      username: helper.testUser.username,
+      password: helper.testUser.password,
+    })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const token = loginResponse.body.token
+    expect(token).toBeDefined()
+
+
     const postResponse = await api
       .post('/api/blogs')
       .send(helper.oneExtraBlog)
+      .set('Authorization', `bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
   
@@ -58,9 +90,24 @@ describe('when posting blogs', () => {
   
   test('missing likes in post defaults to zero', async () => {
     const {likes, ...incompleteObject} = helper.oneExtraBlog
+
+    const loginResponse = await api
+    .post('/api/login')
+    .send({
+      username: helper.testUser.username,
+      password: helper.testUser.password,
+    })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const token = loginResponse.body.token
+    expect(token).toBeDefined()
+    // .set('Authorization', `bearer ${token}`)
+
     const postResponse = await api
       .post('/api/blogs')
       .send(incompleteObject)
+      .set('Authorization', `bearer ${token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
     
@@ -76,17 +123,25 @@ describe('when posting blogs', () => {
   
   test('missing title and url constitute Bad Request', async () => {
     let {title, url, ...missingBoth} = helper.oneExtraBlog
+    
+    const loginResponse = await api
+    .post('/api/login')
+    .send({
+      username: helper.testUser.username,
+      password: helper.testUser.password,
+    })
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+    const token = loginResponse.body.token
+    expect(token).toBeDefined()
+    
+    
     await api
       .post('/api/blogs')
       .send(missingBoth)
+      .set('Authorization', `bearer ${token}`)
       .expect(400)
-    
-    const missingOne = helper.oneExtraBlog
-    delete missingOne.title
-    await api
-      .post('/api/blogs')
-      .send(missingOne)
-      .expect(201)
   })
 })
 
@@ -141,7 +196,7 @@ describe('when deleting a blog', () => {
 })
 
 describe('when updating a blog', () => {
-  test.only('number of blogs the same; content has changed', async () => {
+  test('number of blogs the same; content has changed', async () => {
     let allBlogsV1 = await api
       .get('/api/blogs')
       .expect(200)
