@@ -1,4 +1,3 @@
-/// <reference types="jest" />
 const supertest = require('supertest')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
@@ -7,7 +6,6 @@ const helper = require('./test_helper')
 const api = supertest(app)
 
 
-// http get request to /api/blogs; verify the blog list application return the correct amoutn of blog posts in json format
 beforeEach(async () => {
   await Blog.deleteMany({})
   const allPromises = helper.blogList.map((b) => (new Blog(b)).save())
