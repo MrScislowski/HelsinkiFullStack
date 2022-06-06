@@ -35,14 +35,21 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  const theId = request.params.id
-
-  const retval = await Blog.findByIdAndRemove(theId)
-  if (retval) {
-    response.status(204).end()
-  } else {
-    response.status(404).end()
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken) {
+    return response.status(401).json({error: "must be logged in to do this"})
   }
+
+  const theBlogPost = await Blog.findById(request.params.id)
+  if (!theBlogPost) {
+    return response.status(404).end()
+  }
+  
+  if (theBlogPost.user.toString() !== decodedToken.id.toString()) {
+    return response.status(401).json({error: "you must own this blog post to delete it"})
+  }
+
+  await Blog.findByIdAndRemove(request.params.id)
 })
 
 blogsRouter.put('/:id', async (request, response) => {
