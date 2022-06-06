@@ -17,7 +17,7 @@ const mongoose = require('mongoose')
 const Note = require('./models/note')
 
 
-const app = express()
+// const app = express()
 
 app.use(express.json())
 app.use(cors())
@@ -112,7 +112,3 @@ const errorHandler = (error, request, response, next) => {
 }
 
 app.use(errorHandler)
-
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-})
