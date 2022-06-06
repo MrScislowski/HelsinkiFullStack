@@ -18,5 +18,6 @@ mongoose.connect(DB_URL)
   })
 
 app.use('/api/blogs', require('./controllers/blogs'))
+app.use('/api/users', require('./controllers/users'))
 
 module.exports = app

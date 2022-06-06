@@ -27,3 +27,17 @@ Content-Type: application/json
   "other": "irrelevant",
   "stuff": "to be ignored..."
 }
+
+
+###
+POST http://localhost:3003/api/users 
+Content-Type: application/json
+
+{
+  "username": "b",
+  "name": "b",
+  "password": "c"
+}
+
+###
+GET http://localhost:3003/api/users 
