@@ -9,10 +9,12 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const {username, name, password} = request.body
 
-  console.log('search for username returned:', await User.findOne({username}))
-
   if (await User.findOne({username})) {
     return response.status(400).json({error: 'username already taken'})
+  }
+
+  if (!username || !password || username.length < 3 || password.length < 3) {
+    return response.status(400).json({error: 'username/password must be given, and must be >=3 characters'})
   }
 
   const passwordHash = await bcrypt.hash(password, 10)
