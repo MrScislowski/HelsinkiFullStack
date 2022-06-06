@@ -34,5 +34,33 @@ describe('when creating a new user', () => {
     expect(usersAfter).toHaveLength(usersBefore.length + 1)
   })
 
+  test('entry with existing username will not be created', async () => {
+    let usersBefore = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    usersBefore = usersBefore.body
+
+    const dbResponse = await api
+      .post('/api/users')
+      .send({
+        username: usersBefore[0].username,
+        name: "asdfasdfasdf",
+        password: "asdfasdfasdf"
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(dbResponse.body.error).toContain('username already taken')
+
+    let usersAfter = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      usersAfter = usersAfter.body
+
+    expect(usersAfter).toHaveLength(usersBefore.length)
+  })
+
 
 })
