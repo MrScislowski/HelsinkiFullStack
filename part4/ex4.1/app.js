@@ -19,7 +19,7 @@ mongoose.connect(DB_URL)
   })
 
 app.use(middleware.tokenExtractor)
-app.use('/api/blogs', require('./controllers/blogs'))
+app.use('/api/blogs', middleware.userExtractor, require('./controllers/blogs'))
 app.use('/api/users', require('./controllers/users'))
 app.use('/api/login', require('./controllers/login'))
 

@@ -14,8 +14,8 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4Y
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/629e490487ad47b19f4ae14c
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4YW1wbGUxIiwiaWQiOiI2MjllMDc3YWZiMmQ1MmQ2MGMyZjcwZGMiLCJpYXQiOjE2NTQ1Mzk4NTF9.UaJEaNjeg9QVkEdZBq_TyAVX-egY74Dsary-9y5i84w
+DELETE http://localhost:3003/api/blogs/629e46f9f17986eaedb82293
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImV4YW1wbGUxIiwiaWQiOiI2MjllMDc3YWZiMmQ1MmQ2MGMyZjcwZGMiLCJpYXQiOjE2NTQ1NDE0Mjl9.Eulc41MZXndp8G8kHpVSX6AyBdUs4d1Vvr1mRAYW2ZE
 
 ###
 PUT http://localhost:3003/api/blogs/629a86b2740f488b09a29c4d

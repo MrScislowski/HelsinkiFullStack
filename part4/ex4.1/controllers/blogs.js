@@ -35,8 +35,7 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  if (!decodedToken) {
+  if (!request.user) {
     return response.status(401).json({error: "must be logged in to do this"})
   }
 
@@ -45,7 +44,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(404).end()
   }
   
-  if (theBlogPost.user.toString() !== decodedToken.id.toString()) {
+  if (theBlogPost.user.toString() !== request.user.id.toString()) {
     return response.status(401).json({error: "you must own this blog post to delete it"})
   }
 

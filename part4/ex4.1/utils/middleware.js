@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const tokenExtractor = (request, response, next) => {
   const authorization = request.get('authorization')
   if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
@@ -6,6 +8,15 @@ const tokenExtractor = (request, response, next) => {
   next()
 }
 
+const userExtractor = (request, response, next) => {
+  const user = jwt.decode(request.token, process.send.SECRET)
+
+  request.user = user
+
+  next()
+}
+
 module.exports = {
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }
