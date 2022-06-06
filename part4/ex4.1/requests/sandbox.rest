@@ -51,3 +51,14 @@ Content-Type: application/json
   "password": "asdfijajasdfasdfl",
   "name": "w342asdfasdfasdfsdfb"
 }
+
+
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "a",
+  "password": "b",
+  "name": "c"
+}
