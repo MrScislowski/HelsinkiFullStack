@@ -62,5 +62,33 @@ describe('when creating a new user', () => {
     expect(usersAfter).toHaveLength(usersBefore.length)
   })
 
+  test('entry w/ too short username/password is not saved', async () => {
+    let usersBefore = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    usersBefore = usersBefore.body
+
+    const dbResponse = await api
+      .post('/api/users')
+      .send({
+        username: "zz",
+        name: "asdfasdfasdf",
+        password: "zz"
+      })
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(dbResponse.body.error).toContain('username/password must be given, and must be >=3 characters')
+
+    let usersAfter = await api
+      .get('/api/users')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+      usersAfter = usersAfter.body
+
+    expect(usersAfter).toHaveLength(usersBefore.length)
+  })
+
 
 })
