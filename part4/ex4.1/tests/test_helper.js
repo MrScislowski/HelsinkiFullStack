@@ -34,6 +34,30 @@ const rawBlogList = [
   },
 ]
 
+const userList = [
+  {
+    username: "user1",
+    name: "name1",
+    password: "password1",
+  },
+  {
+    username: "user2",
+    name: "name2",
+    password: "password2",
+  },
+  {
+    username: "user3",
+    name: "name3",
+    password: "password3",
+  },
+]
+
+const oneExtraUser = {
+  username: "user4",
+  name: 'name4',
+  password: 'password4',
+}
+
 const oneExtraBlog = {
   title: "extra blog",
   author: "extra author",
@@ -54,5 +78,5 @@ const generateRandomBlog = () => {
 }
 
 module.exports = {
-  blogList, oneExtraBlog, generateRandomBlog
+  blogList, oneExtraBlog, generateRandomBlog, userList, oneExtraUser
 }

@@ -22,7 +22,7 @@ usersRouter.post('/', async (request, response) => {
   const newUser = new User({username, name, passwordHash})
 
   const retVal = await newUser.save()
-  return response.json(retVal)
+  return response.status(201).json(retVal)
 })
 
 module.exports = usersRouter
