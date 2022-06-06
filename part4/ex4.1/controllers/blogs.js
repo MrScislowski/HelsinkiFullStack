@@ -1,9 +1,10 @@
 const blogsRouter = require('express').Router()
 const res = require('express/lib/response')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
 blogsRouter.get('/', async (request, response) => {
-  response.json(await Blog.find({}))
+  response.json(await Blog.find({}).populate('user'))
 })
 
 blogsRouter.post('/', async (request, response) => {
@@ -11,12 +12,18 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(400).end()
   }
 
+  const curUser = (await User.find({}))[0]
+
   const blog = new Blog({
     likes: request.body.likes ? request.body.likes : 0,
+    user: curUser.id,
     ...request.body
   })
 
+
   const result = await blog.save()
+  curUser.blogs = curUser.blogs.concat(result._id)
+  await curUser.save()
   response.status(201).json(result)
 })
 
@@ -32,9 +39,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 blogsRouter.put('/:id', async (request, response) => {
-  console.log('got:', request.body)
-  const amendedBlog = (({title, author, url, likes}) => ({title, author, url, likes}))(request.body)
-  console.log('turned that into:', amendedBlog)
+  const amendedBlog = (({title, author, url, likes, user}) => ({title, author, url, likes, user}))(request.body)
   const retVal = await Blog.findByIdAndUpdate(request.params.id, 
     amendedBlog, 
     {runValidators: true, returnDocument: 'after'})
