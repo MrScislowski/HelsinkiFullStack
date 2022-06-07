@@ -9,7 +9,7 @@ const tokenExtractor = (request, response, next) => {
 }
 
 const userExtractor = (request, response, next) => {
-  const user = jwt.decode(request.token, process.send.SECRET)
+  const user = jwt.decode(request.token, process.env.SECRET)
 
   request.user = user
 
