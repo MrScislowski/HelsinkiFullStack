@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import login from './services/login'
 import loginService from './services/login'
 
 const App = () => {
@@ -15,12 +16,24 @@ const App = () => {
     )  
   }, [])
 
+  useEffect(() => {
+    const loginDetailsJSON = window.localStorage.getItem('blogUserLogin')
+    if (loginDetailsJSON) {
+      const loginDetails = JSON.parse(loginDetailsJSON)
+      setUser(loginDetails)
+      blogService.setToken(loginDetails.token)
+    }
+  }, [])
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
       const response = await loginService.attemptLogin({username, password})
       blogService.setToken(response.token)
       setUser(response)
+      window.localStorage.setItem('blogUserLogin', JSON.stringify(response))
+      setUsername('')
+      setPassword('')
     }
     catch (exception) {
       console.log('login failed with exception: ', exception)
@@ -51,12 +64,23 @@ const App = () => {
     <p>{user.name} logged in</p>
   )
 
+  const clearLoginInfo = () => {
+    window.localStorage.removeItem('blogUserLogin')
+    
+    setUser(null)
+  }
+
+  const logoutButtonDisplay = () => (
+    <button onClick={clearLoginInfo}> logout </button>
+  )
+
   return (
     <div>
       {user === null?
       loginForm() :
       <>
       {loginStatusDisplay()}
+      {logoutButtonDisplay()}
       {blogsDisplay()}
       </>
       }
