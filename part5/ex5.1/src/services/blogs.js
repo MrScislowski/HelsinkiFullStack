@@ -4,7 +4,7 @@ const baseUrl = '/api/blogs'
 let token = null
 
 const setToken = (newValue) => {
-  token = newValue
+  token = `bearer ${newValue}`
 }
 
 const getAll = () => {
@@ -12,4 +12,14 @@ const getAll = () => {
   return request.then(response => response.data)
 }
 
-export default { getAll, setToken }
+const postBlog = async (newBlog) => {
+  // title: String,
+  // author: String,
+  // url: String,
+  // likes: Number,
+  const response = await axios
+    .post(baseUrl, newBlog, {headers: {Authorization: token}})
+  return response.data
+}
+
+export default { getAll, setToken, postBlog }
