@@ -11,6 +11,7 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
+  const [notification, setNotification] = useState({type: null, message: null})
 
 
   useEffect(() => {
@@ -39,7 +40,12 @@ const App = () => {
       setPassword('')
     }
     catch (exception) {
-      console.log('login failed with exception: ', exception)
+      setNotification(
+        {
+          type: 'error',
+          message: 'wrong username or password',
+        }
+      )
     }
   }
 
@@ -87,6 +93,11 @@ const App = () => {
         likes: 0,
     })
     setBlogs(blogs.concat(newBlog))
+    setNotification(
+      {
+        type: 'info',
+        message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
+      })
   }
 
   const newBlogForm = () => (
@@ -101,8 +112,23 @@ const App = () => {
     </>
   )
 
+  const notificationDisplay = () => {
+    if (notification.type === null) {
+      return <></>
+    }
+    setTimeout(() => {
+      setNotification({type: null, message: null})
+    }, 5000)
+    return (
+      <>
+      <p className={notification.type}>{notification.message}</p>
+      </>
+    )
+  }
+
   return (
     <div>
+      {notificationDisplay()}
       {user === null?
       loginForm() :
       <>
