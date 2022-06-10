@@ -61,7 +61,6 @@ blogsRouter.put('/:id', async (request, response) => {
   const retVal = await Blog.findByIdAndUpdate(request.params.id, 
     amendedBlog,
     {runValidators: true, returnDocument: 'after'})
-  console.log('retval was', retVal)
   if (retVal) {
     response.status(201).json(retVal)
   } else {

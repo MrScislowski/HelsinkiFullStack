@@ -61,14 +61,27 @@ const App = () => {
       </>
     )
 
-  const blogsDisplay = () => (
+  const blogsDisplay = () => {
+    const sortedBlogs = [...blogs]
+    sortedBlogs.sort((a, b) => {
+      if (a.likes > b.likes) {
+        return 1
+      } else if (a.likes < b.likes) {
+        return -1
+      } else {
+        return 0
+      }
+    })
+
+    return (
       <>
-      <h2>blogs</h2>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
-      )}
+        <h2>blogs</h2>
+        {sortedBlogs.map(blog =>
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        )}
       </>
     )
+  }
 
 
 
