@@ -65,10 +65,12 @@ const App = () => {
       <>
       <h2>blogs</h2>
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
       )}
       </>
     )
+
+
 
   const loginStatusDisplay = () => (
     <p>{user.name} logged in</p>
@@ -94,6 +96,16 @@ const App = () => {
       {
         type: 'info',
         message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
+      })
+  }
+
+  const updateBlog = async (updatedBlogObject) => {
+    const updatedBlog = await blogService.amendBlog(updatedBlogObject)
+    setBlogs(blogs.map((b) => (b.id === updatedBlog.id)? updatedBlog : b))
+    setNotification(
+      {
+        type: 'info',
+        message: `blog "${updatedBlog.title}" by ${updatedBlog.author} liked`,
       })
   }
 
