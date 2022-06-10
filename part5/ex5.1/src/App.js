@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import Togglable from './components/Togglable'
+// import Togglable from './components/Togglable'
+import AddBlogForm from './components/AddBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -9,9 +10,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
   const [notification, setNotification] = useState({type: null, message: null})
 
   const newBlogFormRef = useRef()
@@ -88,15 +86,8 @@ const App = () => {
     </p>
   )
 
-  const handleCreateNewBlog = async (event) => {
-    event.preventDefault()
-    const newBlog = await blogService.postBlog(
-      {
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl,
-        likes: 0,
-    })
+  const addBlog = async (blogObject) => {
+    const newBlog = await blogService.postBlog(blogObject)
     setBlogs(blogs.concat(newBlog))
     newBlogFormRef.current.toggleVisibility()
     setNotification(
@@ -106,19 +97,7 @@ const App = () => {
       })
   }
 
-  const newBlogForm = () => (
-    <>
-      <Togglable startingVisibility={false} buttonLabel='add new blog' ref={newBlogFormRef}>
-        <h2>create new</h2>
-        <form onSubmit={handleCreateNewBlog}>
-          title: <input type="text" value={blogTitle} onChange={({ target }) => setBlogTitle(target.value)} /> <br />
-          author: <input type="text" value={blogAuthor} onChange={({ target }) => setBlogAuthor(target.value)} /> <br />
-          url: <input type="text" value={blogUrl} onChange={({ target }) => setBlogUrl(target.value)} /> <br />
-          <button type="submit">create</button>
-        </form>
-      </Togglable>
-    </>
-  )
+  
 
   const notificationDisplay = () => {
     if (notification.type === null) {
@@ -142,7 +121,7 @@ const App = () => {
       <>
       {loginStatusDisplay()}
       {logoutButtonDisplay()}
-      {newBlogForm()}
+      <AddBlogForm newBlogFormRef={newBlogFormRef} addBlog={addBlog} />
       {blogsDisplay()}
       </>
       }
