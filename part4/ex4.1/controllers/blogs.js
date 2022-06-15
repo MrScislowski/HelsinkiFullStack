@@ -52,7 +52,9 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(401).json({error: "you must own this blog post to delete it"})
   }
 
-  await Blog.findByIdAndRemove(request.params.id)
+  const retVal = await Blog.findByIdAndRemove(request.params.id)
+
+  response.status(200).json(retVal)
 })
 
 blogsRouter.put('/:id', async (request, response) => {

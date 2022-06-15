@@ -77,7 +77,7 @@ const App = () => {
       <>
         <h2>blogs</h2>
         {sortedBlogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} removeBlog={deleteBlog} user={user} />
         )}
       </>
     )
@@ -120,6 +120,23 @@ const App = () => {
         type: 'info',
         message: `blog "${updatedBlog.title}" by ${updatedBlog.author} liked`,
       })
+  }
+
+  const deleteBlog = async (blogObject) => {
+    const confirmed = window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}?`)
+
+    if (!confirmed) {
+      return
+    }
+
+    const response = await blogService.deleteBlog(blogObject)
+    setBlogs(blogs.filter((b) => (b.id !== response.id)))
+    setNotification(
+      {
+        type: 'info',
+        message: `blog "${blogObject.title}" by ${blogObject.author} removed`,
+      }
+    )
   }
 
   

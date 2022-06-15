@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -15,7 +15,7 @@ const Blog = ({ blog, updateBlog }) => {
     setDetailsShown(!detailsShown)
   }
 
-  const likeBlog = () => {
+  const likeBlog = async () => {
     const {title, author, url, likes, user, id} = blog
     const updatedBlog = {
       title,
@@ -25,12 +25,20 @@ const Blog = ({ blog, updateBlog }) => {
       likes: likes + 1,
       user: user.id,
     }
-    updateBlog(updatedBlog)
+    await updateBlog(updatedBlog)
+  }
+
+  const removeThis = async () => {
+    await removeBlog(blog)
   }
 
   const showWhenVisible = { display: detailsShown ? '' : 'none' }
 
   const buttonText = (detailsShown) ? 'hide' : 'view'
+
+
+  const ownsPost = blog.user && blog.user.id === user.id
+  const ownedStyle = {display: ownsPost ? '' : 'none'}
 
   return (
     <div style={blogStyle}>
@@ -40,7 +48,8 @@ const Blog = ({ blog, updateBlog }) => {
       <div style={showWhenVisible}>
         {blog.url} <br/>
         likes {blog.likes} <button onClick={likeBlog}>like</button> <br />
-        {(blog.user) ? blog.user.name: ''}
+        {(blog.user) ? blog.user.name: ''} <br />
+        <button style={ownedStyle} onClick={removeThis}>remove</button>
       </div>
     </div>
   )
