@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-// import Togglable from './components/Togglable'
 import AddBlogForm from './components/AddBlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -10,15 +9,15 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({type: null, message: null})
+  const [notification, setNotification] = useState({ type: null, message: null })
 
   const newBlogFormRef = useRef()
 
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs(blogs)
+    )
   }, [])
 
   useEffect(() => {
@@ -33,7 +32,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const response = await loginService.attemptLogin({username, password})
+      const response = await loginService.attemptLogin({ username, password })
       blogService.setToken(response.token)
       setUser(response)
       window.localStorage.setItem('blogUserLogin', JSON.stringify(response))
@@ -51,15 +50,15 @@ const App = () => {
   }
 
   const loginForm = () => (
-      <>
+    <>
       <h2> log in to application</h2>
       <form onSubmit={handleLogin}>
-      username <input type="text" value={username} onChange={({target}) => setUsername(target.value)} /> <br/>
-      password <input type="password" value={password} onChange={({target}) => setPassword(target.value)} /> <br />
-      <button type="submit"> login </button>
+        username <input type="text" value={username} onChange={({ target }) => setUsername(target.value)} /> <br />
+        password <input type="password" value={password} onChange={({ target }) => setPassword(target.value)} /> <br />
+        <button type="submit"> login </button>
       </form>
-      </>
-    )
+    </>
+  )
 
   const blogsDisplay = () => {
     const sortedBlogs = [...blogs]
@@ -91,13 +90,12 @@ const App = () => {
 
   const clearLoginInfo = () => {
     window.localStorage.removeItem('blogUserLogin')
-    
     setUser(null)
   }
 
   const logoutButtonDisplay = () => (
     <p>
-    <button onClick={clearLoginInfo}> logout </button>
+      <button onClick={clearLoginInfo}> logout </button>
     </p>
   )
 
@@ -114,7 +112,7 @@ const App = () => {
 
   const updateBlog = async (updatedBlogObject) => {
     const updatedBlog = await blogService.amendBlog(updatedBlogObject)
-    setBlogs(blogs.map((b) => (b.id === updatedBlog.id)? updatedBlog : b))
+    setBlogs(blogs.map((b) => (b.id === updatedBlog.id) ? updatedBlog : b))
     setNotification(
       {
         type: 'info',
@@ -139,18 +137,18 @@ const App = () => {
     )
   }
 
-  
+
 
   const notificationDisplay = () => {
     if (notification.type === null) {
       return <></>
     }
     setTimeout(() => {
-      setNotification({type: null, message: null})
+      setNotification({ type: null, message: null })
     }, 5000)
     return (
       <>
-      <p className={notification.type}>{notification.message}</p>
+        <p className={notification.type}>{notification.message}</p>
       </>
     )
   }
@@ -158,14 +156,14 @@ const App = () => {
   return (
     <div>
       {notificationDisplay()}
-      {user === null?
-      loginForm() :
-      <>
-      {loginStatusDisplay()}
-      {logoutButtonDisplay()}
-      <AddBlogForm newBlogFormRef={newBlogFormRef} addBlog={addBlog} />
-      {blogsDisplay()}
-      </>
+      {user === null ?
+        loginForm() :
+        <>
+          {loginStatusDisplay()}
+          {logoutButtonDisplay()}
+          <AddBlogForm newBlogFormRef={newBlogFormRef} addBlog={addBlog} />
+          {blogsDisplay()}
+        </>
       }
     </div>
   )

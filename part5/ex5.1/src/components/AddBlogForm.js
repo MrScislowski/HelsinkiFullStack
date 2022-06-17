@@ -1,4 +1,4 @@
-import Togglable from "./Togglable"
+import Togglable from './Togglable'
 import { useState } from 'react'
 
 
@@ -9,7 +9,7 @@ const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
 
   const handleCreateNewBlog = async (event) => {
     event.preventDefault()
-    const blogObject = 
+    const blogObject =
       {
         title: blogTitle,
         author: blogAuthor,

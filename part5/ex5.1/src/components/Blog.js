@@ -17,7 +17,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   }
 
   const likeBlog = async () => {
-    const {title, author, url, likes, user, id} = blog
+    const { title, author, url, likes, user, id } = blog
     const updatedBlog = {
       title,
       author,
@@ -39,7 +39,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
 
 
   const ownsPost = blog.user && blog.user.id === user.id
-  const ownedStyle = {display: ownsPost ? '' : 'none'}
+  const ownedStyle = { display: ownsPost ? '' : 'none' }
 
   return (
     <div style={blogStyle}>

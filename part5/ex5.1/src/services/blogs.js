@@ -18,20 +18,20 @@ const postBlog = async (newBlog) => {
   // url: String,
   // likes: Number,
   const response = await axios
-    .post(baseUrl, newBlog, {headers: {Authorization: token}})
+    .post(baseUrl, newBlog, { headers: { Authorization: token } })
   return response.data
 }
 
 const amendBlog = async (modifiedBlog) => {
   const response = await axios
-    .put(`${baseUrl}/${modifiedBlog.id}`, modifiedBlog, {headers: {Authorization: token}})
+    .put(`${baseUrl}/${modifiedBlog.id}`, modifiedBlog, { headers: { Authorization: token } })
   return response.data
 }
 
 const deleteBlog = async (theBlog) => {
-  const {id} = theBlog
+  const { id } = theBlog
   const response = await axios
-    .delete(`${baseUrl}/${id}`, {headers: {Authorization: token}})
+    .delete(`${baseUrl}/${id}`, { headers: { Authorization: token } })
   return response.data
 }
 
