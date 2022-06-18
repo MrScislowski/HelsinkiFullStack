@@ -40,3 +40,25 @@ test('url and likes are shown when the show button has been clicked', async () =
   expect(element).toHaveTextContent(blog.url)
   expect(element).toHaveTextContent(blog.likes)
 })
+
+test('clicking like button twice causes its event handler to be called twice', async () => {
+  const blog = {
+    title: 'abc',
+    author: 'def',
+    url: 'ghi',
+    likes: 49,
+    id: 'zzz',
+    user: { id: 'zzzz' },
+  }
+
+  const mockHandler = jest.fn(() => console.log('mock handler called'))
+  const { container } = render(<Blog blog={blog} updateBlog={mockHandler} user={blog.user} />)
+
+
+  const user = userEvent.setup()
+  const button = container.querySelector('.like-button')
+  await user.click(button)
+  await user.click(button)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
