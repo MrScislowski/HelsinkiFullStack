@@ -24,10 +24,10 @@ const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
       <Togglable startingVisibility={false} buttonLabel='add new blog' ref={newBlogFormRef}>
         <h2>create new</h2>
         <form onSubmit={handleCreateNewBlog}>
-          title: <input type="text" value={blogTitle} onChange={({ target }) => setBlogTitle(target.value)} /> <br />
-          author: <input type="text" value={blogAuthor} onChange={({ target }) => setBlogAuthor(target.value)} /> <br />
-          url: <input type="text" value={blogUrl} onChange={({ target }) => setBlogUrl(target.value)} /> <br />
-          <button type="submit">create</button>
+          title: <input type="text" value={blogTitle} placeholder='blog title' onChange={({ target }) => setBlogTitle(target.value)} /> <br />
+          author: <input type="text" value={blogAuthor} placeholder='blog author' onChange={({ target }) => setBlogAuthor(target.value)} /> <br />
+          url: <input type="text" value={blogUrl} placeholder='blog url' onChange={({ target }) => setBlogUrl(target.value)} /> <br />
+          <button className='add-blog-form-button' type="submit">create</button>
         </form>
       </Togglable>
     </>
