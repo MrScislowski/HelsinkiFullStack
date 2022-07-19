@@ -8,7 +8,7 @@ import Togglable from './components/Togglable'
 import NoteForm from './components/NoteForm'
 import noteService from './services/notes'
 import loginService from './services/login'
-import Login from './services/login'
+// import Login from './services/login'
 
 const App = () => {
   const [notes, setNotes] = useState([])
@@ -17,7 +17,7 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [loginVisible, setLoginVisible] = useState(false)
+  // const [loginVisible, setLoginVisible] = useState(false)
   const noteFormRef = useRef()
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const App = () => {
       setUser(user)
       noteService.setToken(user.token)
     }
-    }, [])
+  }, [])
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -80,7 +80,7 @@ const App = () => {
       .then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
-      .catch(error => {
+      .catch(() => {
         setErrorMessage(
           `Note '${note.content}' was already removed from server`
         )
@@ -97,7 +97,7 @@ const App = () => {
 
   const noteForm = () => (
     <Togglable buttonLabel="new note" ref={noteFormRef}>
-      <NoteForm 
+      <NoteForm
         createNote={addNote}
       />
     </Togglable>
@@ -107,14 +107,14 @@ const App = () => {
     return (
       <div>
         <Togglable buttonLabel='show'>
-          <LoginForm 
+          <LoginForm
             username={username}
             password={password}
-            handleUsernameChange={({target}) => setUsername(target.value)}
-            handlePasswordChange={({target}) => setPassword(target.value)}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
           />
-          </Togglable>
+        </Togglable>
       </div>
     )
   }
@@ -129,7 +129,7 @@ const App = () => {
         loginForm() :
         <div>
           <p>{user.name} logged-in</p>
-        {noteForm()}
+          {noteForm()}
         </div>
       }
 
