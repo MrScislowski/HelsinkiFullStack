@@ -1,2 +1,2 @@
-[ ] 6.1 part 1:
-    [ ] write new tests
+[ ] 6.2: unicafe revisited, step2
+    implement buttons and number of reviews of each type
