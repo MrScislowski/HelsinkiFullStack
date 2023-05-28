@@ -1,1 +1,2 @@
-[ ] https://fullstackopen.com/en/part6/flux_architecture_and_redux exercise 6.1
+[ ] 6.1 part 1:
+    [ ] write new tests
