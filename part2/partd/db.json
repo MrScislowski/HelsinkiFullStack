@@ -1,0 +1,70 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "HTML is easy",
+      "date": "2019-05-30-T17:30:31.098Z",
+      "important": true
+    },
+    {
+      "id": 2,
+      "content": "note2",
+      "date": "2019-05-30-T17:30:32.098Z",
+      "important": false
+    },
+    {
+      "id": 3,
+      "content": "note3",
+      "date": "2019-05-30-T17:30:33.098Z",
+      "important": true
+    },
+    {
+      "id": 4,
+      "content": "note4",
+      "date": "2019-05-30-T17:30:34.098Z",
+      "important": true
+    },
+    {
+      "content": "hewo",
+      "date": "2022-05-24T11:36:57.456Z",
+      "important": false,
+      "id": 5
+    },
+    {
+      "content": "hello",
+      "date": "2022-05-24T11:38:20.931Z",
+      "important": false,
+      "id": 6
+    },
+    {
+      "content": "newpost",
+      "date": "2022-05-24T11:41:00.435Z",
+      "important": true,
+      "id": 7
+    },
+    {
+      "content": "newpost2",
+      "date": "2022-05-24T11:41:44.035Z",
+      "important": true,
+      "id": 8
+    },
+    {
+      "content": "bw",
+      "date": "2022-05-24T11:44:07.042Z",
+      "important": true,
+      "id": 9
+    },
+    {
+      "content": "bw2",
+      "date": "2022-05-24T11:44:16.730Z",
+      "important": false,
+      "id": 10
+    },
+    {
+      "content": "wefa",
+      "date": "2022-05-24T11:44:45.866Z",
+      "important": true,
+      "id": 11
+    }
+  ]
+}
