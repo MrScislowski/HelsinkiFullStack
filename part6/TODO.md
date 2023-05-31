@@ -1,9 +1,3 @@
-[ ] Read Asynchronous actions and Redux thunk
-
-
-[ ] 6.16 Anecdotes and the backend, step3
-Modify the initialization of the Redux store to happen using asynchronous action creators, which are made possible by the Redux Thunk library.
-
 [ ] 6.17 Anecdotes and the backend, step4
 Also modify the creation of a new anecdote to happen using asynchronous action creators, made possible by the Redux Thunk library.
 

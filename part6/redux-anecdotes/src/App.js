@@ -5,17 +5,14 @@ import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import Filter from './components/Filter'
 import Notification from './components/Notification'
-import anecdoteService from './services/anecdotes'
-import { setAnecdotes } from './reducers/anecdoteReducer'
+import { initializeAnecdotesFromDb } from './reducers/anecdoteReducer'
 
 
 const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    anecdoteService.getAnecdotesFromDb().then(anecdotes => {
-      dispatch(setAnecdotes(anecdotes))
-    })
+    dispatch(initializeAnecdotesFromDb())
   }, [dispatch])
 
   const anecdotes = useSelector(({anecdotes, filter}) => {
@@ -25,6 +22,7 @@ const App = () => {
 
     return anecdotes.filter(an => an.content.indexOf(filter) !== -1)
   })
+  
   const filter = useSelector(state => state.filter)
 
   return (
