@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit"
 import anecdoteService from "../services/anecdotes"
 import { addNotification, clearNotifications } from "./notificationReducer"
 
-
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const initialState = []
@@ -57,7 +56,8 @@ export const createAnecdote = (text) => {
 
   return async dispatch => {
     const createdAnecdote = await anecdoteService.addAnecdoteToDb(proposedAnecdote)
-    dispatch(createdAnecdote)
+
+    dispatch(addAnecdote(createdAnecdote))
     dispatch(addNotification(`Created anecdote '${createdAnecdote.content}'`))
     setTimeout(() => {dispatch(clearNotifications())}, 5000)
   }

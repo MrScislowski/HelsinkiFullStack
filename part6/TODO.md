@@ -1,6 +1,3 @@
-[ ] 6.17 Anecdotes and the backend, step4
-Also modify the creation of a new anecdote to happen using asynchronous action creators, made possible by the Redux Thunk library.
-
 [ ] 6.18 Anecdotes and the backend, step5
 Voting does not yet save changes to the backend. Fix the situation with the help of the Redux Thunk library.
 

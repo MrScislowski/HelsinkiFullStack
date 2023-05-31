@@ -8,7 +8,8 @@ const getAnecdotesFromDb = async () => {
 }
 
 const addAnecdoteToDb = async (anecdote) => {
-    await axios.post(baseUrl, anecdote)
+    const serverResponse = await axios.post(baseUrl, anecdote)
+    return serverResponse.data
 }
 
 export default { getAnecdotesFromDb, addAnecdoteToDb }
