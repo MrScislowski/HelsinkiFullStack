@@ -18,15 +18,11 @@ const anecdoteSlice = createSlice({
       ]
     },
 
-    castVote(state, action) {
-      const id = action.payload
-      const selectedAnecdote = state.find(anec => anec.id === id)
-      const updatedAnecdote = {
-        ...selectedAnecdote,
-        votes: selectedAnecdote.votes + 1
-      }
+    updateAnecdote(state, action) {
+      const updatedAnecdote = action.payload
+      const id = updatedAnecdote.id
+      
       const newState = state.map(anecdote => (anecdote.id === id) ? updatedAnecdote : anecdote)
-      newState.sort((a1, a2) => a1.votes - a2.votes)
       return newState
     },
 
@@ -37,7 +33,7 @@ const anecdoteSlice = createSlice({
   }
 })
 
-export const { addAnecdote, castVote, setAnecdotes } = anecdoteSlice.actions
+export const { addAnecdote, updateAnecdote, setAnecdotes } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
 
 export const initializeAnecdotesFromDb = () => {
@@ -61,4 +57,22 @@ export const createAnecdote = (text) => {
     dispatch(addNotification(`Created anecdote '${createdAnecdote.content}'`))
     setTimeout(() => {dispatch(clearNotifications())}, 5000)
   }
+}
+
+export const castVote = (id) => {
+
+  return async (dispatch, getState) => {
+    const selectedAnecdote = getState().anecdotes.find(anec => anec.id === id)
+    const localUpdatedAnecdote = {
+      ...selectedAnecdote,
+      votes: selectedAnecdote.votes + 1
+    }
+    const updatedAnecdote = await anecdoteService.updateAnecdote(localUpdatedAnecdote)
+    dispatch(updateAnecdote(updatedAnecdote))
+    dispatch(addNotification(`You voted '${updatedAnecdote.content}'`))
+    setTimeout(() => {
+      dispatch(clearNotifications())
+    }, 5000)
+  }
+
 }

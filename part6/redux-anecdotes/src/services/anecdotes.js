@@ -12,4 +12,9 @@ const addAnecdoteToDb = async (anecdote) => {
     return serverResponse.data
 }
 
-export default { getAnecdotesFromDb, addAnecdoteToDb }
+const updateAnecdote = async (modifiedAnecdote) => {
+    const serverResponse = await axios.patch(`${baseUrl}/${modifiedAnecdote.id}`, modifiedAnecdote)
+    return serverResponse.data
+}
+
+export default { getAnecdotesFromDb, addAnecdoteToDb, updateAnecdote }

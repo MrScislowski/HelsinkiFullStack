@@ -1,6 +1,3 @@
-[ ] 6.18 Anecdotes and the backend, step5
-Voting does not yet save changes to the backend. Fix the situation with the help of the Redux Thunk library.
-
 [ ] 6.19 Anecdotes and the backend, step6
 The creation of notifications is still a bit tedious since one has to do two actions and use the setTimeout function:
 
