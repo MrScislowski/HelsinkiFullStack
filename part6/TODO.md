@@ -1,5 +1,25 @@
-[ ] 6.14 Anecdotes and the backend, step1
-When the application launches, fetch the anecdotes from the backend implemented using json-server.
+[ ] Read Asynchronous actions and Redux thunk
 
-[ ] 6.15 Anecdotes and the backend, step2
-Modify the creation of new anecdotes, so that the anecdotes are stored in the backend.
+
+[ ] 6.16 Anecdotes and the backend, step3
+Modify the initialization of the Redux store to happen using asynchronous action creators, which are made possible by the Redux Thunk library.
+
+[ ] 6.17 Anecdotes and the backend, step4
+Also modify the creation of a new anecdote to happen using asynchronous action creators, made possible by the Redux Thunk library.
+
+[ ] 6.18 Anecdotes and the backend, step5
+Voting does not yet save changes to the backend. Fix the situation with the help of the Redux Thunk library.
+
+[ ] 6.19 Anecdotes and the backend, step6
+The creation of notifications is still a bit tedious since one has to do two actions and use the setTimeout function:
+
+dispatch(setNotification(`new anecdote '${content}'`))
+setTimeout(() => {
+  dispatch(clearNotification())
+}, 5000)
+Make an action creator, which enables one to provide the notification as follows:
+
+dispatch(setNotification(`you voted '${anecdote.content}'`, 10))
+The first parameter is the text to be rendered and the second parameter is the time to display the notification given in seconds.
+
+Implement the use of this improved notification in your application.

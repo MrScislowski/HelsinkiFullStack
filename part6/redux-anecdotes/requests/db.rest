@@ -1,0 +1,13 @@
+GET http://localhost:3001/anecdotes
+
+
+
+###
+POST http://localhost:3001/anecdotes
+Content-Type: application/json
+
+{
+    "content": "hewo",
+    "id": "34234",
+    "votes": 3
+}
