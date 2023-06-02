@@ -1,13 +1,21 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { useQuery } from 'react-query'
+import { useQuery, useQueryClient, useMutation } from 'react-query'
 import axios from 'axios'
 
 const App = () => {
+  const queryClient = useQueryClient()
 
-  const handleVote = (anecdote) => {
-    console.log('vote')
+  const voteOnDb = (anecdote) => {
+    return axios.patch(`http://localhost:3001/anecdotes/${anecdote.id}`, {votes: anecdote.votes+1}).then(res => res.data)  
   }
+
+  const voteMutation = useMutation(voteOnDb, {
+    onSuccess: (updatedAnecdote) => {
+      queryClient.setQueryData('anecdotes', 
+        queryClient.getQueryData('anecdotes').map(an => (an.id === updatedAnecdote.id)? updatedAnecdote : an))
+    }
+  })
 
   const anecdotesQuery = useQuery({
     queryKey: 'anecdotes',
@@ -43,7 +51,7 @@ const App = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => handleVote(anecdote)}>vote</button>
+            <button onClick={() => voteMutation.mutate(anecdote)}>vote</button>
           </div>
         </div>
       )}

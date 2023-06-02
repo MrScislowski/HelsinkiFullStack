@@ -1,0 +1,10 @@
+GET http://localhost:3001/anecdotes
+
+
+### 
+PATCH http://localhost:3001/anecdotes/21149
+Content-Type: application/json
+
+{
+    "votes": 5
+}
