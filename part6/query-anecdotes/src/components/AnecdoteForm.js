@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from 'react-query'
-import axios from 'axios'
+import { addAnecdote } from '../requests'
 
 
 const AnecdoteForm = () => {
@@ -14,7 +14,7 @@ const AnecdoteForm = () => {
   }
 
   const addAnecdoteToDb = anecdote => {
-    return axios.post('http://localhost:3001/anecdotes', anecdote).then(res => res.data)
+    return addAnecdote(anecdote)
   }
 
   const newAnecdoteMutation = useMutation(addAnecdoteToDb, {

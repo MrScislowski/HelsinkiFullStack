@@ -1,13 +1,13 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import { getAnecdotes, updateAnecdote } from './requests'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
-import axios from 'axios'
 
 const App = () => {
   const queryClient = useQueryClient()
 
   const voteOnDb = (anecdote) => {
-    return axios.patch(`http://localhost:3001/anecdotes/${anecdote.id}`, {votes: anecdote.votes+1}).then(res => res.data)  
+    return updateAnecdote({...anecdote, votes: anecdote.votes + 1})
   }
 
   const voteMutation = useMutation(voteOnDb, {
@@ -19,13 +19,9 @@ const App = () => {
 
   const anecdotesQuery = useQuery({
     queryKey: 'anecdotes',
-    queryFn: () => axios.get('http://localhost:3001/anecdotes').then(res => res.data),
+    queryFn: () => getAnecdotes(),
     retry: 1
   })
-
-  //   'anecdotes',
-  //   () => axios.get('http://localhost:3001/anecdotes').then(res => res.data)
-  // )
 
   if (anecdotesQuery.isLoading) {
     return <div>Loading data...</div>
