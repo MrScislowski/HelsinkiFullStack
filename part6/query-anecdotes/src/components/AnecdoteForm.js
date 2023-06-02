@@ -14,11 +14,14 @@ const AnecdoteForm = () => {
   }
 
   const addAnecdoteToDb = anecdote => {
-    axios.post('http://localhost:3001/anecdotes', anecdote).then(res => res.data)
+    return axios.post('http://localhost:3001/anecdotes', anecdote).then(res => res.data)
   }
 
   const newAnecdoteMutation = useMutation(addAnecdoteToDb, {
-    onSuccess: queryClient.invalidateQueries('anecdotes')
+    onSuccess: (newAnecdote) => {
+      const priorData = queryClient.getQueryData('anecdotes')
+      queryClient.setQueryData('anecdotes', [...priorData, newAnecdote])
+    }
   })
 
     
