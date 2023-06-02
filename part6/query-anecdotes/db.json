@@ -1,9 +1,6 @@
 {
   "anecdotes": [
     {
-      "id": "47145"
-    },
-    {
       "content": "Adding manpower to a late software project makes it later!",
       "id": "21149",
       "votes": 7
