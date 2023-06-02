@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from 'react-query'
 import { addAnecdote } from '../requests'
+import { displayNotification } from '../NotificationContext'
 
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
+
 
   const createNewAnecdote = content => {
     return {
@@ -21,6 +23,7 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const priorData = queryClient.getQueryData('anecdotes')
       queryClient.setQueryData('anecdotes', [...priorData, newAnecdote])
+      displayNotification(`created anecdote '${newAnecdote.content}'`)
     }
   })
 

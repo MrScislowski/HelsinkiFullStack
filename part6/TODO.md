@@ -1,3 +1,6 @@
+TODO: is it possible to keep 'displayNotification' entirely in its own file, without other files using bloody dispatch...? I feel annoyed at reducers right now. Like, it feels like I could use useState with context and be better off...
+I don't like their solution where their Button has to have type with Magic Values 'INC', etc, and call dispatch(type)...
+
 [ ] Exercise 6.23.
 The application has a Notification component for displaying notifications to the user.
 

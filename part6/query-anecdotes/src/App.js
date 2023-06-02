@@ -1,5 +1,7 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import {NotificationContextProvider} from './NotificationContext'
+import { useReducer } from 'react'
 import { getAnecdotes, updateAnecdote } from './requests'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
 
@@ -34,8 +36,8 @@ const App = () => {
   const anecdotes = anecdotesQuery.data
 
   return (
-    <div>
-      <h3>Anecdote app</h3>
+    <NotificationContextProvider>
+    <div> 
     
       <Notification />
       <AnecdoteForm />
@@ -52,6 +54,7 @@ const App = () => {
         </div>
       )}
     </div>
+    </NotificationContextProvider>
   )
 }
 
