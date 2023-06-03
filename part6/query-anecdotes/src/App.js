@@ -1,12 +1,12 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import {NotificationContextProvider} from './NotificationContext'
-import { useReducer } from 'react'
 import { getAnecdotes, updateAnecdote } from './requests'
 import { useQuery, useQueryClient, useMutation } from 'react-query'
+import { displayTimedNotification, useNotificationDispatch } from './NotificationContext'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const notificationDispatch = useNotificationDispatch()
 
   const voteOnDb = (anecdote) => {
     return updateAnecdote({...anecdote, votes: anecdote.votes + 1})
@@ -36,7 +36,6 @@ const App = () => {
   const anecdotes = anecdotesQuery.data
 
   return (
-    <NotificationContextProvider>
     <div> 
     
       <Notification />
@@ -49,12 +48,15 @@ const App = () => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => voteMutation.mutate(anecdote)}>vote</button>
+            <button onClick={() => {
+              voteMutation.mutate(anecdote)
+              displayTimedNotification(notificationDispatch, `voted for ${anecdote.content}`, 2)
+            }}>vote</button>
+            
           </div>
         </div>
       )}
     </div>
-    </NotificationContextProvider>
   )
 }
 
