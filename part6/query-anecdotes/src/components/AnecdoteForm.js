@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query'
 import { addAnecdote } from '../requests'
-import {displayTimedNotification, useNotificationDispatch} from '../NotificationContext'
+import { displayTimedNotification, useNotificationDispatch } from '../NotificationContext'
 
 
 const AnecdoteForm = () => {
@@ -24,17 +24,20 @@ const AnecdoteForm = () => {
       const priorData = queryClient.getQueryData('anecdotes')
       queryClient.setQueryData('anecdotes', [...priorData, newAnecdote])
       displayTimedNotification(notificationDispatch, `created anecdote '${newAnecdote.content}'`, 2)
+    },
+    onError: (err, variables, onMutateValue) => {
+      displayTimedNotification(notificationDispatch, err.response.data.error, 2)
     }
   })
 
-    
+
   const onCreate = (event) => {
     event.preventDefault()
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     const newAnecdote = createNewAnecdote(content)
     newAnecdoteMutation.mutate(newAnecdote)
-}
+  }
 
   return (
     <div>
