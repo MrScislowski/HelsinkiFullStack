@@ -1,44 +1,33 @@
 import { useState } from 'react'
 import {
-  BrowserRouter as Router,
-  Route, Routes, Link
+  Link, useParams
 } from 'react-router-dom'
+import Menu from './Menu'
 
-const Menu = props => {
-  const {anecdotes, addNew} = props
-
-  const padding = {
-    paddingRight: 5
-  }
-
-  return (
-    <Router>
-      <div>
-        <Link to='/list' style={padding}>anecdotes</Link>
-        <Link to='/create' style={padding}>create new</Link>
-        <Link to='/about' style={padding}>about</Link>
-      </div>
-
-      <Routes>
-        <Route path='/' element={<AnecdoteList anecdotes={anecdotes}/>} />
-        <Route path='/list' element={<AnecdoteList anecdotes={anecdotes}/>} />
-        <Route path='/about' element={<About />} />
-        <Route path='/create' element={<CreateNew addNew={addNew}/>} />
-      </Routes>
-    </Router>
-  )
-}
-
-const AnecdoteList = ({ anecdotes }) => (
+export const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => (
+        <Link to={`/anecdotes/${anecdote.id}`}>
+          <li key={anecdote.id} >{anecdote.content}</li>
+        </Link>))}
     </ul>
   </div>
 )
 
-const About = () => (
+export const Anecdote = ({ anecdotes }) => {
+  const id = Number(useParams().id)
+  const anecdote = anecdotes.find(anec => anec.id === id)
+  return (
+    <div>
+      <blockquote> {anecdote.content} </blockquote>
+      <cite> -{anecdote.author} (<a href={anecdote.info}> {anecdote.info} </a>)</cite>
+    </div>
+  )
+}
+
+export const About = () => (
   <div>
     <h2>About anecdote app</h2>
     <p>According to Wikipedia:</p>
@@ -52,7 +41,7 @@ const About = () => (
   </div>
 )
 
-const Footer = () => (
+export const Footer = () => (
   <div>
     Anecdote app for <a href='https://fullstackopen.com/'>Full Stack Open</a>.
 
@@ -60,7 +49,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
+export const CreateNew = (props) => {
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -146,8 +135,8 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
 
-      <Menu anecdotes={anecdotes} addNew={addNew}/>
-      
+      <Menu anecdotes={anecdotes} addNew={addNew} />
+
       <Footer />
     </div>
   )
