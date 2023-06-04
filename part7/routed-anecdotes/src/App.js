@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import {
+  BrowserRouter as Router,
   Link, useParams
 } from 'react-router-dom'
 import Menu from './Menu'
@@ -9,16 +10,14 @@ export const AnecdoteList = ({ anecdotes }) => (
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map(anecdote => (
-        <Link to={`/anecdotes/${anecdote.id}`}>
-          <li key={anecdote.id} >{anecdote.content}</li>
+        <Link key={anecdote.id} to={`/anecdotes/${anecdote.id}`}>
+          <li >{anecdote.content}</li>
         </Link>))}
     </ul>
   </div>
 )
 
-export const Anecdote = ({ anecdotes }) => {
-  const id = Number(useParams().id)
-  const anecdote = anecdotes.find(anec => anec.id === id)
+export const Anecdote = ({ anecdote }) => {
   return (
     <div>
       <blockquote> {anecdote.content} </blockquote>
@@ -135,7 +134,10 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
 
-      <Menu anecdotes={anecdotes} addNew={addNew} />
+      <Router>
+        <Menu anecdotes={anecdotes} addNew={addNew} />
+      </Router>
+
 
       <Footer />
     </div>
