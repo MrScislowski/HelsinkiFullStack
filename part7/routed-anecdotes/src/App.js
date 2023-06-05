@@ -1,9 +1,23 @@
 import { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Link, useParams
+  Link, useNavigate
 } from 'react-router-dom'
 import Menu from './Menu'
+
+const Notification = ({ notification, setNotification }) => {
+  const style = notification === ''
+    ? {display: "none"}
+    : {border: "black"}
+
+  setTimeout(() => setNotification(''), 5000)
+  
+  return (
+    <div style={style}>
+      {notification}
+    </div>
+  )
+}
 
 export const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -53,6 +67,10 @@ export const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const { setNotification } = props
+
+  const navigate = useNavigate()
+
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -62,6 +80,8 @@ export const CreateNew = (props) => {
       info,
       votes: 0
     })
+    setNotification(`New anecdote '${content}' created!`)
+    navigate('/anecdotes')
   }
 
   return (
@@ -132,10 +152,11 @@ const App = () => {
 
   return (
     <div>
+      <Notification notification={notification} setNotification={setNotification} />
       <h1>Software anecdotes</h1>
 
       <Router>
-        <Menu anecdotes={anecdotes} addNew={addNew} />
+        <Menu anecdotes={anecdotes} addNew={addNew} notification={notification} setNotification={setNotification} />
       </Router>
 
 
