@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import NotificationContext from "./NotificationContext"
 import { useNavigate } from "react-router-dom"
-import { useField } from "./hooks"
+import { useField, resetField } from "./hooks"
 
 
 const CreateNew = (props) => {
@@ -10,7 +10,7 @@ const CreateNew = (props) => {
   const infoField = useField('info', 'text')
 
   const formFields = [contentField, authorField, infoField]
-  const resetAllFields = () => formFields.forEach(ff => ff.reset())
+  const resetAllFields = () => formFields.forEach(ff => resetField(ff))
 
   const [notification, setNotification] = useContext(NotificationContext)
 

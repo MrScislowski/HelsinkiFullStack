@@ -14,18 +14,18 @@ const blankFieldValue = (type) => {
     }
 }
 
+export const resetField = ({type, onChange}) => {
+    onChange({target: {value: blankFieldValue(type)}})
+}
+
 export const useField = (name, type) => {
-    const [value, setValue] = useState()
+    const [value, setValue] = useState(blankFieldValue(type))
 
     const onChange = (e) => {
         setValue(e.target.value)
     }
 
-    const reset = () => {
-        setValue(blankFieldValue(type))
-    }
-
     return {
-        type, name, value, onChange, reset
+        type, name, value, onChange
     }
 }
