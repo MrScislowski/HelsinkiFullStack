@@ -1,11 +1,13 @@
 import {
     Route, Routes, Link, useMatch
 } from 'react-router-dom'
-import { AnecdoteList, About, Anecdote } from './App'
 import CreateNew from './CreateNew'
+import AnecdoteList from './AnecdoteList'
+import Anecdote from './Anecdote'
+import About from './About'
 
 const Menu = props => {
-    const { anecdotes, addNew, notification, setNotification } = props
+    const { anecdotes, addNew } = props
 
     const match = useMatch('/anecdotes/:id')
     const selectedAnecdote = match

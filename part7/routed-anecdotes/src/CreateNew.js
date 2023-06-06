@@ -1,5 +1,6 @@
-import { useContext, useState, useNavigate } from "react"
+import { useContext, useState } from "react"
 import NotificationContext from "./NotificationContext"
+import { useNavigate } from "react-router-dom"
 
 
 const CreateNew = (props) => {
