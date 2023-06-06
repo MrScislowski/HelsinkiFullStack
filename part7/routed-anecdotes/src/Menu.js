@@ -1,7 +1,8 @@
 import {
     Route, Routes, Link, useMatch
 } from 'react-router-dom'
-import { AnecdoteList, About, CreateNew, Anecdote } from './App'
+import { AnecdoteList, About, Anecdote } from './App'
+import CreateNew from './CreateNew'
 
 const Menu = props => {
     const { anecdotes, addNew, notification, setNotification } = props
@@ -27,7 +28,7 @@ const Menu = props => {
                 <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
                 <Route path='/anecdotes' element={<AnecdoteList anecdotes={anecdotes} />} />
                 <Route path='/about' element={<About />} />
-                <Route path='/create' element={<CreateNew addNew={addNew} notification={notification} setNotification={setNotification}/>} />
+                <Route path='/create' element={<CreateNew addNew={addNew} />} />
                 <Route path='/anecdotes/:id' element={<Anecdote anecdote={selectedAnecdote} />} />
             </Routes>
         </>

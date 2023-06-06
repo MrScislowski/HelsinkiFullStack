@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import {
   BrowserRouter as Router,
-  Link, useNavigate
+  Link
 } from 'react-router-dom'
 import Menu from './Menu'
 import NotificationContext from './NotificationContext'
@@ -51,51 +51,6 @@ export const Footer = () => (
   </div>
 )
 
-export const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-
-  const { setNotification } = props
-
-  const navigate = useNavigate()
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
-      votes: 0
-    })
-    setNotification(`New anecdote '${content}' created!`)
-    navigate('/anecdotes')
-  }
-
-  return (
-    <div>
-      <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-        </div>
-        <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url for more info
-          <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
-        </div>
-        <button>create</button>
-      </form>
-    </div>
-  )
-
-}
-
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -133,10 +88,6 @@ const App = () => {
     }
 
     setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
-  }
-
-  const padding = {
-    paddingRight: 5
   }
 
   return (
