@@ -4,20 +4,9 @@ import {
   Link, useNavigate
 } from 'react-router-dom'
 import Menu from './Menu'
+import NotificationContext from './NotificationContext'
+import Notification from './Notification'
 
-const Notification = ({ notification, setNotification }) => {
-  const style = notification === ''
-    ? {display: "none"}
-    : {border: "black"}
-
-  setTimeout(() => setNotification(''), 5000)
-  
-  return (
-    <div style={style}>
-      {notification}
-    </div>
-  )
-}
 
 export const AnecdoteList = ({ anecdotes }) => (
   <div>
@@ -151,17 +140,19 @@ const App = () => {
   }
 
   return (
-    <div>
-      <Notification notification={notification} setNotification={setNotification} />
-      <h1>Software anecdotes</h1>
+    <NotificationContext.Provider value={[notification, setNotification]}>
+      <div>
+        <Notification />
+        <h1>Software anecdotes</h1>
 
-      <Router>
-        <Menu anecdotes={anecdotes} addNew={addNew} notification={notification} setNotification={setNotification} />
-      </Router>
+        <Router>
+          <Menu anecdotes={anecdotes} addNew={addNew} notification={notification} setNotification={setNotification} />
+        </Router>
 
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </NotificationContext.Provider>
   )
 }
 
