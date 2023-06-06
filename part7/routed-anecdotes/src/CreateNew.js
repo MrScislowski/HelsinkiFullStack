@@ -9,6 +9,9 @@ const CreateNew = (props) => {
   const authorField = useField('author', 'text')
   const infoField = useField('info', 'text')
 
+  const formFields = [contentField, authorField, infoField]
+  const resetAllFields = () => formFields.forEach(ff => ff.reset())
+
   const [notification, setNotification] = useContext(NotificationContext)
 
   const navigate = useNavigate()
@@ -41,7 +44,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...infoField} />
         </div>
-        <button>create</button>
+        <button type="submit">create</button>
+        <button type="button" onClick={resetAllFields}>reset</button>
       </form>
     </div>
   )
