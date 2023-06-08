@@ -18,10 +18,16 @@ const useField = (type) => {
 const useResource = (baseUrl) => {
   const [resources, setResources] = useState([])
 
-  // ...
+  useEffect(
+    () => {
+      axios.get(baseUrl).then(response => setResources(response.data))
+    }
+    // giving just one argument (no dependency array) means this gets re-run on each render.
+    // this works well
+    )
 
   const create = (resource) => {
-    // ...
+    axios.post(baseUrl, resource)
   }
 
   const service = {
