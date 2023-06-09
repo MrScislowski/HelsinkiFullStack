@@ -1,18 +1,10 @@
-[ ] get the SECRET variable (and possibly other ones) from my .env
-
-
-[ ] 7.9: automatic code formatting
-In the previous parts, we used ESLint to ensure that code follows the defined conventions. Prettier is yet another approach for the same. According to the documentation, Prettier is an opinionated code formatter, that is, Prettier not only controls the code style but also formats the code according to the definition.
-
-Prettier is easy to integrate into the code editor so that when the code is saved, it is automatically formatted correctly.
-
-Take Prettier to use in your app and configure it to work with your editor.
-
-State management: Redux
-There are two alternative versions to choose for exercises 7.10-7.13: you can do the state management of the application either using Redux or React Query and Context. If you want to maximize your learning, you should do both versions!
+https://fullstackopen.com/en/part6/flux_architecture_and_redux#a-note-about-the-use-of-create-store
 
 [ ] 7.10: Redux, step1
 Refactor the application to use Redux to manage the notification data.
+  [ ] 7.10: Redux, step1b. Refactor appropriately
+  [ ] 7.10: Redux, step1c. useSlice instead of store
+  [ ] 7.10: Redux, step1d. redux-toolkit...?
 
 [ ] 7.11: Redux, step2
 Note that this and the next two exercises are quite laborious but incredibly educational.
