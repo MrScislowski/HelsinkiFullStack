@@ -3,25 +3,22 @@ import Blog from "./components/Blog";
 import AddBlogForm from "./components/AddBlogForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import notificationReducer, {
+import {
   clearNotification,
   displayErrorNotification,
   displayInfoNotification,
 } from "./reducers/notificationReducer";
 
-import { createStore } from "redux";
-
-const store = createStore(notificationReducer);
+import { useSelector, useDispatch } from 'react-redux'
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  // const [notification, setNotification] = useState({
-  //   type: null,
-  //   message: null,
-  // });
+
+  const dispatch = useDispatch()
+  const notification = useSelector(state => state)
 
   const newBlogFormRef = useRef();
 
@@ -48,7 +45,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      store.dispatch(displayErrorNotification("wrong username or password"))
+      dispatch(displayErrorNotification("wrong username or password"));
     }
   };
 
@@ -120,13 +117,21 @@ const App = () => {
     const newBlog = await blogService.postBlog(blogObject);
     setBlogs(blogs.concat(newBlog));
     newBlogFormRef.current.toggleVisibility();
-    store.dispatch(displayInfoNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`))
+    dispatch(
+      displayInfoNotification(
+        `a new blog ${newBlog.title} by ${newBlog.author} added`
+      )
+    );
   };
 
   const updateBlog = async (updatedBlogObject) => {
     const updatedBlog = await blogService.amendBlog(updatedBlogObject);
     setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)));
-    store.dispatch(displayInfoNotification(`blog "${updatedBlog.title}" by ${updatedBlog.author} liked`))
+    dispatch(
+      displayInfoNotification(
+        `blog "${updatedBlog.title}" by ${updatedBlog.author} liked`
+      )
+    );
   };
 
   const deleteBlog = async (blogObject) => {
@@ -141,17 +146,24 @@ const App = () => {
     const response = await blogService.deleteBlog(blogObject);
     setBlogs(blogs.filter((b) => b.id !== response.id));
 
-    store.dispatch(displayInfoNotification(`blog "${blogObject.title}" by ${blogObject.author} removed`))
+    dispatch(
+      displayInfoNotification(
+        `blog "${blogObject.title}" by ${blogObject.author} removed`
+      )
+    );
   };
 
-  const notificationDisplay = () => {
-    const curNotification = store.getState();
+  const Notification = (props) => {
+    const curNotification = notification
+
     if (curNotification.type === null) {
       return <></>;
     }
+
     setTimeout(() => {
-      store.dispatch(clearNotification());
+      dispatch(clearNotification());
     }, 5000);
+
     return (
       <>
         <p className={curNotification.type}>{curNotification.message}</p>
@@ -161,7 +173,7 @@ const App = () => {
 
   return (
     <div>
-      {notificationDisplay()}
+      <Notification />
       {user === null ? (
         loginForm()
       ) : (

@@ -1,10 +1,7 @@
-[ ] figure out why the notifications don't clear after 5 seconds....
 
 https://fullstackopen.com/en/part6/flux_architecture_and_redux#action-creators
 
 [ ] 7.10: Redux, step1
-Refactor the application to use Redux to manage the notification data.
-  [ ] 7.10: Redux, step1b. Refactor appropriately
   [ ] 7.10: Redux, step1c. useSlice instead of store
   [ ] 7.10: Redux, step1d. redux-toolkit...?
 
