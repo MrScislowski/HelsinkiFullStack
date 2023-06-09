@@ -1,3 +1,6 @@
+[ ] get the SECRET variable (and possibly other ones) from my .env
+
+
 [ ] 7.9: automatic code formatting
 In the previous parts, we used ESLint to ensure that code follows the defined conventions. Prettier is yet another approach for the same. According to the documentation, Prettier is an opinionated code formatter, that is, Prettier not only controls the code style but also formats the code according to the definition.
 
@@ -63,16 +66,16 @@ The error message will occur if you refresh the page for an individual user.
 The cause of the issue is that, when we navigate directly to the page of an individual user, the React application has not yet received the data from the backend. One solution for fixing the problem is to use conditional rendering:
 
 const User = () => {
-  const user = ...
-  if (!user) {
-    return null
-  }
+const user = ...
+if (!user) {
+return null
+}
 
-  return (
-    <div>
-      // ...
-    </div>
-  )
+return (
+<div>
+// ...
+</div>
+)
 }copy
 [ ] 7.16: Blog view
 Implement a separate view for blog posts. You can model the layout of your view after the following example:
