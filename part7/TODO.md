@@ -1,4 +1,6 @@
-https://fullstackopen.com/en/part6/flux_architecture_and_redux#a-note-about-the-use-of-create-store
+[ ] figure out why the notifications don't clear after 5 seconds....
+
+https://fullstackopen.com/en/part6/flux_architecture_and_redux#action-creators
 
 [ ] 7.10: Redux, step1
 Refactor the application to use Redux to manage the notification data.

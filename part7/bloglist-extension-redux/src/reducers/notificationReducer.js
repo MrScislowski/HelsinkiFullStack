@@ -13,4 +13,17 @@ const notificationReducer = (state = "", action) => {
   }
 };
 
+const displayInfoNotification = (message) => {
+  return { type: "SET_INFO_MESSAGE", payload: message };
+};
+
+const displayErrorNotification = (message) => {
+  return { type: "SET_ERROR_MESSAGE", payload: message };
+};
+
+const clearNotification = () => {
+  return { type: "CLEAR" };
+};
+
 export default notificationReducer;
+export { displayInfoNotification, displayErrorNotification, clearNotification };

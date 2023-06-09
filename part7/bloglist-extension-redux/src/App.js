@@ -3,7 +3,11 @@ import Blog from "./components/Blog";
 import AddBlogForm from "./components/AddBlogForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
-import notificationReducer from "./reducers/notificationReducer";
+import notificationReducer, {
+  clearNotification,
+  displayErrorNotification,
+  displayInfoNotification,
+} from "./reducers/notificationReducer";
 
 import { createStore } from "redux";
 
@@ -44,10 +48,7 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      store.dispatch({
-        type: "SET_ERROR_MESSSAGE",
-        payload: "wrong username or password",
-      });
+      store.dispatch(displayErrorNotification("wrong username or password"))
     }
   };
 
@@ -119,19 +120,13 @@ const App = () => {
     const newBlog = await blogService.postBlog(blogObject);
     setBlogs(blogs.concat(newBlog));
     newBlogFormRef.current.toggleVisibility();
-    store.dispatch({
-      type: "SET_INFO_MESSAGE",
-      payload: `a new blog ${newBlog.title} by ${newBlog.author} added`,
-    });
+    store.dispatch(displayInfoNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`))
   };
 
   const updateBlog = async (updatedBlogObject) => {
     const updatedBlog = await blogService.amendBlog(updatedBlogObject);
     setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)));
-    store.dispatch({
-      type: "SET_INFO_MESSAGE",
-      payload: `blog "${updatedBlog.title}" by ${updatedBlog.author} liked`,
-    });
+    store.dispatch(displayInfoNotification(`blog "${updatedBlog.title}" by ${updatedBlog.author} liked`))
   };
 
   const deleteBlog = async (blogObject) => {
@@ -146,10 +141,7 @@ const App = () => {
     const response = await blogService.deleteBlog(blogObject);
     setBlogs(blogs.filter((b) => b.id !== response.id));
 
-    store.dispatch({
-      type: "SET_INFO_MESSAGE",
-      payload: `blog "${blogObject.title}" by ${blogObject.author} removed`,
-    });
+    store.dispatch(displayInfoNotification(`blog "${blogObject.title}" by ${blogObject.author} removed`))
   };
 
   const notificationDisplay = () => {
@@ -158,7 +150,7 @@ const App = () => {
       return <></>;
     }
     setTimeout(() => {
-      store.dispatch({ type: "CLEAR" });
+      store.dispatch(clearNotification());
     }, 5000);
     return (
       <>
