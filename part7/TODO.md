@@ -1,10 +1,6 @@
 
 https://fullstackopen.com/en/part6/flux_architecture_and_redux#action-creators
 
-[ ] 7.10: Redux, step1
-  [ ] 7.10: Redux, step1c. useSlice instead of store
-  [ ] 7.10: Redux, step1d. redux-toolkit...?
-
 [ ] 7.11: Redux, step2
 Note that this and the next two exercises are quite laborious but incredibly educational.
 

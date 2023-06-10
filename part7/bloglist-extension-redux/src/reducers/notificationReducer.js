@@ -1,29 +1,24 @@
 // notification: {type: null|error|info, message: null}
 
-const notificationReducer = (state = "", action) => {
-  switch (action.type) {
-    case "SET_INFO_MESSAGE":
+import { createSlice } from "@reduxjs/toolkit";
+
+const initialState = { type: null };
+
+const notificationSlice = createSlice({
+  name: "notifications",
+  initialState,
+  reducers: {
+    displayInfoNotification(state, action) {
       return { type: "info", message: action.payload };
-    case "SET_ERROR_MESSAGE":
+    },
+    displayErrorNotification(state, action) {
       return { type: "error", message: action.payload };
-    case "CLEAR":
-      return { type: null, message: "" };
-    default:
-      return state;
-  }
-};
+    },
+    clearNotification(state, action) {
+      return { type: null, message: null };
+    },
+  },
+});
 
-const displayInfoNotification = (message) => {
-  return { type: "SET_INFO_MESSAGE", payload: message };
-};
-
-const displayErrorNotification = (message) => {
-  return { type: "SET_ERROR_MESSAGE", payload: message };
-};
-
-const clearNotification = () => {
-  return { type: "CLEAR" };
-};
-
-export default notificationReducer;
-export { displayInfoNotification, displayErrorNotification, clearNotification };
+export default notificationSlice.reducer
+export const { displayInfoNotification, displayErrorNotification, clearNotification } = notificationSlice.actions
