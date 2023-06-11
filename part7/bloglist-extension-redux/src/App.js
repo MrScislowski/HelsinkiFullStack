@@ -9,22 +9,26 @@ import {
   displayInfoNotification,
 } from "./reducers/notificationReducer";
 
+import { blogActions } from "./reducers/blogReducer";
+
 import { useSelector, useDispatch } from 'react-redux'
 
+
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
   const dispatch = useDispatch()
-  const notification = useSelector(state => state)
+  const notification = useSelector(state => state.notification)
+  const blogs = useSelector(state => state.blogs)
 
   const newBlogFormRef = useRef();
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    blogService.getAll().then((blogs) => dispatch(blogActions.setBlogsFromArray(blogs)));
+  }, [dispatch]);
 
   useEffect(() => {
     const loginDetailsJSON = window.localStorage.getItem("blogUserLogin");
@@ -115,7 +119,8 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     const newBlog = await blogService.postBlog(blogObject);
-    setBlogs(blogs.concat(newBlog));
+    dispatch(blogActions.addBlog(newBlog));
+    // setBlogs(blogs.concat(newBlog));
     newBlogFormRef.current.toggleVisibility();
     dispatch(
       displayInfoNotification(
@@ -126,10 +131,10 @@ const App = () => {
 
   const updateBlog = async (updatedBlogObject) => {
     const updatedBlog = await blogService.amendBlog(updatedBlogObject);
-    setBlogs(blogs.map((b) => (b.id === updatedBlog.id ? updatedBlog : b)));
+    dispatch(blogActions.updateBlog(updatedBlog))
     dispatch(
       displayInfoNotification(
-        `blog "${updatedBlog.title}" by ${updatedBlog.author} liked`
+        `blog "${updatedBlog.title}" by ${updatedBlog.author} updated`
       )
     );
   };
@@ -144,7 +149,7 @@ const App = () => {
     }
 
     const response = await blogService.deleteBlog(blogObject);
-    setBlogs(blogs.filter((b) => b.id !== response.id));
+    dispatch(blogActions.deleteBlog(blogObject))
 
     dispatch(
       displayInfoNotification(
