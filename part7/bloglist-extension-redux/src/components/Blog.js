@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import propTypes from 'prop-types'
 
+// TODO: don't pass in updateBlog anymore... try dispatching actions instead...
+
 const Blog = ({ blog, updateBlog, removeBlog, user }) => {
   const blogStyle = {
     paddingTop: 10,
