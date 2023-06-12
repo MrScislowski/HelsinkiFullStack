@@ -9,13 +9,12 @@ import {
   displayInfoNotification,
 } from "./reducers/notificationReducer";
 
-import { blogActions } from "./reducers/blogReducer";
+import { blogActions, blogDispatches } from "./reducers/blogReducer";
 
 import { useSelector, useDispatch } from 'react-redux'
 
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -25,9 +24,9 @@ const App = () => {
   const blogs = useSelector(state => state.blogs)
 
   const newBlogFormRef = useRef();
-
+  
   useEffect(() => {
-    blogService.getAll().then((blogs) => dispatch(blogActions.setBlogsFromArray(blogs)));
+    dispatch(blogDispatches.initializeBlogs())
   }, [dispatch]);
 
   useEffect(() => {

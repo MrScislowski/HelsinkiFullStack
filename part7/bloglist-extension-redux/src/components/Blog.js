@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import propTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { blogDispatches } from "../reducers/blogReducer";
 
-// TODO: don't pass in updateBlog anymore... try dispatching actions instead...
 
 const Blog = ({ blog, updateBlog, removeBlog, user }) => {
+  const dispatch = useDispatch();
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -16,19 +19,6 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
 
   const toggleVisibility = () => {
     setDetailsShown(!detailsShown)
-  }
-
-  const likeBlog = async () => {
-    const { title, author, url, likes, user, id } = blog
-    const updatedBlog = {
-      title,
-      author,
-      url,
-      id,
-      likes: likes + 1,
-      user: user.id,
-    }
-    await updateBlog(updatedBlog)
   }
 
   const removeThis = async () => {
@@ -50,7 +40,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
       </div>
       <div className='detailed-blog-content' style={showWhenVisible}>
         {blog.url} <br/>
-        likes {blog.likes} <button className='like-button' onClick={likeBlog}>like</button> <br />
+        likes {blog.likes} <button className='like-button' onClick={dispatch(blogDispatches.likeBlog(blog))}>like</button> <br />
         {(blog.user) ? blog.user.name: ''} <br />
         <button style={ownedStyle} onClick={removeThis}>remove</button>
       </div>

@@ -1,3 +1,13 @@
+[ ] test to see if the offline changes I made even work... if they did, go ahead and implement them for creating/updating blogs too
+
+([ ] download some sort of local mongo client so if i don't have internet it still kinda works...)
+
+App:132 defines the updateBlog function which uses blogService, then dispatches a blog action, then dispatches a notification. It'd be nice if this didn't have to be all defined in App. Could it be defined elsewhere? Is it possible to not pass it with props? Also, can I have the notification say "liked" instead of "updated" when its an actual like.
+
+* I initially wanted to define it in blogReducer.js. Thing is, I can't useDispatch() since that's a hook, and has to be defined in a component.
+
+* And that's where Redux Thunk comes in... you create an action creator that returns a function taking dispatch & getState as inputs, so that it can do stuff 
+
 [ ] 7.12: Redux, step3
 Expand your solution so that it is again possible to like and delete a blog.
 
