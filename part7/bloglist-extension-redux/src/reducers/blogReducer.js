@@ -62,6 +62,7 @@ const initializeBlogs = () => {
 const likeBlog = (blog) => {
     const updatedBlog = {
       ...blog,
+      user: blog.user.id,
       likes: blog.likes + 1,
     }
   return async dispatch => {

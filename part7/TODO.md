@@ -1,5 +1,3 @@
-[ ] liking isn't working... fix this
-
 ([ ] download some sort of local mongo client so if i don't have internet it still kinda works...)
 
 [ ] 7.12: Redux, step3

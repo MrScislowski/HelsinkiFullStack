@@ -162,7 +162,7 @@ const App = () => {
     const curNotification = notification
 
     if (curNotification.type === null) {
-      return <><p>current notification blank</p></>;
+      return <></>;
     }
 
     return (
