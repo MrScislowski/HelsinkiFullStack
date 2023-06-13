@@ -22,7 +22,11 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start-local-db-as-service": "brew services start mongodb-community@6.0",
+    "check-for-services": "brew services list",
+    "stop-local-db-as-service": "brew services stop mongodb-community@6.0",
+    "start-local-db-as-bgproc": "mongod --config /opt/homebrew/etc/mongod.conf --fork"
   },
   "eslintConfig": {
     "extends": [

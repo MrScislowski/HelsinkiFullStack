@@ -1,5 +1,3 @@
-([ ] download some sort of local mongo client so if i don't have internet it still kinda works...)
-
 [ ] 7.12: Redux, step3
 Expand your solution so that it is again possible to like and delete a blog.
 

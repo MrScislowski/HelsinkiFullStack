@@ -16,14 +16,18 @@ import { useSelector, useDispatch } from 'react-redux'
 
 
 const App = () => {
+  // login stuff
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
+
+  // blog & notification state
   const dispatch = useDispatch()
   const notification = useSelector(state => state.notification)
   const blogs = useSelector(state => state.blogs)
 
+  // blog creation stuff
   const newBlogFormRef = useRef();
   
   useEffect(() => {
@@ -57,19 +61,19 @@ const App = () => {
     <>
       <h2> log in to application</h2>
       <form onSubmit={handleLogin}>
-        username{" "}
+        username
         <input
           type="text"
           value={username}
           onChange={({ target }) => setUsername(target.value)}
-        />{" "}
+        />
         <br />
-        password{" "}
+        password
         <input
           type="password"
           value={password}
           onChange={({ target }) => setPassword(target.value)}
-        />{" "}
+        />
         <br />
         <button type="submit"> login </button>
       </form>
