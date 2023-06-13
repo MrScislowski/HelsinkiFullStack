@@ -60,13 +60,13 @@ const initializeBlogs = () => {
 };
 
 const likeBlog = (blog) => {
-    const updatedBlog = {
+    const proposedUpdatedBlog = {
       ...blog,
-      user: blog.user.id,
       likes: blog.likes + 1,
-    }
+      user: blog.user.id,
+    };
   return async dispatch => {
-    await blogService.amendBlog(updatedBlog)
+    const updatedBlog = await blogService.amendBlog(proposedUpdatedBlog)
     dispatch(blogSlice.actions.updateBlog(updatedBlog));
     dispatch(notificationDispatch.displayTimedInfoNotification(`'${blog.title}' liked`))
   }
