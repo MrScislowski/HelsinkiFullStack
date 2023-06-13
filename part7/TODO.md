@@ -1,3 +1,5 @@
+[ ] fix bug that is: once you like a blog, it seems the user information about it is lost...
+
 [ ] 7.12: Redux, step3
 Expand your solution so that it is again possible to like and delete a blog.
 
