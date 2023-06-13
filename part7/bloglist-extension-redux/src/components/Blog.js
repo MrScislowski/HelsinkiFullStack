@@ -40,7 +40,7 @@ const Blog = ({ blog, updateBlog, removeBlog, user }) => {
       </div>
       <div className='detailed-blog-content' style={showWhenVisible}>
         {blog.url} <br/>
-        likes {blog.likes} <button className='like-button' onClick={dispatch(blogDispatches.likeBlog(blog))}>like</button> <br />
+        likes {blog.likes} <button className='like-button' onClick={() => dispatch(blogDispatches.likeBlog(blog))}>like</button> <br />
         {(blog.user) ? blog.user.name: ''} <br />
         <button style={ownedStyle} onClick={removeThis}>remove</button>
       </div>

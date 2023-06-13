@@ -22,7 +22,6 @@ const blogSlice = createSlice({
   reducers: {
     addBlog(state, action) {
       const newBlog = action.payload;
-      console.log(JSON.stringify(newBlog));
       return [...state, newBlog];
     },
     updateBlog(state, action) {
@@ -34,25 +33,12 @@ const blogSlice = createSlice({
       const id = action.payload.id;
       return state.filter((blog) => blog.id !== id);
     },
-    likeBlog(state, action) {
-      const blogBeforeLike = action.payload;
-      const id = blogBeforeLike.id;
-      const likesBefore = blogBeforeLike.likes;
-      const blogAfterLike = { ...blogBeforeLike, likes: likesBefore + 1 };
-      return state.map((blog) => (blog.id === id ? blogAfterLike : blog));
-    },
     setBlogsFromArray(state, action) {
       const blogList = action.payload;
       return blogList;
     },
   },
 });
-
-const {addBlog, updateBlog, deleteBlog} = blogSlice.actions;
-
-const reducerActionsToExport = {addBlog, updateBlog, deleteBlog, likeBlog} 
-
-let blogActions = reducerActionsToExport;
 
 // const updateBlog = async (updatedBlogObject) => {
 //   const updatedBlog = await blogService.amendBlog(updatedBlogObject);
@@ -64,6 +50,7 @@ let blogActions = reducerActionsToExport;
 //   );
 // };
 
+
 const initializeBlogs = () => {
   return async dispatch => {
     const blogs = await blogService.getAll();
@@ -73,25 +60,19 @@ const initializeBlogs = () => {
 };
 
 const likeBlog = (blog) => {
-  const { title, author, url, likes, user, id } = blog
     const updatedBlog = {
-      title,
-      author,
-      url,
-      id,
-      likes: likes + 1,
-      user: user.id,
+      ...blog,
+      likes: blog.likes + 1,
     }
   return async dispatch => {
-    await updateBlog(updatedBlog)
-    dispatch(blogSlice.actions.updateBlog(blog));
+    await blogService.amendBlog(updatedBlog)
+    dispatch(blogSlice.actions.updateBlog(updatedBlog));
     dispatch(notificationDispatch.displayTimedInfoNotification(`'${blog.title}' liked`))
   }
 }
 
-// blogActions = { ...blogActions, initializeBlogs };
-blogActions = {addBlog, updateBlog, deleteBlog}
-export { blogActions }
+const {addBlog, updateBlog, deleteBlog} = blogSlice.actions
+export const blogActions = {addBlog, updateBlog, deleteBlog}
 export const blogDispatches = {initializeBlogs, likeBlog}
 
 export default blogSlice.reducer;

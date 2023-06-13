@@ -7,6 +7,7 @@ import {
   clearNotification,
   displayErrorNotification,
   displayInfoNotification,
+  notificationDispatch
 } from "./reducers/notificationReducer";
 
 import { blogActions, blogDispatches } from "./reducers/blogReducer";
@@ -161,12 +162,8 @@ const App = () => {
     const curNotification = notification
 
     if (curNotification.type === null) {
-      return <></>;
+      return <><p>current notification blank</p></>;
     }
-
-    setTimeout(() => {
-      dispatch(clearNotification());
-    }, 5000);
 
     return (
       <>

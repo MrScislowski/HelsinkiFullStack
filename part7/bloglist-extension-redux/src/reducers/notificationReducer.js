@@ -20,17 +20,17 @@ const notificationSlice = createSlice({
   },
 });
 
-const displayTimedInfoNotification = (message, duration = 5) => {
+const displayTimedInfoNotification = (message, duration = 3) => {
   return async dispatch => {
-    dispatch(displayInfoNotification(message));
-    setTimeout(dispatch(clearNotification()), duration * 1000);
+    dispatch(notificationSlice.actions.displayInfoNotification(message));
+    setTimeout(() => dispatch(notificationSlice.actions.clearNotification()), duration * 1000);
   }
 }
 
-const displayTimedErrorNotification = (message, duration = 5) => {
+const displayTimedErrorNotification = (message, duration = 3) => {
   return async dispatch => {
-    dispatch(displayInfoNotification(message));
-    setTimeout(dispatch(clearNotification()), duration * 1000);
+    dispatch(notificationSlice.actions.displayInfoNotification(message));
+    setTimeout(() => dispatch(notificationSlice.actions.clearNotification()), duration * 1000);
   }
 }
 
