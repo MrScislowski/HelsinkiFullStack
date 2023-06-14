@@ -1,6 +1,3 @@
-[ ] 7.12: Redux, step3
-Expand your solution so that it is again possible to like and delete a blog.
-
 [ ] 7.12: Redux, step3b
 https://fullstackopen.com/en/part6/communicating_with_server_in_a_redux_application#asynchronous-actions-and-redux-thunk
 thunkify and overall refactor the application to be nice and modular

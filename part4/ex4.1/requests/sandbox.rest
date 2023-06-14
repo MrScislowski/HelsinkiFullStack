@@ -41,6 +41,17 @@ Content-Type: application/json
   "password": "example1"
 }
 
+
+###
+POST http://localhost:3003/api/users 
+Content-Type: application/json
+
+{
+  "username": "example2",
+  "name": "another example user",
+  "password": "example2"
+}
+
 ###
 GET http://localhost:3003/api/users 
 
