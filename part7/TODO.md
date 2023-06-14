@@ -1,8 +1,8 @@
 [ ] 7.12: Redux, step3b
-https://fullstackopen.com/en/part6/communicating_with_server_in_a_redux_application#asynchronous-actions-and-redux-thunk
-thunkify and overall refactor the application to be nice and modular
-    * refactor Notification
     * refactor all the form adding shit
+        * AddBlogForm.js:5... make useField hook to simplify the form creation/clearing once submitted/etc
+        * read about wtf newBlogFormRef even is, and why we need it...
+        * AddBlogForm.js: use redux / dispatch to add the new blog, and get rid of the addBlog definition in App.js
 
 [ ] 7.13: Redux, step4
 Store the information about the signed-in user in the Redux store.
