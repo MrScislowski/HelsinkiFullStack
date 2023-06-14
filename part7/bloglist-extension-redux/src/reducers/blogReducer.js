@@ -40,17 +40,6 @@ const blogSlice = createSlice({
   },
 });
 
-// const updateBlog = async (updatedBlogObject) => {
-//   const updatedBlog = await blogService.amendBlog(updatedBlogObject);
-//   dispatch(blogActions.updateBlog(updatedBlog));
-//   dispatch(
-//     displayInfoNotification(
-//       `blog "${updatedBlog.title}" by ${updatedBlog.author} updated`
-//     )
-//   );
-// };
-
-
 const initializeBlogs = () => {
   return async dispatch => {
     const blogs = await blogService.getAll();
@@ -72,8 +61,24 @@ const likeBlog = (blog) => {
   }
 }
 
-const {addBlog, updateBlog, deleteBlog} = blogSlice.actions
-export const blogActions = {addBlog, updateBlog, deleteBlog}
-export const blogDispatches = {initializeBlogs, likeBlog}
+const deleteBlog = (blog) => {
+  return async dispatch => {
+    const confirmed = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}?`
+    );
+  
+    if (!confirmed) {
+      return;
+    }
+
+    await blogService.deleteBlog(blog);
+    dispatch(blogSlice.actions.deleteBlog(blog));
+    dispatch(notificationDispatch.displayTimedInfoNotification(`blog "${blog.title} by ${blog.author} removed`))
+  }
+}
+
+const {addBlog, updateBlog} = blogSlice.actions
+export const blogActions = {addBlog, updateBlog}
+export const blogDispatches = {initializeBlogs, likeBlog, deleteBlog}
 
 export default blogSlice.reducer;

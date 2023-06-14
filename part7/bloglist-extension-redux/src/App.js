@@ -101,25 +101,6 @@ const App = () => {
     );
   };
 
-  const deleteBlog = async (blogObject) => {
-    const confirmed = window.confirm(
-      `Remove blog ${blogObject.title} by ${blogObject.author}?`
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    await blogService.deleteBlog(blogObject);
-    dispatch(blogActions.deleteBlog(blogObject));
-
-    dispatch(
-      displayInfoNotification(
-        `blog "${blogObject.title}" by ${blogObject.author} removed`
-      )
-    );
-  };
-
   const Notification = (props) => {
     const curNotification = notification;
 
@@ -144,7 +125,7 @@ const App = () => {
           {loginStatusDisplay()}
           {logoutButtonDisplay()}
           <AddBlogForm newBlogFormRef={newBlogFormRef} addBlog={addBlog} />
-          <BlogList blogs={blogs} removeBlog={deleteBlog} user={user} />
+          <BlogList blogs={blogs} user={user} />
         </>
       )}
     </div>

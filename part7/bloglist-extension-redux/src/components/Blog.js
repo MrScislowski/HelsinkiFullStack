@@ -3,7 +3,7 @@ import propTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
 import { blogDispatches } from "../reducers/blogReducer";
 
-const Blog = ({ blog, removeBlog, user }) => {
+const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
 
   const blogStyle = {
@@ -20,8 +20,8 @@ const Blog = ({ blog, removeBlog, user }) => {
     setDetailsShown(!detailsShown)
   }
 
-  const removeThis = async () => {
-    await removeBlog(blog)
+  const removeThis = () => {
+    dispatch(blogDispatches.deleteBlog(blog));
   }
 
   const showWhenVisible = { display: detailsShown ? '' : 'none' }
@@ -48,7 +48,6 @@ const Blog = ({ blog, removeBlog, user }) => {
 
 Blog.propTypes = {
   blog: propTypes.object.isRequired,
-  removeBlog: propTypes.func.isRequired,
   user: propTypes.object.isRequired
 }
 
