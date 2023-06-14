@@ -1,19 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import Blog from "./components/Blog";
 import AddBlogForm from "./components/AddBlogForm";
+import BlogList from "./components/BlogList";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import {
-  clearNotification,
   displayErrorNotification,
   displayInfoNotification,
-  notificationDispatch
 } from "./reducers/notificationReducer";
 
 import { blogActions, blogDispatches } from "./reducers/blogReducer";
 
-import { useSelector, useDispatch } from 'react-redux'
-
+import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
   // login stuff
@@ -21,17 +18,16 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-
   // blog & notification state
-  const dispatch = useDispatch()
-  const notification = useSelector(state => state.notification)
-  const blogs = useSelector(state => state.blogs)
+  const dispatch = useDispatch();
+  const notification = useSelector((state) => state.notification);
+  const blogs = useSelector((state) => state.blogs);
 
   // blog creation stuff
   const newBlogFormRef = useRef();
-  
+
   useEffect(() => {
-    dispatch(blogDispatches.initializeBlogs())
+    dispatch(blogDispatches.initializeBlogs());
   }, [dispatch]);
 
   useEffect(() => {
@@ -80,34 +76,6 @@ const App = () => {
     </>
   );
 
-  const blogsDisplay = () => {
-    const sortedBlogs = [...blogs];
-    sortedBlogs.sort((a, b) => {
-      if (a.likes > b.likes) {
-        return 1;
-      } else if (a.likes < b.likes) {
-        return -1;
-      } else {
-        return 0;
-      }
-    });
-
-    return (
-      <>
-        <h2>blogs</h2>
-        {sortedBlogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlog}
-            removeBlog={deleteBlog}
-            user={user}
-          />
-        ))}
-      </>
-    );
-  };
-
   const loginStatusDisplay = () => <p>{user.name} logged in</p>;
 
   const clearLoginInfo = () => {
@@ -133,16 +101,6 @@ const App = () => {
     );
   };
 
-  const updateBlog = async (updatedBlogObject) => {
-    const updatedBlog = await blogService.amendBlog(updatedBlogObject);
-    dispatch(blogActions.updateBlog(updatedBlog))
-    dispatch(
-      displayInfoNotification(
-        `blog "${updatedBlog.title}" by ${updatedBlog.author} updated`
-      )
-    );
-  };
-
   const deleteBlog = async (blogObject) => {
     const confirmed = window.confirm(
       `Remove blog ${blogObject.title} by ${blogObject.author}?`
@@ -152,8 +110,8 @@ const App = () => {
       return;
     }
 
-    const response = await blogService.deleteBlog(blogObject);
-    dispatch(blogActions.deleteBlog(blogObject))
+    await blogService.deleteBlog(blogObject);
+    dispatch(blogActions.deleteBlog(blogObject));
 
     dispatch(
       displayInfoNotification(
@@ -163,7 +121,7 @@ const App = () => {
   };
 
   const Notification = (props) => {
-    const curNotification = notification
+    const curNotification = notification;
 
     if (curNotification.type === null) {
       return <></>;
@@ -186,7 +144,7 @@ const App = () => {
           {loginStatusDisplay()}
           {logoutButtonDisplay()}
           <AddBlogForm newBlogFormRef={newBlogFormRef} addBlog={addBlog} />
-          {blogsDisplay()}
+          <BlogList blogs={blogs} removeBlog={deleteBlog} user={user} />
         </>
       )}
     </div>
