@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import AddBlogForm from "./components/AddBlogForm";
 import BlogList from "./components/BlogList";
+import Notification from "./components/Notification";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import {
   displayErrorNotification,
-  displayInfoNotification,
+  notificationDispatch
 } from "./reducers/notificationReducer";
 
 import { blogActions, blogDispatches } from "./reducers/blogReducer";
@@ -18,9 +19,7 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  // blog & notification state
   const dispatch = useDispatch();
-  const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
 
   // blog creation stuff
@@ -92,26 +91,11 @@ const App = () => {
   const addBlog = async (blogObject) => {
     const newBlog = await blogService.postBlog(blogObject);
     dispatch(blogActions.addBlog(newBlog));
-    // setBlogs(blogs.concat(newBlog));
     newBlogFormRef.current.toggleVisibility();
     dispatch(
-      displayInfoNotification(
+      notificationDispatch.displayTimedInfoNotification(
         `a new blog ${newBlog.title} by ${newBlog.author} added`
       )
-    );
-  };
-
-  const Notification = (props) => {
-    const curNotification = notification;
-
-    if (curNotification.type === null) {
-      return <></>;
-    }
-
-    return (
-      <>
-        <p className={curNotification.type}>{curNotification.message}</p>
-      </>
     );
   };
 
