@@ -39,7 +39,7 @@ const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
       <Togglable startingVisibility={false} buttonLabel='add new blog' ref={newBlogFormRef}>
         <h2>create new</h2>
         <form onSubmit={handleCreateNewBlog}>
-          {formElements.map(el => <>{el.name}: <input {...el} /><br /></>)}
+          {formElements.map(el => <div key={el.name}>{el.name}: <input {...el} /></div>)}
           <button className='add-blog-form-button' type="submit">create</button>
         </form>
       </Togglable>
