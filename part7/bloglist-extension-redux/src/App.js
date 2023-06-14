@@ -6,10 +6,9 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import {
   displayErrorNotification,
-  notificationDispatch
 } from "./reducers/notificationReducer";
 
-import { blogActions, blogDispatches } from "./reducers/blogReducer";
+import { blogDispatches } from "./reducers/blogReducer";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -86,18 +85,8 @@ const App = () => {
     <p>
       <button onClick={clearLoginInfo}> logout </button>
     </p>
+// 
   );
-
-  const addBlog = async (blogObject) => {
-    const newBlog = await blogService.postBlog(blogObject);
-    dispatch(blogActions.addBlog(newBlog));
-    newBlogFormRef.current.toggleVisibility();
-    dispatch(
-      notificationDispatch.displayTimedInfoNotification(
-        `a new blog ${newBlog.title} by ${newBlog.author} added`
-      )
-    );
-  };
 
   return (
     <div>
@@ -108,7 +97,7 @@ const App = () => {
         <>
           {loginStatusDisplay()}
           {logoutButtonDisplay()}
-          <AddBlogForm newBlogFormRef={newBlogFormRef} addBlog={addBlog} />
+          <AddBlogForm newBlogFormRef={newBlogFormRef} />
           <BlogList blogs={blogs} user={user} />
         </>
       )}

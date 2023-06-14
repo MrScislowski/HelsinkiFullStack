@@ -1,8 +1,6 @@
 [ ] 7.12: Redux, step3b
     * refactor all the form adding shit
-        * AddBlogForm.js:5... make useField hook to simplify the form creation/clearing once submitted/etc
         * read about wtf newBlogFormRef even is, and why we need it...
-        * AddBlogForm.js: use redux / dispatch to add the new blog, and get rid of the addBlog definition in App.js
 
 [ ] 7.13: Redux, step4
 Store the information about the signed-in user in the Redux store.

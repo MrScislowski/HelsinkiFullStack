@@ -1,5 +1,7 @@
 import Togglable from './Togglable'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux';
+import { blogDispatches } from '../reducers/blogReducer';
 
 const useField = (name) => {
   const [fieldValue, setFieldValue] = useState('');
@@ -13,7 +15,9 @@ const useField = (name) => {
   }
 }
 
-const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
+const AddBlogForm = ({ newBlogFormRef }) => {
+  const dispatch = useDispatch()
+
   const formElements = [
     useField('title'),
     useField('author'),
@@ -30,7 +34,7 @@ const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
         ...blogFormContents,
         likes: 0,
     }
-    await addBlog(blogObject)
+    dispatch(blogDispatches.addBlog(blogObject))
     formElements.forEach(el => el.onChange({target: {value: ''}}));
   }
 

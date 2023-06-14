@@ -77,8 +77,19 @@ const deleteBlog = (blog) => {
   }
 }
 
-const {addBlog, updateBlog} = blogSlice.actions
-export const blogActions = {addBlog, updateBlog}
-export const blogDispatches = {initializeBlogs, likeBlog, deleteBlog}
+const addBlog = (blog) => {
+  return async dispatch => {
+    const newBlog = await blogService.postBlog(blog)
+    blogSlice.actions.addBlog(blog);
+    // newBlogFormRef.current.toggleVisibility();
+    dispatch(notificationDispatch.displayTimedInfoNotification(
+      `a new blog ${newBlog.title} by ${newBlog.author} added`
+    ))
+  }
+}
+
+const {updateBlog} = blogSlice.actions
+export const blogActions = {updateBlog}
+export const blogDispatches = {addBlog, initializeBlogs, likeBlog, deleteBlog}
 
 export default blogSlice.reducer;
