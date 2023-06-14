@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "cross-env NODE_ENV=production node index.js",
-    "start-offline": "cross-env NODE_ENV=offline node index.js",
+    "start-offline": "cross-env echo 'dont forget to start the local database'; NODE_ENV=offline node index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
     "lint": "eslint ."

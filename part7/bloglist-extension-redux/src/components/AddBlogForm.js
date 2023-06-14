@@ -1,22 +1,37 @@
 import Togglable from './Togglable'
 import { useState } from 'react'
 
+const useField = (name) => {
+  const [fieldValue, setFieldValue] = useState('');
+
+  return {
+    name,
+    type: 'text',
+    value: fieldValue,
+    placeholder: name,
+    onChange: ({target}) => setFieldValue(target.value)
+  }
+}
 
 const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
-  const [blogTitle, setBlogTitle] = useState('')
-  const [blogUrl, setBlogUrl] = useState('')
-  const [blogAuthor, setBlogAuthor] = useState('')
+  const formElements = [
+    useField('title'),
+    useField('author'),
+    useField('url')
+  ]
 
   const handleCreateNewBlog = async (event) => {
     event.preventDefault()
-    const blogObject =
-      {
-        title: blogTitle,
-        author: blogAuthor,
-        url: blogUrl,
+    const blogFormContents = formElements.reduce((acc, curField) => {
+      acc[curField.name] = curField.value;
+      return acc;
+    }, {});
+    const blogObject = {
+        ...blogFormContents,
         likes: 0,
-      }
+    }
     await addBlog(blogObject)
+    formElements.forEach(el => el.onChange({target: {value: ''}}));
   }
 
   return (
@@ -24,9 +39,7 @@ const AddBlogForm = ({ newBlogFormRef, addBlog }) => {
       <Togglable startingVisibility={false} buttonLabel='add new blog' ref={newBlogFormRef}>
         <h2>create new</h2>
         <form onSubmit={handleCreateNewBlog}>
-          title: <input type="text" value={blogTitle} placeholder='blog title' onChange={({ target }) => setBlogTitle(target.value)} /> <br />
-          author: <input type="text" value={blogAuthor} placeholder='blog author' onChange={({ target }) => setBlogAuthor(target.value)} /> <br />
-          url: <input type="text" value={blogUrl} placeholder='blog url' onChange={({ target }) => setBlogUrl(target.value)} /> <br />
+          {formElements.map(el => <>{el.name}: <input {...el} /><br /></>)}
           <button className='add-blog-form-button' type="submit">create</button>
         </form>
       </Togglable>
