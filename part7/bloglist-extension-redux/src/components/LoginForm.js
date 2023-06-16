@@ -11,11 +11,11 @@ const LoginForm = (props) => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    try {
-      dispatch(userActions.attemptLogin(username, password));
+    const didLogin = await dispatch(userActions.attemptLogin(username, password));
+    if (didLogin) {
       setUsername("");
       setPassword("");
-    } catch (exception) {
+    } else {
       dispatch(
         notificationDispatch.displayTimedErrorNotification(
           "wrong username or password"

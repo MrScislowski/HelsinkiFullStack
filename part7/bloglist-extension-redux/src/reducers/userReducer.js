@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import  blogService  from "../services/blogs";
-import  loginService  from "../services/login";
+import blogService from "../services/blogs";
+import loginService from "../services/login";
 
 const initialState = null;
 
@@ -18,12 +18,16 @@ const { setUser } = userSlice.actions;
 
 const attemptLogin = (username, password) => {
   return async (dispatch) => {
-      const response = await loginService.attemptLogin({ username, password });
-      console.log(`response was:`)
-      console.dir(response)
-      blogService.setToken(response.token);
-      dispatch(setUser(response));
-      window.localStorage.setItem("blogUserLogin", JSON.stringify(response));
+    let response = {};
+    try {
+      response = await loginService.attemptLogin({ username, password });
+    } catch (e) {
+      return false
+    }
+    blogService.setToken(response.token);
+    dispatch(setUser(response));
+    window.localStorage.setItem("blogUserLogin", JSON.stringify(response));
+    return true
   };
 };
 

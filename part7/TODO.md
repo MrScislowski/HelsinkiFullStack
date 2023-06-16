@@ -1,7 +1,6 @@
 
 [ ] 7.13: Redux, step4
     Store the information about the signed-in user in the Redux store. 
-    [ ] have incorrect usernames/passwords handled correctly by try/catching them at the right level
     [ ] Don't use useRef any more.
 
 State management: React Query and context

@@ -29,7 +29,7 @@ const displayTimedInfoNotification = (message, duration = 3) => {
 
 const displayTimedErrorNotification = (message, duration = 3) => {
   return async dispatch => {
-    dispatch(notificationSlice.actions.displayInfoNotification(message));
+    dispatch(notificationSlice.actions.displayErrorNotification(message));
     setTimeout(() => dispatch(notificationSlice.actions.clearNotification()), duration * 1000);
   }
 }
