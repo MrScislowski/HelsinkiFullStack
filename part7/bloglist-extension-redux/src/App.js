@@ -1,4 +1,4 @@
-import {useEffect, useRef } from "react";
+import {useEffect} from "react";
 import AddBlogForm from "./components/AddBlogForm";
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
@@ -15,9 +15,6 @@ const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
-
-  // blog creation stuff
-  const newBlogFormRef = useRef();
 
   useEffect(() => {
     dispatch(blogDispatches.initializeBlogs());
@@ -40,7 +37,7 @@ const App = () => {
       ) : (
         <>
           <LoginStatusDisplay />
-          <AddBlogForm newBlogFormRef={newBlogFormRef} />
+          <AddBlogForm />
           <BlogList blogs={blogs} />
         </>
       )}

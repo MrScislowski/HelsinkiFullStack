@@ -5,6 +5,7 @@ import "./index.css";
 import notificationReducer from "./reducers/notificationReducer";
 import blogReducer from "./reducers/blogReducer";
 import userReducer from "./reducers/userReducer";
+import displayReducer from "./reducers/displayReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 
@@ -13,6 +14,7 @@ const store = configureStore({
     notification: notificationReducer,
     blogs: blogReducer,
     user: userReducer,
+    display: displayReducer,
   }
 });
 
