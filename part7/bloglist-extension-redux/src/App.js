@@ -1,25 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+import {useEffect, useRef } from "react";
 import AddBlogForm from "./components/AddBlogForm";
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
+import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
-import {
-  displayErrorNotification,
-} from "./reducers/notificationReducer";
+import { userActions } from "./reducers/userReducer";
 
 import { blogDispatches } from "./reducers/blogReducer";
 
 import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
-  // login stuff
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
+  const user = useSelector((state) => state.user);
+
+  console.log('user is');
+  console.log(user);
 
   // blog creation stuff
   const newBlogFormRef = useRef();
@@ -32,67 +29,31 @@ const App = () => {
     const loginDetailsJSON = window.localStorage.getItem("blogUserLogin");
     if (loginDetailsJSON) {
       const loginDetails = JSON.parse(loginDetailsJSON);
-      setUser(loginDetails);
+      dispatch(userActions.setUser(loginDetails));
       blogService.setToken(loginDetails.token);
+      console.log(`user is now ${user}`)
     }
-  }, []);
-
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await loginService.attemptLogin({ username, password });
-      blogService.setToken(response.token);
-      setUser(response);
-      window.localStorage.setItem("blogUserLogin", JSON.stringify(response));
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      dispatch(displayErrorNotification("wrong username or password"));
-    }
-  };
-
-  const loginForm = () => (
-    <>
-      <h2> log in to application</h2>
-      <form onSubmit={handleLogin}>
-        username
-        <input
-          type="text"
-          value={username}
-          onChange={({ target }) => setUsername(target.value)}
-        />
-        <br />
-        password
-        <input
-          type="password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
-        <br />
-        <button type="submit"> login </button>
-      </form>
-    </>
-  );
+  }, [dispatch]);
 
   const loginStatusDisplay = () => <p>{user.name} logged in</p>;
 
   const clearLoginInfo = () => {
     window.localStorage.removeItem("blogUserLogin");
-    setUser(null);
+    dispatch(userActions.setUser(null));
   };
 
   const logoutButtonDisplay = () => (
     <p>
       <button onClick={clearLoginInfo}> logout </button>
     </p>
-// 
+    //
   );
 
   return (
     <div>
       <Notification />
-      {user === null ? (
-        loginForm()
+      {user == null ? (
+        <LoginForm />
       ) : (
         <>
           {loginStatusDisplay()}

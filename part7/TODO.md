@@ -1,9 +1,7 @@
-[ ] 7.12: Redux, step3b
-    * refactor all the form adding shit
-        * read about wtf newBlogFormRef even is, and why we need it...
+[ ] fix bug: the "remove" button for a blog isn't shown until you like the blog
 
 [ ] 7.13: Redux, step4
-Store the information about the signed-in user in the Redux store.
+Store the information about the signed-in user in the Redux store. Move things into components, and don't use useRef any more.
 
 State management: React Query and context
 There are two alternative versions to choose for exercises 7.10-7.13: you can do the state management of the application either using Redux or React Query and Context.
