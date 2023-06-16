@@ -1,7 +1,9 @@
-[ ] fix bug: the "remove" button for a blog isn't shown until you like the blog
 
 [ ] 7.13: Redux, step4
-Store the information about the signed-in user in the Redux store. Move things into components, and don't use useRef any more.
+    Store the information about the signed-in user in the Redux store. 
+    [ ] fix bug: the "remove" button for a blog isn't shown until you like the blog
+    [ ] have incorrect usernames/passwords handled correctly by try/catching them at the right level
+    [ ] Don't use useRef any more.
 
 State management: React Query and context
 There are two alternative versions to choose for exercises 7.10-7.13: you can do the state management of the application either using Redux or React Query and Context.

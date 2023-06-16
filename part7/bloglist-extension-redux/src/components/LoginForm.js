@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { userActions } from "../reducers/userReducer";
 import { notificationDispatch } from "../reducers/notificationReducer";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const LoginForm = (props) => {
-  const user = useSelector((state) => state.user);
-
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 

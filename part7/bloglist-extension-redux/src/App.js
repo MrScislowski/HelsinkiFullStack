@@ -3,6 +3,7 @@ import AddBlogForm from "./components/AddBlogForm";
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
+import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import blogService from "./services/blogs";
 import { userActions } from "./reducers/userReducer";
 
@@ -14,9 +15,6 @@ const App = () => {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
-
-  console.log('user is');
-  console.log(user);
 
   // blog creation stuff
   const newBlogFormRef = useRef();
@@ -31,23 +29,8 @@ const App = () => {
       const loginDetails = JSON.parse(loginDetailsJSON);
       dispatch(userActions.setUser(loginDetails));
       blogService.setToken(loginDetails.token);
-      console.log(`user is now ${user}`)
     }
   }, [dispatch]);
-
-  const loginStatusDisplay = () => <p>{user.name} logged in</p>;
-
-  const clearLoginInfo = () => {
-    window.localStorage.removeItem("blogUserLogin");
-    dispatch(userActions.setUser(null));
-  };
-
-  const logoutButtonDisplay = () => (
-    <p>
-      <button onClick={clearLoginInfo}> logout </button>
-    </p>
-    //
-  );
 
   return (
     <div>
@@ -56,8 +39,7 @@ const App = () => {
         <LoginForm />
       ) : (
         <>
-          {loginStatusDisplay()}
-          {logoutButtonDisplay()}
+          <LoginStatusDisplay />
           <AddBlogForm newBlogFormRef={newBlogFormRef} />
           <BlogList blogs={blogs} user={user} />
         </>
