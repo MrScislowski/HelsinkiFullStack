@@ -49,13 +49,13 @@ const initializeBlogs = () => {
 };
 
 const likeBlog = (blog) => {
-    const proposedUpdatedBlog = {
+    const updatedBlog = {
       ...blog,
       likes: blog.likes + 1,
-      user: blog.user.id,
     };
   return async dispatch => {
-    const updatedBlog = await blogService.amendBlog(proposedUpdatedBlog)
+    await blogService.amendBlog({...updatedBlog, user: blog.user.id})
+    // we don't use the returned value from the backend because it has stripped user information off it.
     dispatch(blogSlice.actions.updateBlog(updatedBlog));
     dispatch(notificationDispatch.displayTimedInfoNotification(`'${blog.title}' liked`))
   }

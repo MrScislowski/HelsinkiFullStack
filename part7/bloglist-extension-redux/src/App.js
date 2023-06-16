@@ -41,7 +41,7 @@ const App = () => {
         <>
           <LoginStatusDisplay />
           <AddBlogForm newBlogFormRef={newBlogFormRef} />
-          <BlogList blogs={blogs} user={user} />
+          <BlogList blogs={blogs} />
         </>
       )}
     </div>

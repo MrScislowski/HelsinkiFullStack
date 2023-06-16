@@ -1,7 +1,7 @@
 import Blog from "./Blog";
 
 const BlogList = (props) => {
-    const {blogs, removeBlog, user} = props;
+    const {blogs} = props;
     const sortedBlogs = [...blogs]
     sortedBlogs.sort((a, b) => {
         if (a.likes > b.likes) {
@@ -20,8 +20,6 @@ const BlogList = (props) => {
             <Blog
             key={blog.id}
             blog={blog}
-            removeBlog={removeBlog}
-            user={user}
             />
         ))}
         </>

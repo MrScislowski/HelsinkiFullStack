@@ -19,6 +19,8 @@ const { setUser } = userSlice.actions;
 const attemptLogin = (username, password) => {
   return async (dispatch) => {
       const response = await loginService.attemptLogin({ username, password });
+      console.log(`response was:`)
+      console.dir(response)
       blogService.setToken(response.token);
       dispatch(setUser(response));
       window.localStorage.setItem("blogUserLogin", JSON.stringify(response));
