@@ -16,8 +16,6 @@ const App = () => {
   const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
 
-  console.log("re-rendering App");
-
   useEffect(() => {
     dispatch(blogDispatches.initializeBlogs());
   }, [dispatch]);

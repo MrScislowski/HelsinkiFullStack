@@ -80,8 +80,7 @@ const deleteBlog = (blog) => {
 const addBlog = (blog) => {
   return async dispatch => {
     const newBlog = await blogService.postBlog(blog)
-    blogSlice.actions.addBlog(blog);
-    // newBlogFormRef.current.toggleVisibility();
+    dispatch(blogSlice.actions.addBlog(newBlog));
     dispatch(notificationDispatch.displayTimedInfoNotification(
       `a new blog ${newBlog.title} by ${newBlog.author} added`
     ))

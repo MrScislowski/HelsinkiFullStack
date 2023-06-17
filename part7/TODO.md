@@ -1,8 +1,4 @@
 
-[ ] 7.13: Redux, step4
-    Store the information about the signed-in user in the Redux store. 
-    [ ] after clicking "add new blog", App doesn't re-render which means we need to refresh to show the dang blog...
-    
 State management: React Query and context
 There are two alternative versions to choose for exercises 7.10-7.13: you can do the state management of the application either using Redux or React Query and Context.
 
