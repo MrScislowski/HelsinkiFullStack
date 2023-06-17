@@ -5,6 +5,8 @@ There are two alternative versions to choose for exercises 7.10-7.13: you can do
 [ ] 7.10: React Query and context step1
 Refactor the app to use the useReducer-hook and context to manage the notification data.
 
+([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
+
 [ ] 7.11: React Query and context step2
 Use React Query to manage the state for blogs. For this exercise, it is sufficient that the application displays existing blogs and that the creation of a new blog is successful.
 

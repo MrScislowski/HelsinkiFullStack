@@ -1,0 +1,14 @@
+.error {
+  color: red;
+  border: 1px solid red;
+  padding: 10px;
+  background-color: lightgray;
+}
+
+.info {
+  color: green;
+  border: 1px solid green;
+  padding: 10px;
+  background-color: lightgray;
+;
+}
