@@ -1,6 +1,5 @@
 import blogService from "../services/blogs";
-// import { displayInfoNotification } from "../reducers/notificationReducer";
-import { notificationDispatch } from "./notificationReducer";
+// import { notificationDispatch } from "./NotificationContext";
 
 // blog object reference:
 // {
@@ -44,7 +43,7 @@ const initializeBlogs = () => {
   return async dispatch => {
     const blogs = await blogService.getAll();
     dispatch(blogSlice.actions.setBlogsFromArray(blogs));
-    dispatch(notificationDispatch.displayTimedInfoNotification("blogs loaded"));
+    // dispatch(notificationDispatch.displayTimedInfoNotification("blogs loaded"));
   };
 };
 
@@ -57,7 +56,7 @@ const likeBlog = (blog) => {
     await blogService.amendBlog({...updatedBlog, user: blog.user.id})
     // we don't use the returned value from the backend because it has stripped user information off it.
     dispatch(blogSlice.actions.updateBlog(updatedBlog));
-    dispatch(notificationDispatch.displayTimedInfoNotification(`'${blog.title}' liked`))
+    // dispatch(notificationDispatch.displayTimedInfoNotification(`'${blog.title}' liked`))
   }
 }
 
@@ -73,7 +72,7 @@ const deleteBlog = (blog) => {
 
     await blogService.deleteBlog(blog);
     dispatch(blogSlice.actions.deleteBlog(blog));
-    dispatch(notificationDispatch.displayTimedInfoNotification(`blog "${blog.title} by ${blog.author} removed`))
+    // dispatch(notificationDispatch.displayTimedInfoNotification(`blog "${blog.title} by ${blog.author} removed`))
   }
 }
 
@@ -81,9 +80,9 @@ const addBlog = (blog) => {
   return async dispatch => {
     const newBlog = await blogService.postBlog(blog)
     dispatch(blogSlice.actions.addBlog(newBlog));
-    dispatch(notificationDispatch.displayTimedInfoNotification(
-      `a new blog ${newBlog.title} by ${newBlog.author} added`
-    ))
+    // dispatch(notificationDispatch.displayTimedInfoNotification(
+    //   `a new blog ${newBlog.title} by ${newBlog.author} added`
+    // ))
   }
 }
 
