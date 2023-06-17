@@ -1,4 +1,3 @@
-import Togglable from './Togglable'
 import { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { blogDispatches } from '../reducers/blogReducer';
@@ -18,12 +17,16 @@ const useField = (name) => {
 
 const AddBlogForm = (props) => {
   const dispatch = useDispatch()
+  const visible = useSelector(state => state.display.newBlogForm)
+
 
   const formElements = [
     useField('title'),
     useField('author'),
     useField('url')
   ]
+
+  if (!visible) return <button onClick={() => dispatch(displayActions.displayNewBlogForm())}>add new blog</button>;
 
   const handleCreateNewBlog = async (event) => {
     event.preventDefault()
@@ -35,22 +38,19 @@ const AddBlogForm = (props) => {
         ...blogFormContents,
         likes: 0,
     }
-    dispatch(blogDispatches.addBlog(blogObject))
+    dispatch(blogDispatches.addBlog(blogObject));
     formElements.forEach(el => el.onChange({target: {value: ''}}));
+    dispatch(displayActions.hideNewBlogForm());
   }
-
-  const visibility = useSelector(state => state.display)
-
 
   return (
     <>
-      <Togglable visibility={visibility.newBlogForm} buttonLabel='add new blog' dispatch={dispatch} action={() => displayActions.toggleNewBlogForm}>
         <h2>create new</h2>
+        <button onClick={() => dispatch(displayActions.hideNewBlogForm())}>hide</button>
         <form onSubmit={handleCreateNewBlog}>
           {formElements.map(el => <div key={el.name}>{el.name}: <input {...el} /></div>)}
           <button className='add-blog-form-button' type="submit">create</button>
         </form>
-      </Togglable>
     </>
   )
 }

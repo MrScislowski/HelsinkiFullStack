@@ -1,11 +1,8 @@
 
 [ ] 7.13: Redux, step4
     Store the information about the signed-in user in the Redux store. 
-    [ ] Don't use useRef any more.
-        - AddBlogForm.js#L47
-        - Togglable.js#L13
-        ... figure out what to pass here... dispatch? Or some sort of state... is there any benefit of making this togglable? Should I just have the toggle logic in AddBlogForm and maybe abstract it away into a Togglable component later, when I've figured out a clean way to do it? Yeah, that seems right.
-
+    [ ] after clicking "add new blog", App doesn't re-render which means we need to refresh to show the dang blog...
+    
 State management: React Query and context
 There are two alternative versions to choose for exercises 7.10-7.13: you can do the state management of the application either using Redux or React Query and Context.
 
