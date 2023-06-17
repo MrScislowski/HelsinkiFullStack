@@ -1,4 +1,5 @@
-import NotificationContext from "./reducers/NotificationContext";
+import NotificationContext, {notificationActions} from "./reducers/NotificationContext";
+
 import { useContext } from "react";
 
 const App2 = (props) => {
@@ -8,7 +9,7 @@ const App2 = (props) => {
 
   return (
     <>
-    <button onClick={() => notificationDispatch({type: 'SET_INFO', payload: Math.floor(Math.random()*10)})}> set notification to random number </button>
+    <button onClick={() => notificationDispatch(notificationActions.displayInfoMessage(Math.random()*10))}> set notification to random number </button>
     <p>{JSON.stringify(notification)}</p>
     </>
   )

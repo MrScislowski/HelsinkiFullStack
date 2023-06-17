@@ -16,6 +16,18 @@ const notificationReducer = (state, action) => {
   }
 }
 
+const displayInfoMessage = (message) => {
+  return {type: 'SET_INFO', payload: message};
+}
+
+const displayErrorMessage = (message) => {
+  return {type: 'SET_ERROR', payload: message};
+}
+
+const clearDisplay = () => {
+  return {type: 'CLEAR', payload: null};
+}
+
 const NotificationContext = createContext();
 
 export const NotificationContextProvider = (props) => {
@@ -27,6 +39,9 @@ export const NotificationContextProvider = (props) => {
     </NotificationContext.Provider>
   )
 }
+
+const notificationActions = {displayInfoMessage, displayErrorMessage, clearDisplay};
+export {notificationActions};
 
 export default NotificationContext;
 
