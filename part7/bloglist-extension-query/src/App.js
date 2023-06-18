@@ -6,19 +6,13 @@ import LoginForm from "./components/LoginForm";
 import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import blogService from "./services/blogs";
 import { userActions } from "./reducers/userReducer";
-
-import { blogDispatches } from "./reducers/blogReducer";
-
 import { useSelector, useDispatch } from "react-redux";
+import { useQuery } from 'react-query'
+
 
 const App = () => {
   const dispatch = useDispatch();
-  const blogs = useSelector((state) => state.blogs);
   const user = useSelector((state) => state.user);
-
-  useEffect(() => {
-    dispatch(blogDispatches.initializeBlogs());
-  }, [dispatch]);
 
   useEffect(() => {
     const loginDetailsJSON = window.localStorage.getItem("blogUserLogin");
@@ -38,7 +32,7 @@ const App = () => {
         <>
           <LoginStatusDisplay />
           <AddBlogForm />
-          <BlogList blogs={blogs} />
+          <BlogList />
         </>
       )}
     </div>

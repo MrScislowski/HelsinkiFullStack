@@ -1,20 +1,11 @@
 
-State management: React Query and context
-There are two alternative versions to choose for exercises 7.10-7.13: you can do the state management of the application either using Redux or React Query and Context.
-
-[ ] 7.10: React Query and context step1
-Refactor the app to use the useReducer-hook and context to manage the notification data.
-    - is it possible to write good action creators for useReducer? specifically ones that use timing etc...?
-    - how do we use those thunk-ified functions that return functions if theres two separate dispatches (e.g. one for notifications, one for blogs)?
-    - OK, I don't think we can. Hence redux is more powerful. However, maybe there's an alternate refactoring that is more context/useReducer like. What if all the "add blog" etc stuff was in the add blog form component etc
-    - no, I don't think that's going to work. I'm going to try messing with hackernoon.com implementation
-
-([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
-
 [ ] 7.11: React Query and context step2
 Use React Query to manage the state for blogs. For this exercise, it is sufficient that the application displays existing blogs and that the creation of a new blog is successful.
 
 You are free to manage the state for logging in and creating new blog posts by using the internal state of React components.
+
+
+([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
 
 [ ] 7.12: React Query and context step3
 Expand your solution so that it is again possible to like and delete a blog.
