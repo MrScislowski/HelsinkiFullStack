@@ -1,7 +1,12 @@
 import { useReducer, createContext } from "react";
-
+import { useReducerWithThunk } from "./useReducerWithThunk";
 
 // notification: {type: null|error|info, message: null}
+
+/*
+alternate way of doing it:
+https://stackoverflow.com/questions/73015401/react-update-state-with-timeout-in-reducer
+*/
 
 const notificationReducer = (state, action) => {
   switch (action.type) {
@@ -28,10 +33,17 @@ const clearDisplay = () => {
   return {type: 'CLEAR', payload: null};
 }
 
+const displayTimedInfoMessage = (message, duration = 2) => {
+  return async (dispatch) => {
+    dispatch(displayInfoMessage(message));
+    setTimeout(() => dispatch(clearDisplay()), duration*1000);
+  }
+}
+
 const NotificationContext = createContext();
 
 export const NotificationContextProvider = (props) => {
-  const [notification, notificationDispatch] = useReducer(notificationReducer, {type: null, message: null});
+  const [notification, notificationDispatch] = useReducerWithThunk(notificationReducer, {type: null, message: null});
 
   return (
     <NotificationContext.Provider value={[notification, notificationDispatch]} >
@@ -40,7 +52,7 @@ export const NotificationContextProvider = (props) => {
   )
 }
 
-const notificationActions = {displayInfoMessage, displayErrorMessage, clearDisplay};
+const notificationActions = {displayInfoMessage, displayErrorMessage, clearDisplay, displayTimedInfoMessage};
 export {notificationActions};
 
 export default NotificationContext;
