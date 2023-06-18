@@ -1,11 +1,22 @@
 import { useState } from "react";
 import propTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
+import blogService from '../services/blogs'
 import { blogDispatches } from "../reducers/blogReducer";
+import { useMutation, useQueryClient } from "react-query";
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient()
   const user = useSelector((state) => state.user);
+  const removeMutation = useMutation(
+    (blog) => blogService.deleteBlog(blog),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('blogs')
+      }
+    }
+  )
 
   const blogStyle = {
     paddingTop: 10,
@@ -22,7 +33,15 @@ const Blog = ({ blog }) => {
   };
 
   const removeThis = () => {
-    dispatch(blogDispatches.deleteBlog(blog));
+    const confirmed = window.confirm(
+      `Remove blog ${blog.title} by ${blog.author}?`
+    );
+  
+    if (!confirmed) {
+      return;
+    }
+
+    removeMutation.mutate(blog)
   };
 
   const showWhenVisible = { display: detailsShown ? "" : "none" };

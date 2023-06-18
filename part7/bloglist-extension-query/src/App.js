@@ -7,7 +7,6 @@ import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import blogService from "./services/blogs";
 import { userActions } from "./reducers/userReducer";
 import { useSelector, useDispatch } from "react-redux";
-import { useQuery } from 'react-query'
 
 
 const App = () => {
