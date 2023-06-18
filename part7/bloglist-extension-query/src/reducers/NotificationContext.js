@@ -1,4 +1,4 @@
-import { useReducer, createContext } from "react";
+import { createContext } from "react";
 import { useReducerWithThunk } from "./useReducerWithThunk";
 
 // notification: {type: null|error|info, message: null}
@@ -21,39 +21,45 @@ const notificationReducer = (state, action) => {
   }
 }
 
-const displayInfoMessage = (message) => {
-  return {type: 'SET_INFO', payload: message};
-}
-
-const displayErrorMessage = (message) => {
-  return {type: 'SET_ERROR', payload: message};
-}
-
-const clearDisplay = () => {
-  return {type: 'CLEAR', payload: null};
-}
-
-const displayTimedInfoMessage = (message, duration = 2) => {
-  return async (dispatch) => {
-    dispatch(displayInfoMessage(message));
-    setTimeout(() => dispatch(clearDisplay()), duration*1000);
-  }
-}
-
-const NotificationContext = createContext();
+export const NotificationContext = createContext();
 
 export const NotificationContextProvider = (props) => {
   const [notification, notificationDispatch] = useReducerWithThunk(notificationReducer, {type: null, message: null});
 
+  const displayInfoMessage = (message) => {
+    notificationDispatch({type: 'SET_INFO', payload: message});
+  }
+  
+  const displayErrorMessage = (message) => {
+    notificationDispatch({type: 'SET_ERROR', payload: message});
+  }
+  
+  const clearDisplay = () => {
+    notificationDispatch({type: 'CLEAR', payload: null});
+  }
+  
+  const displayTimedInfoMessage = (message, duration = 2) => {
+    displayInfoMessage(message);
+    setTimeout(() => clearDisplay(), duration*1000);
+  }
+
+  const displayTimedErrorMessage = (message, duration = 2) => {
+    displayErrorMessage(message);
+    setTimeout(() => clearDisplay(), duration*1000);
+  }
+
+  // TODO: here it's possible to use other reducers so have access to their dispatches, and define the action creators here. And pass them all in value, instead of just the notification value and its dispatch.
+  // then in other ContextProviders, we can useContext(NotificationContext), and get all those functions. But if I'm keeping some things implemented in redux, is that going to be possible...?
+  // ...possibly not. So maybe just implement the easiest thing (e.g. logged in user) alongside using useReducer/Context, and see if those two things play well together. Because the blog stuff is going to be managed by react-query
+
+  const notificationExports = {displayTimedInfoMessage, displayTimedErrorMessage, notification};
+
   return (
-    <NotificationContext.Provider value={[notification, notificationDispatch]} >
+    <NotificationContext.Provider value={notificationExports} >
       {props.children}
     </NotificationContext.Provider>
   )
 }
-
-const notificationActions = {displayInfoMessage, displayErrorMessage, clearDisplay, displayTimedInfoMessage};
-export {notificationActions};
 
 export default NotificationContext;
 

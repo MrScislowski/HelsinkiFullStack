@@ -6,11 +6,6 @@ import { blogDispatches } from "../reducers/blogReducer";
 const Blog = ({ blog }) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user);
-  // console.log("user:")
-  // console.dir(user)
-  // console.log("blog.user:")
-  // console.dir(blog.user)
-  // console.log(`Likes: ${blog.likes}`)
 
   const blogStyle = {
     paddingTop: 10,

@@ -5,6 +5,9 @@ There are two alternative versions to choose for exercises 7.10-7.13: you can do
 [ ] 7.10: React Query and context step1
 Refactor the app to use the useReducer-hook and context to manage the notification data.
     - is it possible to write good action creators for useReducer? specifically ones that use timing etc...?
+    - how do we use those thunk-ified functions that return functions if theres two separate dispatches (e.g. one for notifications, one for blogs)?
+    - OK, I don't think we can. Hence redux is more powerful. However, maybe there's an alternate refactoring that is more context/useReducer like. What if all the "add blog" etc stuff was in the add blog form component etc
+    - no, I don't think that's going to work. I'm going to try messing with hackernoon.com implementation
 
 ([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
 
