@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import { userActions } from "../reducers/userReducer";
-import NotificationContext, {notificationActions} from "../reducers/NotificationContext";
+// import NotificationContext, {notificationActions} from "../reducers/NotificationContext";
+import { NotificationContext } from "../reducers/NotificationContext";
 import { useDispatch } from "react-redux";
 
 const LoginForm = (props) => {
@@ -8,7 +9,7 @@ const LoginForm = (props) => {
   const [password, setPassword] = useState("");
 
   const dispatch = useDispatch();
-  const [notification, notificationDispatch] = useContext(NotificationContext);
+  const notification = useContext(NotificationContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -17,11 +18,7 @@ const LoginForm = (props) => {
       setUsername("");
       setPassword("");
     } else {
-      notificationDispatch(
-        notificationActions.displayTimedErrorNotification(
-          "wrong username or password"
-        )
-      );
+        notification.displayTimedErrorMessage("wrong username or password");
     }
   };
 

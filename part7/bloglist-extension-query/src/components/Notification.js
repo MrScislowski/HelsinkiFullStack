@@ -4,15 +4,15 @@ import NotificationContext from "../reducers/NotificationContext";
 
 const Notification = () => {
 
-  const [notification, notificationDispatch] = useContext(NotificationContext);
+  const notification = useContext(NotificationContext);
 
-  if (notification.type === null) {
+  if (notification.notification.type === null) {
     return <></>;
   }
 
   return (
     <>
-      <p className={notification.type}>{notification.message}</p>
+      <p className={notification.notification.type}>{notification.notification.message}</p>
     </>
   );
 };

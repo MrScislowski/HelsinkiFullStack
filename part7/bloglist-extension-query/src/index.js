@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-// import App from "./App";
-import App2 from "./App2";
+import App from "./App";
+// import App2 from "./App2";
 import "./index.css";
 import { NotificationContextProvider } from "./reducers/NotificationContext";
 import blogReducer from "./reducers/blogReducer";
@@ -21,7 +21,7 @@ const store = configureStore({
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
   <NotificationContextProvider>
-    <App2 />
+    <App />
   </NotificationContextProvider>
   </Provider>
 );
