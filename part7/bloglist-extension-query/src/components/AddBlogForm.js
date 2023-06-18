@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useContext } from "react";
+import DisplayContext from "../reducers/displayContext";
 import { useMutation, useQueryClient } from "react-query";
 import blogService from "../services/blogs";
-import { displayActions } from "../reducers/displayReducer";
 
 const useField = (name) => {
   const [fieldValue, setFieldValue] = useState("");
@@ -17,7 +16,6 @@ const useField = (name) => {
 };
 
 const AddBlogForm = (props) => {
-  const dispatch = useDispatch();
   const queryClient = useQueryClient();
   const newBlogMutation = useMutation(
     (newBlog) => blogService.postBlog(newBlog),
@@ -28,13 +26,15 @@ const AddBlogForm = (props) => {
     }
   );
 
-  const visible = useSelector((state) => state.display.newBlogForm);
+  const displayState = useContext(DisplayContext);
+
+  const visible = displayState.display.addForm;
 
   const formElements = [useField("title"), useField("author"), useField("url")];
 
   if (!visible)
     return (
-      <button onClick={() => dispatch(displayActions.displayNewBlogForm())}>
+      <button onClick={displayState.showAddForm}>
         add new blog
       </button>
     );
@@ -51,13 +51,13 @@ const AddBlogForm = (props) => {
     };
     newBlogMutation.mutate(blogObject);
     formElements.forEach((el) => el.onChange({ target: { value: "" } }));
-    dispatch(displayActions.hideNewBlogForm());
+    displayState.hideAddForm();
   };
 
   return (
     <>
       <h2>create new</h2>
-      <button onClick={() => dispatch(displayActions.hideNewBlogForm())}>
+      <button onClick={displayState.hideAddForm}>
         hide
       </button>
       <form onSubmit={handleCreateNewBlog}>

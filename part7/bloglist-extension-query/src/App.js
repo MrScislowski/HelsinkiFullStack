@@ -7,10 +7,7 @@ import LoginForm from "./components/LoginForm";
 import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import blogService from "./services/blogs";
 
-import { useSelector, useDispatch } from "react-redux";
-
 const App = () => {
-  const dispatch = useDispatch();
   const userActions = useContext(UserContext);
   
   useEffect(() => {
@@ -18,10 +15,9 @@ const App = () => {
     if (loginDetailsJSON) {
       const loginDetails = JSON.parse(loginDetailsJSON);
       userActions.setUser(loginDetails);
-      // dispatch(userActions.setUser(loginDetails));
       blogService.setToken(loginDetails.token);
     }
-  }, [dispatch]);
+  }, []); // TODO: probably when a different user logs in this should happen again... so what should I put in the dependency array?
 
   return (
     <div>
