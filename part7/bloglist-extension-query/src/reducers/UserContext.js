@@ -1,5 +1,4 @@
-import { createContext } from "react";
-import { useReducerWithThunk } from "./useReducerWithThunk";
+import { createContext, useReducer } from "react";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
 
@@ -15,7 +14,7 @@ const userReducer = (state, action) => {
 export const UserContext = createContext();
 
 export const UserContextProvider = (props) => {
-  const [user, userDispatch] = useReducerWithThunk(userReducer, "");
+  const [user, userDispatch] = useReducer(userReducer, "");
 
   const setUser = (user) => {
     userDispatch({type: 'SET_USER', payload: user});

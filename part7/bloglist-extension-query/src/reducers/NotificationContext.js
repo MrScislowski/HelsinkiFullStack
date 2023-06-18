@@ -1,5 +1,4 @@
-import { createContext } from "react";
-import { useReducerWithThunk } from "./useReducerWithThunk";
+import { createContext, useReducer } from "react";
 
 // notification: {type: null|error|info, message: null}
 
@@ -24,7 +23,7 @@ const notificationReducer = (state, action) => {
 export const NotificationContext = createContext();
 
 export const NotificationContextProvider = (props) => {
-  const [notification, notificationDispatch] = useReducerWithThunk(notificationReducer, {type: null, message: null});
+  const [notification, notificationDispatch] = useReducer(notificationReducer, {type: null, message: null});
 
   const displayInfoMessage = (message) => {
     notificationDispatch({type: 'SET_INFO', payload: message});
