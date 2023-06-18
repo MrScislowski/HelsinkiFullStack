@@ -1,17 +1,14 @@
 
-[ ] 7.11: React Query and context step2
-Use React Query to manage the state for blogs. For this exercise, it is sufficient that the application displays existing blogs and that the creation of a new blog is successful.
-
-You are free to manage the state for logging in and creating new blog posts by using the internal state of React components.
-
-
-([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
-
 [ ] 7.12: React Query and context step3
 Expand your solution so that it is again possible to like and delete a blog.
 
 [ ] 7.13: React Query and context step4
 Use the useReducer-hook and context to manage the data for the logged in user.
+
+
+([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
+
+
 
 Views
 The rest of the tasks are common to both the Redux and React Query versions.
