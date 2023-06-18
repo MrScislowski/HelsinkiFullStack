@@ -1,18 +1,17 @@
-import { useSelector, useDispatch } from "react-redux";
-import { userActions } from "../reducers/userReducer";
+import { useContext } from "react";
+import UserContext from "../reducers/UserContext";
 
 const LoginStatusDisplay = (props) => {
-  const user = useSelector((state) => state.user);
-  const dispatch = useDispatch();
+  const user = useContext(UserContext);
 
   const clearLoginInfo = () => {
     window.localStorage.removeItem("blogUserLogin");
-    dispatch(userActions.setUser(null));
+    user.setUser(null);
   };
 
   return (
     <>
-      <p>{user.name} logged in</p>
+      <p>{user.user.user.name} logged in</p>
       <p>
         <button onClick={clearLoginInfo}> logout </button>
       </p>

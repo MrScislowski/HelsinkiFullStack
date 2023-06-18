@@ -1,6 +1,5 @@
 [ ] 7.13: React Query and context step4
-Use the useReducer-hook and context to manage the data for the logged in user.
-
+Add display management using useReducer/context
 
 ([ ]) add nice methods to clear database and populate it with test info for testing purposes. It gets pretty unwieldy to keep all the info I've ever added to it.
 

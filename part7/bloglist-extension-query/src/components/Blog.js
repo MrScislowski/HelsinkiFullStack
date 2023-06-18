@@ -1,14 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import UserContext from "../reducers/UserContext";
 import propTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
 import blogService from '../services/blogs'
-import { blogDispatches } from "../reducers/blogReducer";
 import { useMutation, useQueryClient } from "react-query";
 
 const Blog = ({ blog }) => {
-  const dispatch = useDispatch();
-  const queryClient = useQueryClient()
-  const user = useSelector((state) => state.user);
+  const queryClient = useQueryClient();
+  const user = useContext(UserContext);
   const removeMutation = useMutation(
     (blog) => blogService.deleteBlog(blog),
     {
@@ -57,7 +55,7 @@ const Blog = ({ blog }) => {
 
   const buttonText = detailsShown ? "hide" : "view";
 
-  const ownsPost = blog.user && blog.user.id === user.id;
+  const ownsPost = blog.user && blog.user.id === user.user.user.id;
   const ownedStyle = { display: ownsPost ? "" : "none" };
 
   return (

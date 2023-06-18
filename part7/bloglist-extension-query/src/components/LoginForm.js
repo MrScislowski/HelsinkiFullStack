@@ -1,18 +1,17 @@
 import { useState, useContext } from "react";
-import { userActions } from "../reducers/userReducer";
 import { NotificationContext } from "../reducers/NotificationContext";
-import { useDispatch } from "react-redux";
+import { UserContext } from "../reducers/UserContext";
 
 const LoginForm = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const dispatch = useDispatch();
   const notification = useContext(NotificationContext);
+  const user = useContext(UserContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const didLogin = await dispatch(userActions.attemptLogin(username, password));
+    const didLogin = await user.attemptLogin(username, password);
     if (didLogin) {
       setUsername("");
       setPassword("");

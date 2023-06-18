@@ -59,11 +59,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
   // const amendedBlog = (({title, author, url, likes, user}) => ({title, author, url, likes, user}))(request.body)
-  console.log("request.body is: ")
-  console.dir(request.body)
   const amendedBlog = (({title, author, url, likes, user}) => ({title, author, url, likes, user}))(request.body) // this line just strips the blog id off the request body
-  console.log("amendedBlog is: ")
-  console.dir(amendedBlog)
   const retVal = await Blog.findByIdAndUpdate(request.params.id, 
     amendedBlog,
     {runValidators: true, returnDocument: 'after'})
