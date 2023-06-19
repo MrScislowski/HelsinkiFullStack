@@ -62,7 +62,9 @@ blogsRouter.delete('/:id', async (request, response) => {
   response.status(200).json(retVal)
 })
 
+blogsRouter.put('/fillInitial', async (request, response) => {
 
+})
 
 blogsRouter.put('/:id', async (request, response) => {
   // const amendedBlog = (({title, author, url, likes, user}) => ({title, author, url, likes, user}))(request.body)
@@ -75,7 +77,6 @@ blogsRouter.put('/:id', async (request, response) => {
   } else {
     response.status(404).end()
   }
-
 })
 
 module.exports = blogsRouter

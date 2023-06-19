@@ -6,6 +6,7 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import ClearDBButton from "./components/ClearDBButton";
+import LoadInitialBlogsButton from "./components/LoadInitialBlogsButton";
 import blogService from "./services/blogs";
 
 const App = () => {
@@ -33,6 +34,7 @@ const App = () => {
         </>
       )}
       <ClearDBButton />
+      <LoadInitialBlogsButton />
     </div>
   );
 };

@@ -1,5 +1,3 @@
-[ ] add nice method to populate the DB w/ test data
-
 Views
 The rest of the tasks are common to both the Redux and React Query versions.
 

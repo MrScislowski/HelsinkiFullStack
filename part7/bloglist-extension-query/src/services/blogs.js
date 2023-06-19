@@ -1,5 +1,6 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
+const initialData = require("../data/initialData.json");
 
 let token = null
 
@@ -40,4 +41,11 @@ const deleteAllBlogs = async () => {
   return response.data
 }
 
-export default { getAll, setToken, postBlog, amendBlog, deleteBlog, deleteAllBlogs }
+const loadInitialBlogs = async () => {
+  for (const blog of initialData) {
+    await postBlog(blog)
+  }
+}
+
+const blogService = { getAll, setToken, postBlog, amendBlog, deleteBlog, deleteAllBlogs, loadInitialBlogs }
+export default blogService
