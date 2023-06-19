@@ -5,6 +5,7 @@ import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import LoginStatusDisplay from "./components/LoginStatusDisplay";
+import ClearDBButton from "./components/ClearDBButton";
 import blogService from "./services/blogs";
 
 const App = () => {
@@ -31,6 +32,7 @@ const App = () => {
           <BlogList />
         </>
       )}
+      <ClearDBButton />
     </div>
   );
 };

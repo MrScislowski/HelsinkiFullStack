@@ -38,6 +38,11 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(result)
 })
 
+blogsRouter.delete('/all', async (request, response) => {
+  const retVal = await Blog.deleteMany({})
+  response.status(200).json(retVal);
+})
+
 blogsRouter.delete('/:id', async (request, response) => {
   if (!request.user) {
     return response.status(401).json({error: "must be logged in to do this"})
@@ -56,6 +61,8 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   response.status(200).json(retVal)
 })
+
+
 
 blogsRouter.put('/:id', async (request, response) => {
   // const amendedBlog = (({title, author, url, likes, user}) => ({title, author, url, likes, user}))(request.body)
