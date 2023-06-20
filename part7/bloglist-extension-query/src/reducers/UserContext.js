@@ -33,7 +33,7 @@ export const UserContextProvider = (props) => {
   };
 
   
-  const userExports = {user, setUser, attemptLogin};
+  const userExports = [user, {setUser, attemptLogin}];
 
   return (
     <UserContext.Provider value={userExports} >

@@ -1,20 +1,24 @@
 import { useState, useContext } from "react";
 import { NotificationContext } from "../reducers/NotificationContext";
 import { UserContext } from "../reducers/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = (props) => {
+  const navigate = useNavigate()
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const notification = useContext(NotificationContext);
-  const user = useContext(UserContext);
+  const [user, userActions] = useContext(UserContext);
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    const didLogin = await user.attemptLogin(username, password);
+    const didLogin = await userActions.attemptLogin(username, password);
     if (didLogin) {
       setUsername("");
       setPassword("");
+      navigate("/");
     } else {
         notification.displayTimedErrorMessage("wrong username or password");
     }

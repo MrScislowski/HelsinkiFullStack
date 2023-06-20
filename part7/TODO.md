@@ -2,6 +2,8 @@ Views
 The rest of the tasks are common to both the Redux and React Query versions.
 
 [ ] 7.14: Users view
+  - Implement routing that sends back to login page when necessary
+    * why is useEffect not working properly (either running once ever, or making an infinite loop)? Is this because we should really be doing [value, dispatch] = useContext(...) instead of my more hacked together one? 
 Implement a view to the application that displays all of the basic information related to users:
 
 browser blogs with users table showing blogs created

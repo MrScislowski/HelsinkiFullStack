@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "react-query";
 
 const Blog = ({ blog }) => {
   const queryClient = useQueryClient();
-  const user = useContext(UserContext);
+  const [user, userActions] = useContext(UserContext);
   const removeMutation = useMutation(
     (blog) => blogService.deleteBlog(blog),
     {
@@ -55,7 +55,7 @@ const Blog = ({ blog }) => {
 
   const buttonText = detailsShown ? "hide" : "view";
 
-  const ownsPost = blog.user && blog.user.id === user.user.user.id;
+  const ownsPost = blog.user && blog.user.id === user.user.id;
   const ownedStyle = { display: ownsPost ? "" : "none" };
 
   return (

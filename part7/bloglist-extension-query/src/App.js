@@ -1,17 +1,19 @@
-import {useEffect, useContext} from "react";
+import { useEffect, useContext } from "react";
 import UserContext from "./reducers/UserContext";
-import AddBlogForm from "./components/AddBlogForm";
-import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
-import LoginStatusDisplay from "./components/LoginStatusDisplay";
-import ClearDBButton from "./components/ClearDBButton";
-import LoadInitialBlogsButton from "./components/LoadInitialBlogsButton";
+import BlogsDisplay from "./components/BlogsDisplay";
 import blogService from "./services/blogs";
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Routes,
+  Route,
+} from "react-router-dom";
 
 const App = () => {
-  const userActions = useContext(UserContext);
-  
+  const [user, userActions] = useContext(UserContext);
+
   useEffect(() => {
     const loginDetailsJSON = window.localStorage.getItem("blogUserLogin");
     if (loginDetailsJSON) {
@@ -21,22 +23,27 @@ const App = () => {
     }
   }, []); // TODO: probably when a different user logs in this should happen again... so what should I put in the dependency array?
 
+
+  // https://github.com/remix-run/react-router/blob/dev/examples/auth/src/App.tsx
   return (
-    <div>
+    <Router>
       <Notification />
-      {userActions.user.user == null ? (
-        <LoginForm />
-      ) : (
-        <>
-          <LoginStatusDisplay />
-          <AddBlogForm />
-          <BlogList />
-        </>
-      )}
-      <ClearDBButton />
-      <LoadInitialBlogsButton />
-    </div>
+      <Routes>
+        <Route path="/blogs" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
+      </Routes>
+    </Router>
   );
 };
+
+const RequireAuth = (props) => {
+  const [user, userActions] = useContext(UserContext);
+  if (user.user == null) {
+    return <Navigate to="/login" replace />
+  }
+
+  return props.children;
+}
 
 export default App;
