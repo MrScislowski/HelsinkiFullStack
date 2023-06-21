@@ -7,6 +7,7 @@ import { NotificationContextProvider } from "./reducers/NotificationContext";
 import { UserContextProvider } from "./reducers/UserContext";
 import { DisplayContextProvider } from "./reducers/displayContext";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { BrowserRouter as Router } from "react-router-dom";
 
 const queryClient = new QueryClient();
 
@@ -15,9 +16,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <DisplayContextProvider>
       <NotificationContextProvider>
         <UserContextProvider>
-          <App />
+          <Router>
+            <App />
+          </Router>
         </UserContextProvider>
       </NotificationContextProvider>
-      </DisplayContextProvider>
+    </DisplayContextProvider>
   </QueryClientProvider>
 );

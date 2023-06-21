@@ -1,5 +1,8 @@
-Views
-The rest of the tasks are common to both the Redux and React Query versions.
+[ ] decide about when to fetch user data...
+    * to use useMatch routing (so that we can pass just a single user to the IndividualUser component), we'd need to load all the user data in App
+    * and I was previously thinking that, since through UsersList is the only place to get to an IndividualUser, we could load the data there.
+    * but I think it's possible that people may bookmark a users blogs, and should be able to get there without going through IndividualUser
+    * maybe there's some lazy loading stuff possible in React, but I don't know about it yet
 
 [ ] 7.15: Individual user view
 Implement a view for individual users that displays all of the blog posts added by that user:

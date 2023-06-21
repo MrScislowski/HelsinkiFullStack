@@ -7,11 +7,12 @@ import BlogsDisplay from "./components/BlogsDisplay";
 import UsersDisplay from "./components/UsersDisplay";
 import blogService from "./services/blogs";
 import {
-  BrowserRouter as Router,
+  useMatch,
   Navigate,
   Routes,
   Route,
 } from "react-router-dom";
+import IndividualUser from "./components/IndividualUser";
 
 const App = () => {
   const [user, userActions] = useContext(UserContext);
@@ -36,17 +37,21 @@ const App = () => {
     )
   }
 
+  const blogUser = useMatch('/users/:id') ?
+  
+
   return (
-    <Router>
+    <>
       <Notification />
       <LoginStatusDisplay />
       <Routes>
           <Route path="/blogs" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
+          <Route path="/users/:id" element={<RequireAuth><IndividualUser /></RequireAuth>} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/users" element={<RequireAuth><UsersDisplay /></RequireAuth>} />
           <Route path="/" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
       </Routes>
-    </Router>
+    </>
   );
 };
 
