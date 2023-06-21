@@ -1,4 +1,4 @@
-import { useEffect, useContext } from "react";
+import { useEffect, useContext, useState } from "react";
 import UserContext from "./reducers/UserContext";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
@@ -13,18 +13,27 @@ import {
 
 const App = () => {
   const [user, userActions] = useContext(UserContext);
+  const [pageLoading, setPageLoading] = useState(true);
 
-  useEffect(() => {
+
+  useEffect( () => {
     const loginDetailsJSON = window.localStorage.getItem("blogUserLogin");
-    if (loginDetailsJSON) {
+    if (user.user == null && loginDetailsJSON) {
       const loginDetails = JSON.parse(loginDetailsJSON);
       userActions.setUser(loginDetails);
       blogService.setToken(loginDetails.token);
     }
-  }, []); // TODO: probably when a different user logs in this should happen again... so what should I put in the dependency array?
-
+    setPageLoading(false);
+  }, [user])
 
   // https://github.com/remix-run/react-router/blob/dev/examples/auth/src/App.tsx
+
+  if (pageLoading) {
+    return (
+      <div> loading ... </div>
+    )
+  }
+
   return (
     <Router>
       <Notification />
@@ -39,6 +48,9 @@ const App = () => {
 
 const RequireAuth = (props) => {
   const [user, userActions] = useContext(UserContext);
+  
+  console.log('rendering in RequireAuth')
+  console.dir(user);
   if (user.user == null) {
     return <Navigate to="/login" replace />
   }

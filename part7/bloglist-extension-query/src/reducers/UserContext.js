@@ -14,7 +14,7 @@ const userReducer = (state, action) => {
 export const UserContext = createContext();
 
 export const UserContextProvider = (props) => {
-  const [user, userDispatch] = useReducer(userReducer, "");
+  const [user, userDispatch] = useReducer(userReducer, "initial bromified value!");
 
   const setUser = (user) => {
     userDispatch({type: 'SET_USER', payload: user});
