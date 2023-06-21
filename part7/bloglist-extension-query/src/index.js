@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-// import App2 from "./App2";
+import App2 from "./App2";
 import "./index.css";
 import { NotificationContextProvider } from "./reducers/NotificationContext";
 import { UserContextProvider } from "./reducers/UserContext";
@@ -15,7 +15,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <DisplayContextProvider>
       <NotificationContextProvider>
         <UserContextProvider>
-          <App />
+          <App2 />
         </UserContextProvider>
       </NotificationContextProvider>
       </DisplayContextProvider>

@@ -75,3 +75,7 @@ Content-Type: application/json
   "password": "example1",
   "name": "example1"
 }
+
+
+###
+GET http://localhost:3003/api/users 

@@ -1,16 +1,41 @@
 import { NotificationContext} from "./reducers/NotificationContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+import axios from "axios";
 
 const App2 = (props) => {
-  const notification = useContext(NotificationContext);
 
-  // notificationDispatch({type:'SET_INFO', message: "hello"});
+  const [usersData, setUsersData] = useState([]);
+
+  console.log(`usersData is`);
+  console.dir(usersData);
+
+
+  useEffect(() => {
+    const getUsersData = async () => {
+      const theData = await axios.get("http://localhost:3003/api/users")
+      console.log("just got this data: ")
+      console.dir(theData)
+      setUsersData(theData.data);
+    }
+
+    getUsersData();
+  }, [])
 
   return (
     <>
-    <button onClick={() => notification.displayTimedInfoMessage(Math.random()*10)}> set notification to random number </button>
-
-    <p>{JSON.stringify(notification)}</p>
+    <table>
+      <thead>
+        <tr>
+          <th></th> <th># blogs</th>
+        </tr>
+      </thead>
+      <tbody>
+        {usersData.map(user => (<tr key={user.id}>
+        <td>{user.name} ({user.username})</td>
+        <td>{user.blogs.length}</td>
+        </tr>))}
+      </tbody>
+    </table>
     </>
   )
 }
