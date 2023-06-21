@@ -9,6 +9,10 @@ const LoginStatusDisplay = (props) => {
     userActions.setUser(null);
   };
 
+  if (!user.user) {
+    return <></>
+  }
+
   return (
     <>
       <p>{user.user.name} logged in</p>

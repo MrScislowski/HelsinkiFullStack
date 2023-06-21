@@ -1,4 +1,4 @@
-import axios from "axios";
+import userService from "../services/users"
 import { useState, useEffect } from "react";
 
 const UsersDisplay = (props) => {
@@ -6,8 +6,8 @@ const UsersDisplay = (props) => {
 
   useEffect(() => {
     const getUsersData = async () => {
-      const theData = await axios.get("http://localhost:3003/api/users")
-      setUsersData(theData.data);
+      const theData = await userService.getAll();
+      setUsersData(theData);
     }
 
     getUsersData();

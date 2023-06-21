@@ -1,10 +1,6 @@
 Views
 The rest of the tasks are common to both the Redux and React Query versions.
 
-[ ] 7.14: Users view
-Implement a view to the application that displays all of the basic information related to users:
-
-browser blogs with users table showing blogs created
 [ ] 7.15: Individual user view
 Implement a view for individual users that displays all of the blog posts added by that user:
 
@@ -31,6 +27,8 @@ return (
 </div>
 )
 }copy
+
+
 [ ] 7.16: Blog view
 Implement a separate view for blog posts. You can model the layout of your view after the following example:
 
