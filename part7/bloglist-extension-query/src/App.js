@@ -2,7 +2,9 @@ import { useEffect, useContext, useState } from "react";
 import UserContext from "./reducers/UserContext";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
+import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import BlogsDisplay from "./components/BlogsDisplay";
+import UsersDisplay from "./components/UsersDisplay";
 import blogService from "./services/blogs";
 import {
   BrowserRouter as Router,
@@ -37,10 +39,12 @@ const App = () => {
   return (
     <Router>
       <Notification />
+      <LoginStatusDisplay />
       <Routes>
-        <Route path="/blogs" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
+          <Route path="/blogs" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/users" element={<RequireAuth><UsersDisplay /></RequireAuth>} />
+          <Route path="/" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
       </Routes>
     </Router>
   );
