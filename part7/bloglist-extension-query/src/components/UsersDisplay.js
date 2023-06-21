@@ -2,16 +2,8 @@ import userService from "../services/users"
 import { useState, useEffect } from "react";
 
 const UsersDisplay = (props) => {
-  const [usersData, setUsersData] = useState([]);
-
-  useEffect(() => {
-    const getUsersData = async () => {
-      const theData = await userService.getAll();
-      setUsersData(theData);
-    }
-
-    getUsersData();
-  }, [])
+  const {allUsersData} = props;
+  
 
   return (
     <>
