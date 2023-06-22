@@ -1,15 +1,9 @@
-import Blog from "./Blog";
-import blogService from "../services/blogs";
-import { useQuery } from "react-query";
+import { Link } from "react-router-dom";
 
 const BlogList = (props) => {
-  const blogQuery = useQuery("blogs", () => blogService.getAll());
-
-  if (blogQuery.isLoading) {
-    return <div>query loading...</div>;
-  }
-
-  const blogs = blogQuery.data;
+  console.log("props passed to BlogList are: ");
+  console.dir(props);
+  const { blogs } = props;
 
   const sortedBlogs = [...blogs];
   sortedBlogs.sort((a, b) => {
@@ -25,9 +19,15 @@ const BlogList = (props) => {
   return (
     <>
       <h2>blogs</h2>
-      {sortedBlogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
-      ))}
+      <ul>
+        {sortedBlogs.map((blog) => (
+          <li key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} {blog.author}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </>
   );
 };

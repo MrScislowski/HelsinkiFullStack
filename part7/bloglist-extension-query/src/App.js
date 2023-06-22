@@ -5,8 +5,10 @@ import LoginForm from "./components/LoginForm";
 import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import BlogsDisplay from "./components/BlogsDisplay";
 import UsersDisplay from "./components/UsersDisplay";
+import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import userService from "./services/users";
+import { useQuery } from "react-query";
 import { useMatch, Navigate, Routes, Route } from "react-router-dom";
 import IndividualUser from "./components/IndividualUser";
 
@@ -34,18 +36,39 @@ const App = () => {
     getAllUsersData();
   }, []);
 
-  let match = useMatch("/users/:id");
-  const blogUser = match
-    ? allUsersData.find((user) => user.id === match.params.id)
+  const blogQuery = useQuery("blogs", () => blogService.getAll());
+
+  const blogs = blogQuery.data;
+
+  const usermatch = useMatch("/users/:id");
+  const blogUser = usermatch
+    ? allUsersData.find((user) => user.id === usermatch.params.id)
     : null;
 
+  const blogmatch = useMatch("/blogs/:id");
+  const chosenBlog = blogmatch
+    ? blogs.find((blog) => blog.id === blogmatch.params.id)
+    : null;
+
+  if (blogQuery.isLoading) {
+    return <div>query loading...</div>;
+  }
 
   if (pageLoading) {
     return <div> loading ... </div>;
   }
 
-  
+  if (usermatch && !blogUser) {
+    return <div>user not found...</div>
+  }
 
+  if (blogmatch && !chosenBlog) {
+    return <div>blog not found...</div>
+  }
+
+  console.log(`in App, blogQuery.isloading is: ${blogQuery.isLoading}`)
+  console.log("and the value of blogs is")
+  console.dir(blogs);
   return (
     <>
       <Notification />
@@ -55,7 +78,15 @@ const App = () => {
           path="/blogs"
           element={
             <RequireAuth>
-              <BlogsDisplay />
+              <BlogsDisplay blogs={blogs}/>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/blogs/:id"
+          element={
+            <RequireAuth>
+              <Blog blog={chosenBlog} />
             </RequireAuth>
           }
         />
@@ -72,7 +103,7 @@ const App = () => {
           path="/users"
           element={
             <RequireAuth>
-              <UsersDisplay allUsersData={allUsersData}/>
+              <UsersDisplay allUsersData={allUsersData} />
             </RequireAuth>
           }
         />
@@ -92,13 +123,12 @@ const App = () => {
 const RequireAuth = (props) => {
   const [user, userActions] = useContext(UserContext);
 
-  console.log("rendering in RequireAuth");
-  console.dir(user);
   if (user.user == null) {
     return <Navigate to="/login" replace />;
   }
 
   return props.children;
+
 };
 
 export default App;

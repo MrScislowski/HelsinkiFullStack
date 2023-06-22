@@ -4,7 +4,10 @@ import propTypes from "prop-types";
 import blogService from '../services/blogs'
 import { useMutation, useQueryClient } from "react-query";
 
-const Blog = ({ blog }) => {
+const Blog = (props) => {
+  console.log("props passed to Blog are: ");
+  console.dir(props);
+  const {blog} = props;
   const queryClient = useQueryClient();
   const [user, userActions] = useContext(UserContext);
   const removeMutation = useMutation(
@@ -33,12 +36,6 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   };
 
-  const [detailsShown, setDetailsShown] = useState(false);
-
-  const toggleVisibility = () => {
-    setDetailsShown(!detailsShown);
-  };
-
   const removeThis = () => {
     const confirmed = window.confirm(
       `Remove blog ${blog.title} by ${blog.author}?`
@@ -51,9 +48,10 @@ const Blog = ({ blog }) => {
     removeMutation.mutate(blog)
   };
 
-  const showWhenVisible = { display: detailsShown ? "" : "none" };
-
-  const buttonText = detailsShown ? "hide" : "view";
+  if (!blog.user) {
+    console.log("returning early because blog.user is undefined")
+    return <div>loading...</div>
+  }
 
   const ownsPost = blog.user && blog.user.id === user.user.id;
   const ownedStyle = { display: ownsPost ? "" : "none" };
@@ -62,11 +60,8 @@ const Blog = ({ blog }) => {
     <div style={blogStyle}>
       <div className="basic-blog-content">
         {blog.title} {blog.author}{" "}
-        <button className="visibility-button" onClick={toggleVisibility}>
-          {buttonText}
-        </button>
       </div>
-      <div className="detailed-blog-content" style={showWhenVisible}>
+      <div className="detailed-blog-content" >
         {blog.url} <br />
         likes {blog.likes}{" "}
         <button
@@ -74,7 +69,7 @@ const Blog = ({ blog }) => {
           onClick={() => likeMutation.mutate(blog)}
         >
           like
-        </button>{" "}
+        </button>
         <br />
         {blog.user ? blog.user.name : ""} <br />
         <button style={ownedStyle} onClick={removeThis}>
@@ -85,8 +80,8 @@ const Blog = ({ blog }) => {
   );
 };
 
-Blog.propTypes = {
-  blog: propTypes.object.isRequired,
-};
+// Blog.propTypes = {
+//   blog: propTypes.object.isRequired,
+// };
 
 export default Blog;

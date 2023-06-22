@@ -1,4 +1,7 @@
 [ ] 7.16: Blog view
+    [ ] wtf... are we going to have to drill props through requireAuth....? is there an easy way to pass all the props as props to the next thing...?
+    [ ] trying to remove a blog post gives error in Blog.js; blog.user is undefined
+    [ ] going straight to a blog post gives error in App.js (blogs is undefined when trying blogs.find)
 Implement a separate view for blog posts. You can model the layout of your view after the following example:
 
 browser blogs showing single blog via URL /blogs/number
