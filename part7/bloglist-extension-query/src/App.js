@@ -6,20 +6,15 @@ import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import BlogsDisplay from "./components/BlogsDisplay";
 import UsersDisplay from "./components/UsersDisplay";
 import blogService from "./services/blogs";
-import {
-  useMatch,
-  Navigate,
-  Routes,
-  Route,
-} from "react-router-dom";
+import userService from "./services/users";
+import { useMatch, Navigate, Routes, Route } from "react-router-dom";
 import IndividualUser from "./components/IndividualUser";
 
 const App = () => {
   const [user, userActions] = useContext(UserContext);
+
   const [pageLoading, setPageLoading] = useState(true);
-
-
-  useEffect( () => {
+  useEffect(() => {
     const loginDetailsJSON = window.localStorage.getItem("blogUserLogin");
     if (user.user == null && loginDetailsJSON) {
       const loginDetails = JSON.parse(loginDetailsJSON);
@@ -27,17 +22,28 @@ const App = () => {
       blogService.setToken(loginDetails.token);
     }
     setPageLoading(false);
-  }, [user])
+  }, [user]);
 
-  // https://github.com/remix-run/react-router/blob/dev/examples/auth/src/App.tsx
+  const [allUsersData, setAllUsersData] = useState([]);
+  useEffect(() => {
+    const getAllUsersData = async () => {
+      const theData = await userService.getAll();
+      setAllUsersData(theData);
+    };
+
+    getAllUsersData();
+  }, []);
+
+  let match = useMatch("/users/:id");
+  const blogUser = match
+    ? allUsersData.find((user) => user.id === match.params.id)
+    : null;
+
 
   if (pageLoading) {
-    return (
-      <div> loading ... </div>
-    )
+    return <div> loading ... </div>;
   }
 
-  const blogUser = useMatch('/users/:id') ?
   
 
   return (
@@ -45,11 +51,39 @@ const App = () => {
       <Notification />
       <LoginStatusDisplay />
       <Routes>
-          <Route path="/blogs" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
-          <Route path="/users/:id" element={<RequireAuth><IndividualUser /></RequireAuth>} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/users" element={<RequireAuth><UsersDisplay /></RequireAuth>} />
-          <Route path="/" element={<RequireAuth><BlogsDisplay /></RequireAuth>} />
+        <Route
+          path="/blogs"
+          element={
+            <RequireAuth>
+              <BlogsDisplay />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/users/:id"
+          element={
+            <RequireAuth>
+              <IndividualUser user={blogUser} />
+            </RequireAuth>
+          }
+        />
+        <Route path="/login" element={<LoginForm />} />
+        <Route
+          path="/users"
+          element={
+            <RequireAuth>
+              <UsersDisplay allUsersData={allUsersData}/>
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <BlogsDisplay />
+            </RequireAuth>
+          }
+        />
       </Routes>
     </>
   );
@@ -57,14 +91,14 @@ const App = () => {
 
 const RequireAuth = (props) => {
   const [user, userActions] = useContext(UserContext);
-  
-  console.log('rendering in RequireAuth')
+
+  console.log("rendering in RequireAuth");
   console.dir(user);
   if (user.user == null) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/login" replace />;
   }
 
   return props.children;
-}
+};
 
 export default App;

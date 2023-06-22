@@ -1,5 +1,6 @@
 import userService from "../services/users"
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const UsersDisplay = (props) => {
   const {allUsersData} = props;
@@ -15,8 +16,8 @@ const UsersDisplay = (props) => {
         </tr>
       </thead>
       <tbody>
-        {usersData.map(user => (<tr key={user.id}>
-        <td>{user.name} ({user.username})</td>
+        {allUsersData.map(user => (<tr key={user.id}>
+        <td><Link to={`/users/${user.id}`}> {user.name} ({user.username})</Link></td>
         <td>{user.blogs.length}</td>
         </tr>))}
       </tbody>

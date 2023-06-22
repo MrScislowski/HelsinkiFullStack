@@ -1,37 +1,3 @@
-[ ] decide about when to fetch user data...
-    * to use useMatch routing (so that we can pass just a single user to the IndividualUser component), we'd need to load all the user data in App
-    * and I was previously thinking that, since through UsersList is the only place to get to an IndividualUser, we could load the data there.
-    * but I think it's possible that people may bookmark a users blogs, and should be able to get there without going through IndividualUser
-    * maybe there's some lazy loading stuff possible in React, but I don't know about it yet
-
-[ ] 7.15: Individual user view
-Implement a view for individual users that displays all of the blog posts added by that user:
-
-browser blogs showing users added blogs
-You can access the view by clicking the name of the user in the view that lists all users:
-
-browser blogs showing clickable users
-NB: you will almost certainly stumble across the following error message during this exercise:
-
-browser TypeError cannot read property name of undefined
-The error message will occur if you refresh the page for an individual user.
-
-The cause of the issue is that, when we navigate directly to the page of an individual user, the React application has not yet received the data from the backend. One solution for fixing the problem is to use conditional rendering:
-
-const User = () => {
-const user = ...
-if (!user) {
-return null
-}
-
-return (
-<div>
-// ...
-</div>
-)
-}copy
-
-
 [ ] 7.16: Blog view
 Implement a separate view for blog posts. You can model the layout of your view after the following example:
 
