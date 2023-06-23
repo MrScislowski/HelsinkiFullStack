@@ -1,5 +1,8 @@
+[ ] change the adding of initial blog data so that it actually uses users that are in the db
 
 [ ] 7.18: comments, step1
+    - add functionality to backend
+    - mirror on frontend
 Implement the functionality for commenting on blog posts:
 
 browser blogs showing list of comments for a blog
