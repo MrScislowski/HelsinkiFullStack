@@ -46,7 +46,7 @@ const App = () => {
     : null;
 
   const blogmatch = useMatch("/blogs/:id");
-  const chosenBlog = blogmatch
+  const chosenBlog = (blogmatch && blogs)
     ? blogs.find((blog) => blog.id === blogmatch.params.id)
     : null;
 
@@ -111,7 +111,7 @@ const App = () => {
           path="/"
           element={
             <RequireAuth>
-              <BlogsDisplay />
+              <BlogsDisplay blogs={blogs}/>
             </RequireAuth>
           }
         />
@@ -127,6 +127,8 @@ const RequireAuth = (props) => {
     return <Navigate to="/login" replace />;
   }
 
+  console.log("requireAuth gets the following props, and is about to return props.children");
+  console.dir(props);
   return props.children;
 
 };

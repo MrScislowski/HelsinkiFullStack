@@ -1,14 +1,4 @@
 [ ] 7.16: Blog view
-    [ ] wtf... are we going to have to drill props through requireAuth....? is there an easy way to pass all the props as props to the next thing...?
-    [ ] trying to remove a blog post gives error in Blog.js; blog.user is undefined
-    [ ] going straight to a blog post gives error in App.js (blogs is undefined when trying blogs.find)
-Implement a separate view for blog posts. You can model the layout of your view after the following example:
-
-browser blogs showing single blog via URL /blogs/number
-Users should be able to access the view by clicking the name of the blog post in the view that lists all of the blog posts.
-
-browser showing blogs are clickable
-After you're done with this exercise, the functionality that was implemented in exercise 5.7 is no longer necessary. Clicking a blog post no longer needs to expand the item in the list and display the details of the blog post.
 
 [ ] 7.17: Navigation
 Implement a navigation menu for the application:
