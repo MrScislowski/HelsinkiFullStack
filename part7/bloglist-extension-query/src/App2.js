@@ -1,6 +1,6 @@
-import { NotificationContext} from "./reducers/NotificationContext";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+// import { NotificationContext} from "./reducers/NotificationContext";
+// import { useContext, useEffect, useState } from "react";
+// import axios from "axios";
 
 const App2 = (props) => {
 
@@ -34,6 +34,6 @@ const App2 = (props) => {
 //     </table>
 //     </>
 //   )
-// }
+}
 
 export default App2;

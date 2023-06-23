@@ -15,10 +15,8 @@ const LoginStatusDisplay = (props) => {
 
   return (
     <>
-      <p>{user.user.name} logged in</p>
-      <p>
+      {user.user.name} logged in
         <button onClick={clearLoginInfo}> logout </button>
-      </p>
     </>
   );
 };

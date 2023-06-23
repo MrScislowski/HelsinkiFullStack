@@ -1,9 +1,4 @@
-[ ] 7.16: Blog view
 
-[ ] 7.17: Navigation
-Implement a navigation menu for the application:
-
-browser blogs navigation navigation menu
 [ ] 7.18: comments, step1
 Implement the functionality for commenting on blog posts:
 

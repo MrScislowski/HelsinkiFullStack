@@ -1,6 +1,5 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import UserContext from "../reducers/UserContext";
-import propTypes from "prop-types";
 import blogService from '../services/blogs'
 import { useMutation, useQueryClient } from "react-query";
 

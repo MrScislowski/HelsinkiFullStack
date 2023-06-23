@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import BlogsDisplay from "./components/BlogsDisplay";
 import UsersDisplay from "./components/UsersDisplay";
+import NavigationMenu from "./components/NavigationMenu";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import userService from "./services/users";
@@ -72,7 +73,9 @@ const App = () => {
   return (
     <>
       <Notification />
-      <LoginStatusDisplay />
+      <RequireAuth>
+        <NavigationMenu />
+      </RequireAuth>
       <Routes>
         <Route
           path="/blogs"
