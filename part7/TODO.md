@@ -1,17 +1,5 @@
 [ ] change the adding of initial blog data so that it actually uses users that are in the db
 
-[ ] 7.18: comments, step1
-    - add functionality to backend
-    - mirror on frontend
-Implement the functionality for commenting on blog posts:
-
-browser blogs showing list of comments for a blog
-Comments should be anonymous, meaning that they are not associated with the user who left the comment.
-
-In this exercise, it is enough for the frontend to only display the comments that the application receives from the backend.
-
-An appropriate mechanism for adding comments to a blog post would be an HTTP POST request to the api/blogs/:id/comments endpoint.
-
 [ ] 7.19: comments, step2
 Extend your application so that users can add comments to blog posts from the frontend:
 

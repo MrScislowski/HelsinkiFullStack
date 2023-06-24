@@ -22,10 +22,11 @@
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   },
   "scripts": {
-    "start": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "start-offline": "DANGEROUSLY_DISABLE_HOST_CHECK=true react-scripts start",
     "start-local-db-as-service": "brew services start mongodb-community@6.0",
     "check-for-services": "brew services list",
     "stop-local-db-as-service": "brew services stop mongodb-community@6.0",

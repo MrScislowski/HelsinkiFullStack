@@ -75,6 +75,14 @@ const Blog = (props) => {
           remove
         </button>
       </div>
+      <div className="blog-comments">
+        <h3>comments</h3>
+        <ul>
+        {blog.comments
+        ? blog.comments.map((comment, index) => <li key={index}>{comment}</li>)
+        : null}
+        </ul>
+      </div>
     </div>
   );
 };
