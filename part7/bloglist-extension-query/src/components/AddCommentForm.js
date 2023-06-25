@@ -10,7 +10,8 @@ const AddCommentForm = (props) => {
   const newCommentMutation = useMutation(
     (args) => {
         const {blogId, comment} = args;
-        blogService.addCommentToBlog(blogId, comment)
+        // only if it returns something is the mutation considered "successful" which leads to the onSuccess callback firing
+        return blogService.addCommentToBlog(blogId, comment);
     },
     {
       onSuccess: () => {
