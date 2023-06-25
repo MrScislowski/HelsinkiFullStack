@@ -87,6 +87,7 @@ blogsRouter.put("/:id", async (request, response) => {
 
 blogsRouter.post("/:id/comments", async (request, response) => {
   const commentText = request.body.comment;
+  console.dir(request.body)
   const selectedBlog = await Blog.findById(request.params.id);
   if (!selectedBlog.comments) {
     selectedBlog.comments = [commentText];

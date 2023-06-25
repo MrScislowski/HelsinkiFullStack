@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
 
 const BlogList = (props) => {
-  console.log("props passed to BlogList are: ");
-  console.dir(props);
   const { blogs } = props;
 
   const sortedBlogs = [...blogs];

@@ -1,11 +1,10 @@
 import { useContext } from "react";
 import UserContext from "../reducers/UserContext";
 import blogService from '../services/blogs'
+import AddCommentForm from "./AddCommentForm";
 import { useMutation, useQueryClient } from "react-query";
 
 const Blog = (props) => {
-  console.log("props passed to Blog are: ");
-  console.dir(props);
   const {blog} = props;
   const queryClient = useQueryClient();
   const [user, userActions] = useContext(UserContext);
@@ -48,7 +47,6 @@ const Blog = (props) => {
   };
 
   if (!blog.user) {
-    console.log("returning early because blog.user is undefined")
     return <div>loading...</div>
   }
 
@@ -77,6 +75,7 @@ const Blog = (props) => {
       </div>
       <div className="blog-comments">
         <h3>comments</h3>
+        <AddCommentForm blogId={blog.id} />
         <ul>
         {blog.comments
         ? blog.comments.map((comment, index) => <li key={index}>{comment}</li>)

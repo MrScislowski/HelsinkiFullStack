@@ -47,5 +47,10 @@ const loadInitialBlogs = async () => {
   }
 }
 
-const blogService = { getAll, setToken, postBlog, amendBlog, deleteBlog, deleteAllBlogs, loadInitialBlogs }
+const addCommentToBlog = async (blogId, comment) => {
+  const response = await axios.post(`${baseUrl}/${blogId}/comments`, {comment: comment});
+  return response.data
+}
+
+const blogService = { getAll, setToken, postBlog, amendBlog, deleteBlog, deleteAllBlogs, loadInitialBlogs, addCommentToBlog }
 export default blogService

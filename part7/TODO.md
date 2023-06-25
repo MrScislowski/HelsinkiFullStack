@@ -1,7 +1,7 @@
-[ ] change the adding of initial blog data so that it actually uses users that are in the db
 
 [ ] 7.19: comments, step2
 Extend your application so that users can add comments to blog posts from the frontend:
+    [ ] invalidating queries should cause the current blog and its comments to be re-rendered
 
 browser showing comments added via frontend
 [ ] 7.20: Styles, step1

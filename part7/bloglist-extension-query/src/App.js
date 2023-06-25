@@ -67,9 +67,6 @@ const App = () => {
     return <div>blog not found...</div>
   }
 
-  console.log(`in App, blogQuery.isloading is: ${blogQuery.isLoading}`)
-  console.log("and the value of blogs is")
-  console.dir(blogs);
   return (
     <>
       <Notification />
@@ -130,8 +127,6 @@ const RequireAuth = (props) => {
     return <Navigate to="/login" replace />;
   }
 
-  console.log("requireAuth gets the following props, and is about to return props.children");
-  console.dir(props);
   return props.children;
 
 };
