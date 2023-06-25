@@ -1,9 +1,9 @@
 
 UI choices:
     [ ] mantine
+      - change all text/buttons/etc to their style, then try tweaking.
     [ ] MUI = material ui
-    [ ] chakraUI
-    [ ] tailwind
+
 
 
 [ ] 7.20: Styles, step1

@@ -4,6 +4,8 @@ import blogService from '../services/blogs'
 import AddCommentForm from "./AddCommentForm";
 import { useMutation, useQueryClient } from "react-query";
 
+import { Paper, Text, Title, Button } from "@mantine/core";
+
 const Blog = (props) => {
   const {blog} = props;
   const queryClient = useQueryClient();
@@ -26,14 +28,6 @@ const Blog = (props) => {
     }
   )
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
   const removeThis = () => {
     const confirmed = window.confirm(
       `Remove blog ${blog.title} by ${blog.author}?`
@@ -47,34 +41,37 @@ const Blog = (props) => {
   };
 
   if (!blog.user) {
-    return <div>loading...</div>
+    return <Text>loading...</Text>
   }
 
   const ownsPost = blog.user && blog.user.id === user.user.id;
   const ownedStyle = { display: ownsPost ? "" : "none" };
 
   return (
-    <div style={blogStyle}>
-      <div className="basic-blog-content">
-        {blog.title} {blog.author}{" "}
-      </div>
-      <div className="detailed-blog-content" >
+    <Paper withBorder radius="md">
+      <Text size="xl" weight={500} mt="md">
+        {blog.title} {blog.author}
+      </Text>
+
+      <Text size="sm" mt="sm" color="dimmed">
         {blog.url} <br />
-        likes {blog.likes}{" "}
-        <button
+        likes {blog.likes}
+      </Text>
+
+      <Button
           className="like-button"
           onClick={() => likeMutation.mutate(blog)}
         >
           like
-        </button>
+        </Button>
         <br />
         {blog.user ? blog.user.name : ""} <br />
-        <button style={ownedStyle} onClick={removeThis}>
+        <Button style={ownedStyle} onClick={removeThis}>
           remove
-        </button>
-      </div>
-      <div className="blog-comments">
-        <h3>comments</h3>
+        </Button>
+
+        <div className="blog-comments">
+        <Title order={3}>comments</Title>
         <AddCommentForm blogId={blog.id} />
         <ul>
         {blog.comments
@@ -82,7 +79,8 @@ const Blog = (props) => {
         : null}
         </ul>
       </div>
-    </div>
+
+    </Paper>
   );
 };
 
