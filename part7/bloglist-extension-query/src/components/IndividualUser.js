@@ -1,22 +1,23 @@
 import { Link } from "react-router-dom";
+import { List, Text, Title } from "@mantine/core"
 
 const IndividualUser = (props) => {
   const { user } = props;
 
   return (
     <>
-      <h2>{user.name}</h2>
-      <p>username: {user.username}</p>
-      <h3>blogs</h3>
-      <ul>
+      <Title order={2}>{user.name}</Title>
+      <Text>username: {user.username}</Text>
+      <Title order={3}>blogs</Title>
+      <List>
         {user.blogs.map((blog) => {
           return (
-            <li key={blog.id}>
+            <List.Item key={blog.id}>
               <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-            </li>
+            </List.Item>
           );
         })}
-      </ul>
+      </List>
     </>
   );
 };

@@ -1,8 +1,9 @@
 
 UI choices:
     [ ] mantine
-      - change all text/buttons/etc to their style, then try tweaking.
-    [ ] MUI = material ui
+      - use a table for the users display
+      - style the notifications. Problem is, notification isn't really working right now
+      - at top level, start to try to make the styles look better.
 
 
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 import { useQueryClient, useMutation } from "react-query";
+import { TextInput, Button } from "@mantine/core";
 
 const AddCommentForm = (props) => {
   const [newComment, setNewComment] = useState("");
@@ -28,8 +29,8 @@ const AddCommentForm = (props) => {
 
   return (
     <form>
-      <input type="text" value={newComment} onChange={(e) => {setNewComment(e.target.value)} }/>
-      <button type="submit" onClick={(event) => handleSubmit(event)}>Add comment</button>
+      <TextInput value={newComment} onChange={(e) => {setNewComment(e.target.value)} }/>
+      <Button type="submit" onClick={(event) => handleSubmit(event)}>Add comment</Button>
     </form>
   );
 };

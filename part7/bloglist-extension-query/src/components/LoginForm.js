@@ -2,9 +2,10 @@ import { useState, useContext } from "react";
 import { NotificationContext } from "../reducers/NotificationContext";
 import { UserContext } from "../reducers/UserContext";
 import { useNavigate } from "react-router-dom";
+import { Button, PasswordInput, TextInput, Title } from "@mantine/core";
 
 const LoginForm = (props) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -20,29 +21,25 @@ const LoginForm = (props) => {
       setPassword("");
       navigate("/");
     } else {
-        notification.displayTimedErrorMessage("wrong username or password");
+      notification.displayTimedErrorMessage("wrong username or password");
     }
   };
 
   return (
     <>
-      <h2> log in to application</h2>
+      <Title order={2}> log in to application</Title>
       <form onSubmit={handleLogin}>
-        username
-        <input
-          type="text"
+        <TextInput
+          label="username"
           value={username}
           onChange={({ target }) => setUsername(target.value)}
         />
-        <br />
-        password
-        <input
-          type="password"
+        <PasswordInput
+          label="password"
           value={password}
           onChange={({ target }) => setPassword(target.value)}
         />
-        <br />
-        <button type="submit"> login </button>
+        <Button type="submit"> login </Button>
       </form>
     </>
   );

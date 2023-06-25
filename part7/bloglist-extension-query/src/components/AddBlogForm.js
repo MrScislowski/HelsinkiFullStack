@@ -2,13 +2,15 @@ import { useState, useContext } from "react";
 import DisplayContext from "../reducers/displayContext";
 import { useMutation, useQueryClient } from "react-query";
 import blogService from "../services/blogs";
+import { Button, TextInput, Title } from "@mantine/core";
 
 const useField = (name) => {
   const [fieldValue, setFieldValue] = useState("");
 
   return {
     name,
-    type: "text",
+    // type: "text",
+    label: name,
     value: fieldValue,
     placeholder: name,
     onChange: ({ target }) => setFieldValue(target.value),
@@ -34,9 +36,10 @@ const AddBlogForm = (props) => {
 
   if (!visible)
     return (
-      <button onClick={displayState.showAddForm}>
+      
+      <Button onClick={displayState.showAddForm}>
         add new blog
-      </button>
+      </Button>
     );
 
   const handleCreateNewBlog = async (event) => {
@@ -56,19 +59,17 @@ const AddBlogForm = (props) => {
 
   return (
     <>
-      <h2>create new</h2>
-      <button onClick={displayState.hideAddForm}>
+      <Title order={2} >create new</Title>
+      <Button onClick={displayState.hideAddForm}>
         hide
-      </button>
+      </Button>
       <form onSubmit={handleCreateNewBlog}>
         {formElements.map((el) => (
-          <div key={el.name}>
-            {el.name}: <input {...el} />
-          </div>
+          <TextInput key={el.name} {...el} />
         ))}
-        <button className="add-blog-form-button" type="submit">
+        <Button className="add-blog-form-button" type="submit">
           create
-        </button>
+        </Button>
       </form>
     </>
   );

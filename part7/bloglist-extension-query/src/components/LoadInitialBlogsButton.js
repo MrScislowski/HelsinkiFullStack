@@ -1,6 +1,8 @@
 import blogService from "../services/blogs";
 import { useMutation } from "react-query";
 import { useQueryClient } from "react-query";
+import { Button } from "@mantine/core";
+
 
 const LoadInitialBlogsButton = (props) => {
   const queryClient = useQueryClient();
@@ -15,7 +17,7 @@ const LoadInitialBlogsButton = (props) => {
   )
 
   return (<>
-  <button onClick={() => addInitialBlogs.mutate()}> Add Initial Data </button>
+  <Button onClick={() => addInitialBlogs.mutate()}> Add Initial Data </Button>
   </>)
 }
 

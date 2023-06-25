@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import UserContext from "../reducers/UserContext";
+import { Button, Text } from "@mantine/core"
 
 const LoginStatusDisplay = (props) => {
   const [user, userActions] = useContext(UserContext);
@@ -15,8 +16,8 @@ const LoginStatusDisplay = (props) => {
 
   return (
     <>
-      {user.user.name} logged in
-        <button onClick={clearLoginInfo}> logout </button>
+      <Text>{user.user.name} logged in</Text>
+        <Button onClick={clearLoginInfo}> logout </Button>
     </>
   );
 };

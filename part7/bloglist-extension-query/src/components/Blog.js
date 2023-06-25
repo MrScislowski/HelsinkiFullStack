@@ -4,7 +4,7 @@ import blogService from '../services/blogs'
 import AddCommentForm from "./AddCommentForm";
 import { useMutation, useQueryClient } from "react-query";
 
-import { Paper, Text, Title, Button } from "@mantine/core";
+import { Paper, Text, Title, Button, List } from "@mantine/core";
 
 const Blog = (props) => {
   const {blog} = props;
@@ -64,21 +64,19 @@ const Blog = (props) => {
         >
           like
         </Button>
-        <br />
-        {blog.user ? blog.user.name : ""} <br />
+
+        <Text>{blog.user ? blog.user.name : ""}</Text>
         <Button style={ownedStyle} onClick={removeThis}>
           remove
         </Button>
 
-        <div className="blog-comments">
         <Title order={3}>comments</Title>
         <AddCommentForm blogId={blog.id} />
-        <ul>
+        <List>
         {blog.comments
-        ? blog.comments.map((comment, index) => <li key={index}>{comment}</li>)
+        ? blog.comments.map((comment, index) => <List.Item key={index}>{comment}</List.Item>)
         : null}
-        </ul>
-      </div>
+        </List>
 
     </Paper>
   );

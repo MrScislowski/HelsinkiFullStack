@@ -1,6 +1,7 @@
 import blogService from "../services/blogs";
 import { useMutation } from "react-query";
 import { useQueryClient } from "react-query";
+import { Button } from "@mantine/core";
 
 const ClearDBButton = (props) => {
   const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ const ClearDBButton = (props) => {
   }
 
   return (<>
-  <button onClick={doDeleteAll}> DELETE ALL BLOGS </button>
+  <Button onClick={doDeleteAll}> DELETE ALL BLOGS </Button>
   </>)
 }
 

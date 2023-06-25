@@ -2,13 +2,13 @@ import { useEffect, useContext, useState } from "react";
 import UserContext from "./reducers/UserContext";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
-import LoginStatusDisplay from "./components/LoginStatusDisplay";
 import BlogsDisplay from "./components/BlogsDisplay";
 import UsersDisplay from "./components/UsersDisplay";
 import NavigationMenu from "./components/NavigationMenu";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import userService from "./services/users";
+import { Alert, Loader } from "@mantine/core";
 import { useQuery } from "react-query";
 import { useMatch, Navigate, Routes, Route } from "react-router-dom";
 import IndividualUser from "./components/IndividualUser";
@@ -52,19 +52,19 @@ const App = () => {
     : null;
 
   if (blogQuery.isLoading) {
-    return <div>query loading...</div>;
+    return <Loader variant="dots" />
   }
 
   if (pageLoading) {
-    return <div> loading ... </div>;
+    return <Loader variant="dots" />;
   }
 
   if (usermatch && !blogUser) {
-    return <div>user not found...</div>
+    return <Alert> User not found </Alert>
   }
 
   if (blogmatch && !chosenBlog) {
-    return <div>blog not found...</div>
+    return <Alert> Blog not found </Alert>
   }
 
   return (

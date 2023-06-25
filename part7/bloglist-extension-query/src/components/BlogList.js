@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { List, Title } from "@mantine/core";
 
 const BlogList = (props) => {
   const { blogs } = props;
@@ -16,16 +17,16 @@ const BlogList = (props) => {
 
   return (
     <>
-      <h2>blogs</h2>
-      <ul>
+      <Title order={2} >blogs</Title>
+      <List>
         {sortedBlogs.map((blog) => (
-          <li key={blog.id}>
+          <List.Item key={blog.id}>
             <Link to={`/blogs/${blog.id}`}>
               {blog.title} {blog.author}
             </Link>
-          </li>
+          </List.Item>
         ))}
-      </ul>
+      </List>
     </>
   );
 };
