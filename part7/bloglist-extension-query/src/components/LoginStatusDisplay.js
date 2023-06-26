@@ -17,7 +17,7 @@ const LoginStatusDisplay = (props) => {
   return (
     <>
       <Text>{user.user.name} logged in</Text>
-        <Button onClick={clearLoginInfo}> logout </Button>
+        <Button size="xs" variant="light" uppercase compact onClick={clearLoginInfo}> logout </Button>
     </>
   );
 };

@@ -18,9 +18,9 @@ const BlogList = (props) => {
   return (
     <>
       <Title order={2} >blogs</Title>
-      <List>
+      <List icon={""} withPadding>
         {sortedBlogs.map((blog) => (
-          <List.Item key={blog.id}>
+          <List.Item  key={blog.id}>
             <Link to={`/blogs/${blog.id}`}>
               {blog.title} {blog.author}
             </Link>
