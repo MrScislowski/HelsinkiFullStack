@@ -1,25 +1,3 @@
-Exercises 8.1.-8.7
-Through the exercises, we will implement a GraphQL backend for a small library. Start with this file. Remember to npm init and to install dependencies!
-
-8.1: The number of books and authors
-Implement queries bookCount and authorCount which return the number of books and the number of authors.
-
-The query
-
-query {
-  bookCount
-  authorCount
-}copy
-should return
-
-{
-  "data": {
-    "bookCount": 7,
-    "authorCount": 5
-  }
-}copy
-
-
 8.2: All books
 Implement query allBooks, which returns the details of all books.
 
