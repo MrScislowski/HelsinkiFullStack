@@ -1,18 +1,3 @@
-8.2: All books
-Implement query allBooks, which returns the details of all books.
-
-In the end, the user should be able to do the following query:
-
-query {
-  allBooks { 
-    title 
-    author
-    published 
-    genres
-  }
-}copy
-
-
 8.3: All authors
 Implement query allAuthors, which returns the details of all authors. The response should include a field bookCount containing the number of books the author has written.
 
