@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { Table, Title } from "@mantine/core";
 
 const UsersDisplay = (props) => {
   const {allUsersData} = props;
@@ -6,8 +7,8 @@ const UsersDisplay = (props) => {
 
   return (
     <>
-    <h2>Users</h2>
-    <table>
+    <Title order={2}>Users</Title>
+    <Table>
       <thead>
         <tr>
           <th></th><th># blogs</th>
@@ -19,7 +20,7 @@ const UsersDisplay = (props) => {
         <td>{user.blogs.length}</td>
         </tr>))}
       </tbody>
-    </table>
+    </Table>
     </>
   )
 }

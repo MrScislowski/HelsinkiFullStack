@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+import NotificationContext from "../reducers/NotificationContext";
 import blogService from "../services/blogs";
 import { useQueryClient, useMutation } from "react-query";
 import { TextInput, Button } from "@mantine/core";
@@ -6,6 +7,7 @@ import { TextInput, Button } from "@mantine/core";
 const AddCommentForm = (props) => {
   const [newComment, setNewComment] = useState("");
   const { blogId } = props;
+  const notification = useContext(NotificationContext)
 
   const queryClient = useQueryClient();
   const newCommentMutation = useMutation(
@@ -25,6 +27,7 @@ const AddCommentForm = (props) => {
     event.preventDefault();
     newCommentMutation.mutate({blogId: blogId, comment: newComment});
     setNewComment("");
+    notification.displayTimedInfoMessage("comment added");
   };
 
   return (

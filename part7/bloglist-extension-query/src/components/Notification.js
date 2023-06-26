@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import NotificationContext from "../reducers/NotificationContext";
+import { Notification as MantineNotification } from "@mantine/core";
 
 
 const Notification = () => {
@@ -12,7 +13,7 @@ const Notification = () => {
 
   return (
     <>
-      <p className={notification.notification.type}>{notification.notification.message}</p>
+      <MantineNotification color={notification.notification.type === 'error' ? "red" : "teal"}>{notification.notification.message}</MantineNotification>
     </>
   );
 };
