@@ -1,32 +1,4 @@
 
-8.4: Books of an author
-Modify the allBooks query so that a user can give an optional parameter author. The response should include only books written by that author.
-
-For example query
-
-query {
-  allBooks(author: "Robert Martin") {
-    title
-  }
-}copy
-should return
-
-{
-  "data": {
-    "allBooks": [
-      {
-        "title": "Clean Code"
-      },
-      {
-        "title": "Agile software development"
-      }
-    ]
-  }
-}copy
-
-
-
-
 8.5: Books by genre
 Modify the query allBooks so that a user can give an optional parameter genre. The response should include only books of that genre.
 
