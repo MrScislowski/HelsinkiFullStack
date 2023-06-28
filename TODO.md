@@ -1,9 +1,5 @@
 https://fullstackopen.com/en/part8/react_and_graph_ql#exercises-8-8-8-12
 
-[ ]8.9: Books view
-Implement a Books view to show on a page all other details of all books except their genres.
-
-browser showing 7 books with the button
 [ ]8.10: Adding a book
 Implement a possibility to add new books to your application. The functionality can look like this:
 
