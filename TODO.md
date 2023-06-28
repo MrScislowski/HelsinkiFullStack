@@ -1,9 +1,5 @@
 https://fullstackopen.com/en/part8/react_and_graph_ql#exercises-8-8-8-12
 
-[ ]8.8: Authors view
-Implement an Authors view to show the details of all authors on a page as follows:
-
-browser showing 5 authors with the buttons
 [ ]8.9: Books view
 Implement a Books view to show on a page all other details of all books except their genres.
 
