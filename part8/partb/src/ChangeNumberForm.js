@@ -13,36 +13,36 @@ const useField = (name) => {
   };
 };
 
-const ChangeNumberForm = ({setErrorMessage}) => {
+const ChangeNumberForm = ({ setErrorMessage }) => {
   const fields = [useField("name"), useField("phone")];
 
   const [editNumber, result] = useMutation(EDIT_NUMBER, {
     refetchQueries: [{ query: ALL_PERSONS }],
     onError: (error) => {
-        const messages = error.graphQLErrors[0].message;
-        // setErrorMessage(messages);
-        // setTimeout(() => setErrorMessage(null), 5000);
-      },
+      const messages = error.graphQLErrors[0].message;
+      // setErrorMessage(messages);
+      // setTimeout(() => setErrorMessage(null), 5000);
+    },
   });
 
   const handleNumberChange = (event) => {
     event.preventDefault();
 
     const variablesStructure = fields.reduce((acc, field) => {
-        acc[field.name] = field.value
-        return acc
-    }, {})
+      acc[field.name] = field.value;
+      return acc;
+    }, {});
 
-    editNumber({variables: variablesStructure})
+    editNumber({ variables: variablesStructure });
 
-    fields.forEach(field => field.onChange({target:{value:""}}));
+    fields.forEach((field) => field.onChange({ target: { value: "" } }));
   };
 
   useEffect(() => {
     if (result.data && result.data.editNumber === null) {
-      setErrorMessage('Person not found')
+      setErrorMessage("Person not found");
     }
-  }, [result.data])
+  }, [result.data]);
 
   return (
     <>
