@@ -1,0 +1,1 @@
+[ ] reconcile use of Prettier (can I have it auto indent as I work...?) and eslint

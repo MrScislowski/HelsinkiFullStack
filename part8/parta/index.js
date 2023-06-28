@@ -123,5 +123,4 @@ startStandaloneServer(server, {
   listen: { port: 4000 },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
-  console.log(`Also, here's a uuid: ${uuid()}`);
 });
