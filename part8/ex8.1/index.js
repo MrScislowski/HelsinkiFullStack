@@ -169,9 +169,6 @@ const resolvers = {
       return args;
     },
     editAuthor: (root, args) => {
-      console.log(`about to search for stuff with:`)
-      console.dir(args)
-      console.dir(authors)
       const oldAuthor = authors.find((author) => author.name === args.name);
       if (!oldAuthor) {
         return null;

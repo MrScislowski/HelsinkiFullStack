@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { EDIT_AUTHOR, ALL_AUTHORS, ALL_BOOKS } from "../queries";
 
 const EditAuthor = (props) => {
-  const [author, setAuthor] = useState("");
+  const [author, setAuthor] = useState("select");
   const [year, setYear] = useState("");
+  const [authors, setAuthors] = useState([]);
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
@@ -14,12 +15,29 @@ const EditAuthor = (props) => {
     },
   });
 
+  const authorsResponse = useQuery(ALL_AUTHORS, {
+    skip: authors.length > 0,
+    onCompleted: (data) => {
+      setAuthors(data.allAuthors.map((au) => au.name));
+      setAuthor(authors[0]);
+    },
+  });
+
   if (!props.show) {
     return null;
   }
 
+  if (authorsResponse.loading) {
+    return <div>loading...</div>;
+  }
+
+  if (authorsResponse.error) {
+    return <div> error </div>;
+  }
+
   const submit = (event) => {
     event.preventDefault();
+    console.log("about to run edit author");
     editAuthor({ variables: { name: author, bornYear: Number(year) } });
     setAuthor("");
     setYear("");
@@ -28,12 +46,13 @@ const EditAuthor = (props) => {
   return (
     <>
       <form onSubmit={submit}>
-        <input
-          type="text"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
-          placeholder="author"
-        />
+        <select value={author} onChange={(e) => setAuthor(e.target.value)}>
+          {authors.map((a) => (
+            <option key={a} value={a}>
+              {a}
+            </option>
+          ))}
+        </select>
         <input
           type="text"
           value={year}
