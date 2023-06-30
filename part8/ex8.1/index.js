@@ -129,24 +129,17 @@ type Book {
 // TODO: use mongoose/mongoDB to do all of the resolvers
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      let filteredBooks = books;
-
-      if (args.author) {
-        filteredBooks = filteredBooks.filter(
-          (book) => book.author === args.author
-        );
-      }
-
-      if (args.genre) {
-        filteredBooks = filteredBooks.filter((book) =>
-          book.genres.includes(args.genre)
-        );
-      }
-
-      return filteredBooks;
+    bookCount: async () => {
+      const allBooks = await Book.find({});
+      return allBooks.length;
+    },
+    authorCount: async () => {
+      const allAuthors = await Author.find({});
+      return allAuthors.length;
+    },
+    allBooks: async (root, args) => {
+      const allBooks = await Book.find({});
+      return allBooks;
     },
     allAuthors: () => {
       return authors.map((author) => {
