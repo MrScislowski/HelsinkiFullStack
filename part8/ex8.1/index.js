@@ -79,19 +79,6 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      // books = [...books, args];
-
-      // if (!authors.find((author) => author.name === args.author)) {
-      //   authors = [
-      //     ...authors,
-      //     {
-      //       name: args.author,
-      //       id: uuid(),
-      //     },
-      //   ];
-      // }
-      // return args;
-
       let foundAuthor = await Author.findOne({ name: args.name });
       if (!foundAuthor) {
         foundAuthor = new Author({ name: args.author });
@@ -99,21 +86,14 @@ const resolvers = {
       }
 
       const newBook = new Book({ ...args, author: foundAuthor });
-
       return newBook.save();
     },
-    editAuthor: (root, args) => {
-      const oldAuthor = authors.find((author) => author.name === args.name);
-      if (!oldAuthor) {
-        return null;
-      }
-      const newAuthor = { ...oldAuthor, born: args.setBornTo };
-
-      authors = authors.map((author) =>
-        author.name === args.name ? newAuthor : author
+    editAuthor: async (root, args) => {
+      return Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true }
       );
-
-      return newAuthor;
     },
   },
 };
