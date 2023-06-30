@@ -58,7 +58,16 @@ const resolvers = {
       return Author.collection.countDocuments();
     },
     allBooks: async (root, args) => {
-      return Book.find({}).populate("author");
+      let query = {};
+      if (args.author) {
+        const bookAuthor = await Author.findOne({ name: args.author });
+        if (bookAuthor) {
+          query = { ...query, author: bookAuthor._id };
+        } else {
+          return [];
+        }
+      }
+      return Book.find(query).populate("author");
     },
     allAuthors: async () => {
       const allBooks = await Book.find({}).populate("author").lean();

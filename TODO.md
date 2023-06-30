@@ -1,18 +1,10 @@
 https://fullstackopen.com/en/part8/database_and_user_administration#exercises-8-13-8-16
 
-8.13: Database, part 1
-
-    Change the library application so that it saves the data to a database.
-
-    The following things do not have to work just yet:
-
-    allBooks query with parameters
-    bookCount field of an author object
-    author field of a book
-    editAuthor mutation
-    Note: despite the fact that author is now an object within a book, the schema for adding a book can remain same, only the name of the author is given as a parameter
-
 8.14: Database, part 2
+
+implement remaining queries:
+
+    - allbooks with parameters
 
     Complete the program so that all queries (to get allBooks working with the parameter author and bookCount field of an author object is not required) and mutations work.
 
