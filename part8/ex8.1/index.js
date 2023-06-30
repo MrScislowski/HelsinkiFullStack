@@ -23,7 +23,7 @@ const typeDefs = `
 type Author {
 name: String!
 id: String!
-bookCount: Int!
+bookCount: Int
 born: Int
 }
 
@@ -78,19 +78,29 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: (root, args) => {
-      books = [...books, args];
+    addBook: async (root, args) => {
+      // books = [...books, args];
 
-      if (!authors.find((author) => author.name === args.author)) {
-        authors = [
-          ...authors,
-          {
-            name: args.author,
-            id: uuid(),
-          },
-        ];
+      // if (!authors.find((author) => author.name === args.author)) {
+      //   authors = [
+      //     ...authors,
+      //     {
+      //       name: args.author,
+      //       id: uuid(),
+      //     },
+      //   ];
+      // }
+      // return args;
+
+      let foundAuthor = await Author.findOne({ name: args.name });
+      if (!foundAuthor) {
+        foundAuthor = new Author({ name: args.author });
+        foundAuthor = await foundAuthor.save();
       }
-      return args;
+
+      const newBook = new Book({ ...args, author: foundAuthor });
+
+      return newBook.save();
     },
     editAuthor: (root, args) => {
       const oldAuthor = authors.find((author) => author.name === args.name);
