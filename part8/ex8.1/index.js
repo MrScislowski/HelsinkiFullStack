@@ -1,4 +1,5 @@
 const { ApolloServer } = require("@apollo/server");
+const { GraphQLError } = require("graphql");
 const { startStandaloneServer } = require("@apollo/server/standalone");
 const { v1: uuid } = require("uuid");
 const config = require("./config");
@@ -93,14 +94,39 @@ const resolvers = {
   },
   Mutation: {
     addBook: async (root, args) => {
-      let foundAuthor = await Author.findOne({ name: args.name });
+      let foundAuthor = await Author.findOne({ name: args.author });
       if (!foundAuthor) {
         foundAuthor = new Author({ name: args.author });
-        foundAuthor = await foundAuthor.save();
+        try {
+          // TODO: graphQL error
+          foundAuthor = await foundAuthor.save();
+        } catch (error) {
+          throw new GraphQLError(
+            "Failed to create the author of your proposed book",
+            {
+              extensions: {
+                code: "BAD_USER_INPUT",
+                invalidArgs: args.name,
+                errorMessage: error.message,
+              },
+            }
+          );
+        }
       }
 
       const newBook = new Book({ ...args, author: foundAuthor });
-      return newBook.save();
+      // TODO: graphQL error making newbook
+
+      // TODO: graphQL error saving newBook
+      return newBook.save().catch((error) => {
+        throw new GraphQLError("Creating the new book failed", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name,
+            errorMessage: error.message,
+          },
+        });
+      });
     },
     editAuthor: async (root, args) => {
       return Author.findOneAndUpdate(
