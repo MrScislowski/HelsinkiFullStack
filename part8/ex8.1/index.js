@@ -67,6 +67,11 @@ const resolvers = {
           return [];
         }
       }
+
+      if (args.genre) {
+        query = { ...query, genres: args.genre };
+      }
+
       return Book.find(query).populate("author");
     },
     allAuthors: async () => {
