@@ -111,7 +111,15 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       let foundAuthor = await Author.findOne({ name: args.author });
       if (!foundAuthor) {
         foundAuthor = new Author({ name: args.author });
@@ -144,7 +152,15 @@ const resolvers = {
         });
       });
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("not authenticated", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
       return Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
@@ -175,8 +191,8 @@ const resolvers = {
           },
         });
       }
-      const { username, favoriteGenre } = proposedUser;
-      const token = jwt.sign({ username, favoriteGenre }, config.SECRET);
+      const { _id: id, username, favoriteGenre } = proposedUser;
+      const token = jwt.sign({ id, username, favoriteGenre }, config.SECRET);
       return { value: token };
     },
   },
@@ -189,6 +205,33 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.startsWith("bearer ")) {
+      const decodedToken = jwt.verify(auth.substring(7), config.SECRET);
+      const currentUser = await User.findById(decodedToken.id);
+      return { currentUser };
+    }
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
+
+// startStandaloneServer(server, {
+//   listen: { port: 4000 },
+//   context: async ({ req, res }) => {
+//     const auth = req ? req.headers.authorization : null;
+//     if (auth && auth.startsWith("Bearer ")) {
+//       const decodedToken = jwt.verify(
+//         auth.substring(7),
+//         process.env.JWT_SECRET
+//       );
+//       const currentUser = await User.findById(decodedToken.id).populate(
+//         "friends"
+//       );
+//       return { currentUser };
+//     }
+//   },
+// }).then(({ url }) => {
+//   console.log(`Server ready at ${url}`);
+// });
