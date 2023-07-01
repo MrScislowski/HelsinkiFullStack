@@ -18,4 +18,5 @@ switch (process.env.NODE_ENV) {
 module.exports = {
   PORT,
   DB_URL,
+  SECRET: process.env.SECRET,
 };

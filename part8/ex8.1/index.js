@@ -1,7 +1,8 @@
 const { ApolloServer } = require("@apollo/server");
 const { GraphQLError } = require("graphql");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { v1: uuid } = require("uuid");
+// const { v1: uuid } = require("uuid");
+const jwt = require("jsonwebtoken");
 const config = require("./config");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
@@ -161,6 +162,22 @@ const resolvers = {
       console.log("save result is: ");
       console.dir(saveResult);
       return saveResult;
+    },
+    login: async (root, args) => {
+      const proposedUser = await User.findOne({
+        username: args.username,
+      });
+      if (!proposedUser || args.password !== "password1") {
+        throw new GraphQLError("wrong credentials", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            errorMessage: "remember, password has to be password1",
+          },
+        });
+      }
+      const { username, favoriteGenre } = proposedUser;
+      const token = jwt.sign({ username, favoriteGenre }, config.SECRET);
+      return { value: token };
     },
   },
 };
