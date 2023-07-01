@@ -8,6 +8,7 @@ mongoose.set("strictQuery", false);
 
 const Author = require("./models/author");
 const Book = require("./models/book");
+const User = require("./models/user");
 
 const MONGODB_URI = config.DB_URL;
 console.log(`connecting to ${MONGODB_URI}`);
@@ -36,20 +37,33 @@ type Book {
     genres: [String!]!
 }
 
+type User {
+  username: String!
+  favoriteGenre: String
+  id: ID!
+}
+
+type Token {
+  value: String!
+}
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
+    getAllUsers: [User!]!
   }
 
   type Mutation {
     addBook(title: String!, author: String!, published: Int!, genres: [String!]!): Book!
     editAuthor(name: String!, setBornTo: Int!): Author
+    createUser(username: String!, favoriteGenre: String!): User
+    login(username: String!, password: String!): Token
   }
 `;
 
-// TODO: use mongoose/mongoDB to do all of the resolvers
 const resolvers = {
   Query: {
     bookCount: async () => {
@@ -91,6 +105,9 @@ const resolvers = {
       });
       return modifiedAuthors;
     },
+    getAllUsers: async () => {
+      return User.find({});
+    },
   },
   Mutation: {
     addBook: async (root, args) => {
@@ -115,9 +132,7 @@ const resolvers = {
       }
 
       const newBook = new Book({ ...args, author: foundAuthor });
-      // TODO: graphQL error making newbook
 
-      // TODO: graphQL error saving newBook
       return newBook.save().catch((error) => {
         throw new GraphQLError("Creating the new book failed", {
           extensions: {
@@ -134,6 +149,18 @@ const resolvers = {
         { born: args.setBornTo },
         { new: true }
       );
+    },
+    createUser: async (root, args) => {
+      const newUser = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre,
+      });
+      console.log(`newUser is: `);
+      console.dir(newUser);
+      const saveResult = await newUser.save();
+      console.log("save result is: ");
+      console.dir(saveResult);
+      return saveResult;
     },
   },
 };
