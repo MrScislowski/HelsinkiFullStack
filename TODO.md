@@ -1,8 +1,5 @@
 https://fullstackopen.com/en/part8/login_and_updating_the_cache#exercises-8-17-8-22
 
-8.17 Listing books
-After the backend changes, the list of books does not work anymore. Fix it.
-
 8.18 Log in
 Adding new books and changing the birth year of an author do not work because they require a user to be logged in.
 
