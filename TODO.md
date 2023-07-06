@@ -1,21 +1,5 @@
 https://fullstackopen.com/en/part8/login_and_updating_the_cache#exercises-8-17-8-22
 
-8.18 Log in
-Adding new books and changing the birth year of an author do not work because they require a user to be logged in.
-
-Implement login functionality and fix the mutations.
-
-It is not necessary yet to handle validation errors.
-
-You can decide how the login looks on the user interface. One possible solution is to make the login form into a separate view which can be accessed through a navigation menu:
-
-browser books showing login button highlighted
-The login form:
-
-browser showing login form
-When a user is logged in, the navigation changes to show the functionalities which can only be done by a logged-in user:
-
-browser showing addbook and logout buttons
 8.19 Books by genre, part 1
 Complete your application to filter the book list by genre. Your solution might look something like this:
 

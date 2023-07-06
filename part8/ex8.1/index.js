@@ -161,6 +161,8 @@ const resolvers = {
         });
       }
 
+      console.log(`Looking for authors using ${JSON.stringify(args)}`);
+
       return Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
@@ -207,7 +209,7 @@ startStandaloneServer(server, {
   listen: { port: 4000 },
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null;
-    if (auth && auth.startsWith("bearer ")) {
+    if (auth && auth.startsWith("Bearer ")) {
       const decodedToken = jwt.verify(auth.substring(7), config.SECRET);
       const currentUser = await User.findById(decodedToken.id);
       return { currentUser };
