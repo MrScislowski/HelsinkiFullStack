@@ -22,7 +22,6 @@ const Books = (props) => {
   }
 
   const allGenresSet = books.reduce((genreSet, curBook) => {
-    console.dir(curBook);
     curBook.genres.forEach((genre) => genreSet.add(genre));
     return genreSet;
   }, new Set());
@@ -31,7 +30,11 @@ const Books = (props) => {
   return (
     <div>
       <h2>books</h2>
-
+      {chosenGenre ? (
+        <p>
+          in genre <strong>{chosenGenre}</strong>
+        </p>
+      ) : null}
       <table>
         <tbody>
           <tr>

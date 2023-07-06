@@ -37,7 +37,6 @@ const EditAuthor = (props) => {
 
   const submit = (event) => {
     event.preventDefault();
-    console.log("about to run edit author");
     editAuthor({ variables: { name: author, bornYear: Number(year) } });
     setAuthor("");
     setYear("");

@@ -161,8 +161,6 @@ const resolvers = {
         });
       }
 
-      console.log(`Looking for authors using ${JSON.stringify(args)}`);
-
       return Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
@@ -174,11 +172,7 @@ const resolvers = {
         username: args.username,
         favoriteGenre: args.favoriteGenre,
       });
-      console.log(`newUser is: `);
-      console.dir(newUser);
       const saveResult = await newUser.save();
-      console.log("save result is: ");
-      console.dir(saveResult);
       return saveResult;
     },
     login: async (root, args) => {
