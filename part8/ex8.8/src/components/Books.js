@@ -1,8 +1,11 @@
 import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
+import { useState } from "react";
 
 const Books = (props) => {
   const response = useQuery(ALL_BOOKS);
+
+  const [chosenGenre, setChosenGenre] = useState(null);
 
   if (!props.show) {
     return null;
@@ -12,7 +15,18 @@ const Books = (props) => {
     return <div>loading...</div>;
   }
 
-  const books = response.data.allBooks;
+  const allBooks = response.data.allBooks;
+  let books = allBooks;
+  if (chosenGenre) {
+    books = allBooks.filter((book) => book.genres.includes(chosenGenre));
+  }
+
+  const allGenresSet = books.reduce((genreSet, curBook) => {
+    console.dir(curBook);
+    curBook.genres.forEach((genre) => genreSet.add(genre));
+    return genreSet;
+  }, new Set());
+  const allGenres = Array.from(allGenresSet);
 
   return (
     <div>
@@ -34,6 +48,14 @@ const Books = (props) => {
           ))}
         </tbody>
       </table>
+      {allGenres.map((genre) => (
+        <button key={`${genre}button`} onClick={() => setChosenGenre(genre)}>
+          {genre}
+        </button>
+      ))}
+      <button key={`allgenrebuttonconst`} onClick={() => setChosenGenre(null)}>
+        all genres
+      </button>
     </div>
   );
 };

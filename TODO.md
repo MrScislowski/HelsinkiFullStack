@@ -1,11 +1,5 @@
 https://fullstackopen.com/en/part8/login_and_updating_the_cache#exercises-8-17-8-22
 
-8.19 Books by genre, part 1
-Complete your application to filter the book list by genre. Your solution might look something like this:
-
-browser showing books buttons down at the bottom
-In this exercise, the filtering can be done using just React.
-
 8.20 Books by genre, part 2
 Implement a view which shows all the books based on the logged-in user's favourite genre.
 
