@@ -27,6 +27,7 @@ const doPopulateDb = async () => {
     born: 1986,
   });
   const author2 = await Author.create({ name: "Blaise Pascal", born: 1610 });
+  const author3 = await Author.create({ name: "Roddy Doyle", born: 1958 });
 
   const book1 = await Book.create({
     title: "broma",
@@ -47,6 +48,13 @@ const doPopulateDb = async () => {
     author: author2,
     genres: ["religion", "philosophy"],
     published: 1660,
+  });
+
+  const book4 = await Book.create({
+    title: "The Commitments",
+    author: author3,
+    genres: ["rock", "comedy"],
+    published: 1989,
   });
 
   return true;

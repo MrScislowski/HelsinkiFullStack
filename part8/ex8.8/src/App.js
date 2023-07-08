@@ -4,7 +4,9 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import EditAuthor from "./components/EditAuthor";
 import LoginForm from "./components/LoginForm";
+import Recommendations from "./components/Recommendations";
 import { useApolloClient } from "@apollo/client";
+import jwtDecode from "jwt-decode";
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -16,6 +18,15 @@ const App = () => {
     window.localStorage.clear();
     client.resetStore();
   };
+
+  let favoriteGenre = null;
+  if (token) {
+    try {
+      favoriteGenre = jwtDecode(token).favoriteGenre;
+    } catch (error) {
+      console.log(`error parsing genre from token. Error: ${error}`);
+    }
+  }
 
   return (
     <div>
@@ -33,6 +44,11 @@ const App = () => {
             edit author details
           </button>
         ) : null}
+        {token ? (
+          <button onClick={() => setPage("recommendations")}>
+            recommendations
+          </button>
+        ) : null}
         {token ? <button onClick={() => logout()}>logout</button> : null}
       </div>
 
@@ -43,6 +59,11 @@ const App = () => {
       <NewBook show={page === "add"} />
 
       <EditAuthor show={page === "editAuthor"} />
+
+      <Recommendations
+        show={page === "recommendations"}
+        favoriteGenre={favoriteGenre}
+      />
 
       <LoginForm show={page === "login"} setToken={setToken} />
     </div>

@@ -1,9 +1,5 @@
 https://fullstackopen.com/en/part8/login_and_updating_the_cache#exercises-8-17-8-22
 
-8.20 Books by genre, part 2
-Implement a view which shows all the books based on the logged-in user's favourite genre.
-
-browser showing two books via patterns
 8.21 books by genre with GraphQL
 In the previous two exercises, the filtering could have been done using just React. To complete this exercise, you should redo the filtering the books based on a selected genre (that was done in exercise 8.19) using a GraphQL query to the server. If you already did so then you do not have to do anything.
 
