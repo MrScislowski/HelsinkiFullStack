@@ -1,28 +1,35 @@
 import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries";
+import { ALL_BOOKS, BOOKS_BY_GENRE } from "../queries";
 import BookTable from "./BookTable";
 import { useState } from "react";
 
 const Books = (props) => {
-  const response = useQuery(ALL_BOOKS);
-
   const [chosenGenre, setChosenGenre] = useState(null);
+
+  const allBooksResponse = useQuery(ALL_BOOKS, {
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
+
+  const filteredBookResponse = useQuery(
+    chosenGenre ? BOOKS_BY_GENRE : ALL_BOOKS,
+    {
+      variables: chosenGenre ? { genre: chosenGenre } : null,
+    }
+  );
 
   if (!props.show) {
     return null;
   }
 
-  if (response.loading) {
+  if (filteredBookResponse.loading || allBooksResponse.loading) {
     return <div>loading...</div>;
   }
 
-  const allBooks = response.data.allBooks;
-  let books = allBooks;
-  if (chosenGenre) {
-    books = allBooks.filter((book) => book.genres.includes(chosenGenre));
-  }
+  const allBooks = allBooksResponse.data.allBooks;
+  const books = filteredBookResponse.data.allBooks;
 
-  const allGenresSet = books.reduce((genreSet, curBook) => {
+  const allGenresSet = allBooks.reduce((genreSet, curBook) => {
     curBook.genres.forEach((genre) => genreSet.add(genre));
     return genreSet;
   }, new Set());

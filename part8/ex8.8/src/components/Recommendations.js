@@ -1,7 +1,6 @@
 import { useQuery } from "@apollo/client";
 import { BOOKS_BY_GENRE } from "../queries";
 import BookTable from "./BookTable";
-import { useEffect, useState } from "react";
 
 const Recommendations = ({ show, favoriteGenre }) => {
   const response = useQuery(BOOKS_BY_GENRE, {
