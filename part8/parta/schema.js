@@ -1,10 +1,4 @@
 const typeDefs = `
-
-  enum YesNo {
-    YES
-    NO
-  }
-
   type User {
     username: String!
     friends: [Person!]!
@@ -27,6 +21,11 @@ const typeDefs = `
     id: ID!
   }
 
+  enum YesNo {
+    YES
+    NO
+  }
+
   type Query {
     personCount: Int!
     allPersons(phone: YesNo): [Person!]!
@@ -40,26 +39,15 @@ const typeDefs = `
       phone: String
       street: String!
       city: String!
-    ): Person,
-    editNumber(
-      name: String!
-      phone: String!
     ): Person
-    createUser(
-      username: String!
-    ): User
-    login(
-      username: String!
-      password: String!
-    ): Token
-    addAsFriend(
-      name: String!
-    ): User
+    editNumber(name: String!, phone: String!): Person
+    createUser(username: String!): User
+    login(username: String!, password: String!): Token
+    addAsFriend(name: String!): User
   }
 
   type Subscription {
     personAdded: Person!
   }
 `;
-
 module.exports = typeDefs;

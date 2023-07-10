@@ -1,33 +1,31 @@
+const { GraphQLError } = require("graphql");
+const jwt = require("jsonwebtoken");
 const { PubSub } = require("graphql-subscriptions");
 const pubsub = new PubSub();
 
 const Person = require("./models/person");
 const User = require("./models/user");
-const jwt = require("jsonwebtoken");
-
-const { GraphQLError } = require("graphql");
 
 const resolvers = {
   Query: {
     personCount: async () => Person.collection.countDocuments(),
-    allPersons: async (root, args) => {
+    allPersons: async (root, args, context) => {
       if (!args.phone) {
         return Person.find({});
       }
 
       return Person.find({ phone: { $exists: args.phone === "YES" } });
     },
-
     findPerson: async (root, args) => Person.findOne({ name: args.name }),
     me: (root, args, context) => {
       return context.currentUser;
     },
   },
   Person: {
-    address: (root) => {
+    address: ({ street, city }) => {
       return {
-        street: root.street,
-        city: root.city,
+        street,
+        city,
       };
     },
   },
@@ -49,7 +47,7 @@ const resolvers = {
         currentUser.friends = currentUser.friends.concat(person);
         await currentUser.save();
       } catch (error) {
-        throw new GraphQLError("Saving person failed", {
+        throw new GraphQLError("Saving user failed", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: args.name,
@@ -59,6 +57,7 @@ const resolvers = {
       }
 
       pubsub.publish("PERSON_ADDED", { personAdded: person });
+
       return person;
     },
     editNumber: async (root, args) => {
@@ -76,8 +75,9 @@ const resolvers = {
           },
         });
       }
-    },
 
+      return person;
+    },
     createUser: async (root, args) => {
       const user = new User({ username: args.username });
 
@@ -96,9 +96,7 @@ const resolvers = {
 
       if (!user || args.password !== "secret") {
         throw new GraphQLError("wrong credentials", {
-          extensions: {
-            code: "BAD_USER_INPUT",
-          },
+          extensions: { code: "BAD_USER_INPUT" },
         });
       }
 
@@ -110,8 +108,8 @@ const resolvers = {
       return { value: jwt.sign(userForToken, process.env.JWT_SECRET) };
     },
     addAsFriend: async (root, args, { currentUser }) => {
-      const isFriend = (person) =>
-        currentUser.friends
+      const nonFriendAlready = (person) =>
+        !currentUser.friends
           .map((f) => f._id.toString())
           .includes(person._id.toString());
 
@@ -122,11 +120,12 @@ const resolvers = {
       }
 
       const person = await Person.findOne({ name: args.name });
-      if (!isFriend(person)) {
+      if (nonFriendAlready(person)) {
         currentUser.friends = currentUser.friends.concat(person);
       }
 
       await currentUser.save();
+
       return currentUser;
     },
   },
