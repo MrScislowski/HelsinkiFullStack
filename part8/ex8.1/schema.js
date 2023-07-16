@@ -1,28 +1,28 @@
 const typeDefs = `
-type Author {
-name: String!
-id: String!
-bookCount: Int
-born: Int
-}
+  type Author {
+    name: String!
+    id: String!
+    bookCount: Int
+    born: Int
+  }
 
-type Book {
+  type Book {
     title: String!
     published: String!
     author: Author!
     id: String!
     genres: [String!]!
-}
+  }
 
-type User {
-  username: String!
-  favoriteGenre: String
-  id: ID!
-}
+  type User {
+    username: String!
+    favoriteGenre: String
+    id: ID!
+  }
 
-type Token {
-  value: String!
-}
+  type Token {
+    value: String!
+  }
 
   type Query {
     bookCount: Int!
