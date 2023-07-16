@@ -1,7 +1,3 @@
-const http = require("http");
-const express = require("express");
-const cors = require("cors");
-
 const { ApolloServer } = require("@apollo/server");
 const {
   ApolloServerPluginDrainHttpServer,
@@ -9,18 +5,29 @@ const {
 const { expressMiddleware } = require("@apollo/server/express4");
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 
-const jwt = require("jsonwebtoken");
-const config = require("./config");
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-
 const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 
+const http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+mongoose.set("strictQuery", false);
+
 const User = require("./models/user");
 
+const typeDefs = require("./schema");
+const resolvers = require("./resolvers");
+
+const config = require("./config");
+
 const MONGODB_URI = config.DB_URL;
-console.log(`connecting to ${MONGODB_URI}`);
+
+console.log("connecting to", MONGODB_URI);
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
@@ -30,9 +37,7 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
-const typeDefs = require("./schema");
-const resolvers = require("./resolvers");
-
+// setup is now within a function
 const start = async () => {
   const app = express();
   const httpServer = http.createServer(app);
