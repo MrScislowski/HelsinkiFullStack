@@ -42,9 +42,11 @@ const resolvers = {
 
         return {
           ...author,
+          id: author._id,
           bookCount: bookCount,
         };
       });
+
       return modifiedAuthors;
     },
     getAllUsers: async () => {
