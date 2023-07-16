@@ -1,5 +1,7 @@
 https://fullstackopen.com/en/part8/fragments_and_subscriptions#exercises-8-23-8-26
 
+[ ] why does ex8.1 subscriptions not work, while parta subscriptions do work?
+
 8.23: Subscriptions - server
 Do a backend implementation for subscription bookAdded, which returns the details of all new books to its subscribers.
 

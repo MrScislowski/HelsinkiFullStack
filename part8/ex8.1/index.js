@@ -10,7 +10,6 @@ const { useServer } = require("graphql-ws/lib/use/ws");
 
 const http = require("http");
 const express = require("express");
-const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const jwt = require("jsonwebtoken");
