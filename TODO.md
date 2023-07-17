@@ -1,7 +1,5 @@
 https://fullstackopen.com/en/part8/fragments_and_subscriptions#exercises-8-23-8-26
 
-[ ] why does ex8.1 subscriptions not work, while parta subscriptions do work? -> OMG, it works in chrome... maybe the new apollo server just isn't compatible with safari in some way...? exhausting.
-
 8.24: Subscriptions - client, part 1
 Start using subscriptions in the client, and subscribe to bookAdded. When new books are added, notify the user. Any method works. For example, you can use the window.alert function.
 
