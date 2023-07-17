@@ -5,14 +5,9 @@ import NewBook from "./components/NewBook";
 import EditAuthor from "./components/EditAuthor";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
-import {
-  useApolloClient,
-  useQuery,
-  useMutation,
-  useSubscription,
-} from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import jwtDecode from "jwt-decode";
-import { BOOK_ADDED } from "./queries";
+import { ALL_BOOKS, BOOK_ADDED } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
@@ -21,9 +16,27 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
+      console.log(JSON.stringify(data.data));
       const title = data.data.bookAdded.title;
       const author = data.data.bookAdded.author.name;
       window.alert(`${title} by ${author} added`);
+      const addedBook = data.data.bookAdded;
+
+      // {"bookAdded":{"title":"bahhjahh","author":{"name":"bahhjahh","__typename":"Author"},"published":"2342","genres":["df","wdf"],"__typename":"Book"}}
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        if (
+          allBooks.find(
+            (book) =>
+              book.author.name === addedBook.author.name &&
+              book.title === addedBook.title
+          )
+        ) {
+          return { allBooks: allBooks };
+        } else {
+          return { allBooks: allBooks.concat(addedBook) };
+        }
+      });
     },
   });
 
