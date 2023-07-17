@@ -21,4 +21,22 @@ const calculateBMI = (heightInCm: number, weightInKg: number): BMICategory => {
   else throw new Error(`unknown bmi ${bmi}`);
 };
 
-console.log(calculateBMI(180, 74));
+try {
+  const height = Number(process.argv[2]);
+  if (isNaN(height) || height == 0) {
+    throw new Error("height must be a nonzero number");
+  }
+
+  const weight = Number(process.argv[3]);
+  if (isNaN(weight)) {
+    throw new Error("weight must be a number");
+  }
+
+  console.log(calculateBMI(height, weight));
+} catch (error: unknown) {
+  let errorMessage = "An error occurred. ";
+  if (error instanceof Error) {
+    errorMessage += "Details: " + error.message;
+  }
+  console.log(errorMessage);
+}
