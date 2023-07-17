@@ -1,28 +1,5 @@
 https://fullstackopen.com/en/part9/first_steps_with_type_script#exercises-9-1-9-3
 
-setup
-Exercises 9.1-9.7. will all be made in the same node project. Create the project in an empty directory with npm init and install the ts-node and typescript packages. Also, create the file tsconfig.json in the directory with the following content:
-
-{
-"compilerOptions": {
-"noImplicitAny": true,
-}
-}copy
-The compiler option noImplicitAny makes it mandatory to have types for all variables used. This option is currently a default, but it lets us define it explicitly.
-
-9.1 Body mass index
-Create the code of this exercise in the file bmiCalculator.ts.
-
-Write a function calculateBmi that calculates a BMI based on a given height (in centimeters) and weight (in kilograms) and then returns a message that suits the results.
-
-Call the function in the same file with hard-coded parameters and print out the result. The code
-
-console.log(calculateBmi(180, 74))copy
-should print the following message:
-
-Normal (healthy weight)copy
-Create an npm script for running the program with the command npm run calculateBmi.
-
 9.2 Exercise calculator
 Create the code of this exercise in file exerciseCalculator.ts.
 
