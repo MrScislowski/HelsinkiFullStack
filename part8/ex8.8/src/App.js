@@ -16,7 +16,6 @@ const App = () => {
 
   useSubscription(BOOK_ADDED, {
     onData: ({ data }) => {
-      console.log(JSON.stringify(data.data));
       const title = data.data.bookAdded.title;
       const author = data.data.bookAdded.author.name;
       window.alert(`${title} by ${author} added`);
