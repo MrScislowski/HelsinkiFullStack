@@ -8,7 +8,10 @@ type BMICategory =
   | "Obese (Class II)"
   | "Obese (Class III)";
 
-const calculateBMI = (heightInCm: number, weightInKg: number): BMICategory => {
+export const calculateBMI = (
+  heightInCm: number,
+  weightInKg: number
+): BMICategory => {
   const bmi = weightInKg / (heightInCm / 100) ** 2;
   if (bmi < 16.0) return "Underweight (Severe thinness)";
   else if (bmi <= 16.9) return "Underweight (Moderate thinness)";
@@ -21,22 +24,22 @@ const calculateBMI = (heightInCm: number, weightInKg: number): BMICategory => {
   else throw new Error(`unknown bmi ${bmi}`);
 };
 
-try {
-  const height = Number(process.argv[2]);
-  if (isNaN(height) || height == 0) {
-    throw new Error("height must be a nonzero number");
-  }
+// try {
+//   const height = Number(process.argv[2]);
+//   if (isNaN(height) || height == 0) {
+//     throw new Error("height must be a nonzero number");
+//   }
 
-  const weight = Number(process.argv[3]);
-  if (isNaN(weight)) {
-    throw new Error("weight must be a number");
-  }
+//   const weight = Number(process.argv[3]);
+//   if (isNaN(weight)) {
+//     throw new Error("weight must be a number");
+//   }
 
-  console.log(calculateBMI(height, weight));
-} catch (error: unknown) {
-  let errorMessage = "An error occurred. ";
-  if (error instanceof Error) {
-    errorMessage += "Details: " + error.message;
-  }
-  console.log(errorMessage);
-}
+//   console.log(calculateBMI(height, weight));
+// } catch (error: unknown) {
+//   let errorMessage = "An error occurred. ";
+//   if (error instanceof Error) {
+//     errorMessage += "Details: " + error.message;
+//   }
+//   console.log(errorMessage);
+// }
