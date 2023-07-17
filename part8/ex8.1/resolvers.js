@@ -38,14 +38,14 @@ const resolvers = {
       const allAuthors = await Author.find({}).lean();
 
       const modifiedAuthors = allAuthors.map((author) => {
-        const bookCount = allBooks.reduce((count, book) => {
-          return book.author.name === author.name ? count + 1 : count;
-        }, 0);
+        // const bookCount = allBooks.reduce((count, book) => {
+        //   return book.author.name === author.name ? count + 1 : count;
+        // }, 0);
 
         return {
           ...author,
           id: author._id,
-          bookCount: bookCount,
+          // bookCount: bookCount,
         };
       });
 
@@ -67,7 +67,7 @@ const resolvers = {
 
       let foundAuthor = await Author.findOne({ name: args.author });
       if (!foundAuthor) {
-        foundAuthor = new Author({ name: args.author });
+        foundAuthor = new Author({ name: args.author, bookCount: 0 });
         try {
           // TODO: graphQL error
           foundAuthor = await foundAuthor.save();
@@ -96,6 +96,22 @@ const resolvers = {
           },
         });
       });
+
+      foundAuthor
+        .updateOne({
+          $inc: {
+            bookCount: 1,
+          },
+        })
+        .catch((error) => {
+          throw new GraphQLError("Incrementing book count failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.name,
+              errorMessage: error.message,
+            },
+          });
+        });
 
       pubsub.publish("BOOK_ADDED", { bookAdded: newBook });
 

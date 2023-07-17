@@ -25,9 +25,18 @@ const doPopulateDb = async () => {
   const author1 = await Author.create({
     name: "Daniel Scislowski",
     born: 1986,
+    bookCount: 2,
   });
-  const author2 = await Author.create({ name: "Blaise Pascal", born: 1610 });
-  const author3 = await Author.create({ name: "Roddy Doyle", born: 1958 });
+  const author2 = await Author.create({
+    name: "Blaise Pascal",
+    born: 1610,
+    bookCount: 1,
+  });
+  const author3 = await Author.create({
+    name: "Roddy Doyle",
+    born: 1958,
+    bookCount: 1,
+  });
 
   const book1 = await Book.create({
     title: "broma",
