@@ -5,13 +5,27 @@ import NewBook from "./components/NewBook";
 import EditAuthor from "./components/EditAuthor";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
-import { useApolloClient } from "@apollo/client";
+import {
+  useApolloClient,
+  useQuery,
+  useMutation,
+  useSubscription,
+} from "@apollo/client";
 import jwtDecode from "jwt-decode";
+import { BOOK_ADDED } from "./queries";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
   const client = useApolloClient();
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const title = data.data.bookAdded.title;
+      const author = data.data.bookAdded.author.name;
+      window.alert(`${title} by ${author} added`);
+    },
+  });
 
   const logout = () => {
     setToken(null);
