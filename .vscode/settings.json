@@ -1,5 +1,9 @@
 {
     "[javascript]": {
         "editor.defaultFormatter": "esbenp.prettier-vscode"
-    }
+    },
+    "eslint.workingDirectories": [
+        "./part9/partb",
+        "./part9/ex9.1"
+    ]
 }

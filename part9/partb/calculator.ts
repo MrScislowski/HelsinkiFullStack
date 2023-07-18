@@ -1,11 +1,12 @@
-type Operation = "multiply" | "add" | "divide";
+export type Operation = "multiply" | "add" | "divide";
 
-const calculator = (a: number, b: number, op: Operation): number => {
+export const calculator = (a: number, b: number, op: Operation): number => {
   switch (op) {
     case "add":
       return a + b;
     case "divide":
       if (b == 0) throw new Error("can't divide by zero");
+      return a / b;
     case "multiply":
       return a * b;
     default:
