@@ -23,23 +23,3 @@ export const calculateBMI = (
   else if (bmi >= 40.0) return "Obese (Class III)";
   else throw new Error(`unknown bmi ${bmi}`);
 };
-
-// try {
-//   const height = Number(process.argv[2]);
-//   if (isNaN(height) || height == 0) {
-//     throw new Error("height must be a nonzero number");
-//   }
-
-//   const weight = Number(process.argv[3]);
-//   if (isNaN(weight)) {
-//     throw new Error("weight must be a number");
-//   }
-
-//   console.log(calculateBMI(height, weight));
-// } catch (error: unknown) {
-//   let errorMessage = "An error occurred. ";
-//   if (error instanceof Error) {
-//     errorMessage += "Details: " + error.message;
-//   }
-//   console.log(errorMessage);
-// }

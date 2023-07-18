@@ -3,13 +3,6 @@ import { calculateBMI } from "./bmiCalculator";
 
 const app = express();
 
-// interface BMIQuery {
-//   weight: number;
-//   height: number;
-// }
-
-// type BMIRequest = express.Request<{}, any, any, BMIQuery>;
-
 app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack!");
 });

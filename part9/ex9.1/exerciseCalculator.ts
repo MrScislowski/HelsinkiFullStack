@@ -45,7 +45,7 @@ try {
     throw new Error("target must be a number");
   const target: number = Number(process.argv[2]);
 
-  for (let hourVal of process.argv.slice(3)) {
+  for (const hourVal of process.argv.slice(3)) {
     if (isNaN(Number(hourVal))) throw new Error("daily hours must be numbers");
   }
 
