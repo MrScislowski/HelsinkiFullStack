@@ -8,7 +8,7 @@ interface ExerciseAnalysis {
   average: number;
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   dailyHours: number[],
   target: number
 ): ExerciseAnalysis => {
@@ -38,24 +38,24 @@ const calculateExercises = (
   };
 };
 
-try {
-  //   const hourArray: number[] = process.argv.slice(2, -1);
-  //   const target: number = process.argv.slice(-1)[0];
-  if (isNaN(Number(process.argv[2])))
-    throw new Error("target must be a number");
-  const target: number = Number(process.argv[2]);
+// try {
+//   //   const hourArray: number[] = process.argv.slice(2, -1);
+//   //   const target: number = process.argv.slice(-1)[0];
+//   if (isNaN(Number(process.argv[2])))
+//     throw new Error("target must be a number");
+//   const target: number = Number(process.argv[2]);
 
-  for (const hourVal of process.argv.slice(3)) {
-    if (isNaN(Number(hourVal))) throw new Error("daily hours must be numbers");
-  }
+//   for (const hourVal of process.argv.slice(3)) {
+//     if (isNaN(Number(hourVal))) throw new Error("daily hours must be numbers");
+//   }
 
-  const hourArray: number[] = process.argv.slice(3).map((el) => Number(el));
+//   const hourArray: number[] = process.argv.slice(3).map((el) => Number(el));
 
-  console.log(calculateExercises(hourArray, target));
-} catch (error: unknown) {
-  let errorMessage = "An error occurred. ";
-  if (error instanceof Error) {
-    errorMessage += "Details: " + error.message;
-  }
-  console.log(errorMessage);
-}
+//   console.log(calculateExercises(hourArray, target));
+// } catch (error: unknown) {
+//   let errorMessage = "An error occurred. ";
+//   if (error instanceof Error) {
+//     errorMessage += "Details: " + error.message;
+//   }
+//   console.log(errorMessage);
+// }
