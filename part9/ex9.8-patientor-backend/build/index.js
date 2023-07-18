@@ -6,8 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-const PORT = 3000;
-app.get("/ping", (_req, res) => {
+const PORT = 3001;
+// Access-Control-Allow-Origin: http://localhost:3000
+const allowCrossDomain = (_req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    next();
+};
+app.use(allowCrossDomain);
+app.get("/api/ping", (_req, res) => {
     console.log("someone pinged here");
     res.send("pong");
 });
