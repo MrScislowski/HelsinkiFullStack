@@ -4,6 +4,7 @@
     },
     "eslint.workingDirectories": [
         "./part9/partb",
-        "./part9/ex9.1"
+        "./part9/ex9.1",
+        "./part9/partc"
     ]
 }
