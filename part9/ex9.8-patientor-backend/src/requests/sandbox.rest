@@ -6,3 +6,12 @@ GET http://localhost:3001/api/patients
 
 ###
 POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "danny boy",
+  "dateOfBirth": "1986-02-10",
+  "gender": "male",
+  "occupation": "teacher",
+  "ssn": "3331234123"
+}
