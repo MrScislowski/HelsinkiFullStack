@@ -1,30 +1,16 @@
 import Header from "./Header";
-import CoursePart from "./CoursePart";
-import { CoursePartDetails } from "./types";
+import Content from "./Content";
+import { courseParts } from "./types";
+import Summary from "./Summary";
 
 const App = () => {
   const courseName = "Half Stack application development";
-  const courseParts: CoursePartDetails[] = [
-    {
-      name: "Fundamentals",
-      exerciseCount: 10,
-    },
-    {
-      name: "Using props to pass data",
-      exerciseCount: 7,
-    },
-    {
-      name: "Deeper type usage",
-      exerciseCount: 14,
-    },
-  ];
 
   return (
     <div>
       <Header title={courseName} />
-      {courseParts.map((cp) => (
-        <CoursePart key={cp.name} details={cp} />
-      ))}
+      <Content parts={courseParts} />
+      <Summary courseInfo={courseParts} />
     </div>
   );
 };

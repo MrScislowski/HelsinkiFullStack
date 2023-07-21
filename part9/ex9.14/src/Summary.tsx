@@ -1,7 +1,7 @@
-import { CoursePartDetails } from "./types";
+import { CoursePart } from "./types";
 
 interface SummaryProps {
-  courseInfo: CoursePartDetails[];
+  courseInfo: CoursePart[];
 }
 
 const Summary = (props: SummaryProps) => {
