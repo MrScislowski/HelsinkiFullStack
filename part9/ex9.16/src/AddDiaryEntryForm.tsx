@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { FlightDetailsSafe } from "./types";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 interface AddDiaryEntryFormProps {
   addEntry: (e: FlightDetailsSafe) => void;
+  setNotification: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const useTextField = () => {
@@ -40,7 +41,15 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
           } as React.ChangeEvent<HTMLInputElement>);
         });
       })
-      .catch((e) => console.dir(e));
+      .catch((err: Error | AxiosError) => {
+        let errorMessage = "";
+        if (axios.isAxiosError(err)) {
+          errorMessage += err.response ? err.response.data : "";
+        } else {
+          errorMessage += err.message;
+        }
+        props.setNotification(errorMessage);
+      });
   };
 
   return (
