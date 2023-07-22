@@ -6,6 +6,9 @@
         "./part9/partb",
         "./part9/ex9.1",
         "./part9/partc",
-        "./part9/ex9.8-patientor-backend"
+        "./part9/ex9.8-patientor-backend",
+        "./part9/flight-diary",
+        "./part9/ex9.14",
+        "./part9/ex9.16"
     ]
 }

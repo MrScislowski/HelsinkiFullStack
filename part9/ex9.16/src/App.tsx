@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { FlightDetailsSafe } from "./types";
+import DiaryEntriesList from "./DiaryEntriesList";
 import axios from "axios";
+import AddDiaryEntryForm from "./AddDiaryEntryForm";
 
 const App = () => {
   const [entries, setEntries] = useState<FlightDetailsSafe[]>([]);
@@ -15,18 +17,19 @@ const App = () => {
         console.log("error occurred. See error details below: ");
         console.dir(e);
       });
-  }, [entries]);
+  }, []);
+
+  const addEntry = (entry: FlightDetailsSafe) => {
+    setEntries([...entries, entry]);
+  };
 
   return (
-    <ul>
-      {entries.map((entry) => {
-        return (
-          <li key={entry.id}>
-            {entry.date}: {entry.weather} weather {entry.visibility} visibility
-          </li>
-        );
-      })}
-    </ul>
+    <>
+      <h2>Add Diary Entry</h2>
+      <AddDiaryEntryForm addEntry={addEntry} />
+      <h2>Diary Entries</h2>
+      <DiaryEntriesList entries={entries} />
+    </>
   );
 };
 

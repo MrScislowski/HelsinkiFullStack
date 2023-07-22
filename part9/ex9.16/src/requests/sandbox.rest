@@ -1,1 +1,15 @@
 GET http://localhost:3000/api/diaries
+
+###
+GET http://localhost:3000/ping
+
+###
+POST http://localhost:3000/api/diaries
+Content-Type: application/json
+
+{
+  "date": "2020-01-31",
+  "weather": "rainy",
+  "visibility": "good",
+  "comment": "added from sandbox"
+}
