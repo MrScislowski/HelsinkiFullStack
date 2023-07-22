@@ -2,44 +2,60 @@ import { useState } from "react";
 import { FlightDetailsSafe } from "./types";
 import axios, { AxiosError } from "axios";
 
+interface RadioGroupProps {
+  name: string;
+  value: string;
+  setValue: React.Dispatch<React.SetStateAction<string>>;
+  options: string[];
+}
+
+const RadioGroup = (props: RadioGroupProps) => {
+  return (
+    <fieldset>
+      <legend> {props.name} </legend>
+      {props.options.map((opt) => {
+        return (
+          <label key={opt}>
+            {opt}
+            <input
+              type="radio"
+              value={opt}
+              checked={props.value === opt}
+              onChange={(e) => props.setValue(e.target.value)}
+            />
+          </label>
+        );
+      })}
+    </fieldset>
+  );
+};
+
 interface AddDiaryEntryFormProps {
   addEntry: (e: FlightDetailsSafe) => void;
   setNotification: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const useTextField = () => {
-  const [value, setValue] = useState("");
-
-  return {
-    type: "text",
-    value: value,
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
-      setValue(event.target.value),
-  };
-};
-
 const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
-  const date = useTextField();
-  const visibility = useTextField();
-  const weather = useTextField();
-  const comment = useTextField();
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [visibility, setVisibility] = useState("");
+  const [weather, setWeather] = useState("");
+  const [comment, setComment] = useState("");
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     axios
       .post<FlightDetailsSafe>("http://localhost:3000/api/diaries", {
-        date: date.value,
-        visibility: visibility.value,
-        weather: weather.value,
-        comment: comment.value,
+        date,
+        visibility,
+        weather,
+        comment,
       })
       .then((res) => {
         props.addEntry(res.data);
-        [date, visibility, weather, comment].forEach((field) => {
-          field.onChange({
-            target: { value: "" },
-          } as React.ChangeEvent<HTMLInputElement>);
-        });
+        setDate(new Date().toISOString().split("T")[0]);
+        setVisibility("");
+        setWeather("");
+        setComment("");
       })
       .catch((err: Error | AxiosError) => {
         let errorMessage = "";
@@ -56,19 +72,33 @@ const AddDiaryEntryForm = (props: AddDiaryEntryFormProps) => {
     <>
       <form>
         <label>
-          date: <input {...date} />
+          date:
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
         </label>
         <br />
+        <RadioGroup
+          name="visibility"
+          value={visibility}
+          setValue={setVisibility}
+          options={["great", "good", "ok", "poor"]}
+        />
+        <RadioGroup
+          name="weather"
+          value={weather}
+          setValue={setWeather}
+          options={["sunny", "rainy", "cloudy", "stormy", "windy"]}
+        />
         <label>
-          visibility: <input {...visibility} />
-        </label>
-        <br />
-        <label>
-          weather: <input {...weather} />
-        </label>
-        <br />
-        <label>
-          comment: <input {...comment} />
+          comment
+          <input
+            type="text"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
         </label>
         <br />
         <button type="submit" onClick={(e) => handleSubmit(e)}>
