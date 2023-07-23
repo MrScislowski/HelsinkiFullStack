@@ -19,15 +19,13 @@ const getPatientsNonSensitive = (): PatientNonSensitiveInfo[] => {
   });
 };
 
-const getPatientById = (id: string): PatientNonSensitiveInfo | undefined => {
+const getPatientById = (id: string): Patient | undefined => {
   const patientInfo = patients.find((p) => p.id === id);
   if (!patientInfo) {
     return patientInfo;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { ssn, ...nonSensitiveInfo } = patientInfo;
-  return nonSensitiveInfo;
+  return patientInfo;
 };
 
 const addPatient = (info: PatientSansRegistration): Patient => {
