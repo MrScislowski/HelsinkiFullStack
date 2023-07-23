@@ -3,7 +3,7 @@ import {
   PatientNonSensitiveInfo,
   PatientSansRegistration,
 } from "../types";
-import patients from "../../data/patients";
+import patients from "../../data/patients-full";
 // import { v1 as uuid } from "uuid";
 import uuid = require("uuid");
 
