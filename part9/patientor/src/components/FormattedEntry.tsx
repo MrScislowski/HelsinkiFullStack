@@ -6,6 +6,18 @@ import {
   OccupationalHealthcareEntry,
 } from "../types";
 
+// import Card from "@mui/material/Card";
+// import CardActions from "@mui/material/CardActions";
+// import CardContent from "@mui/material/CardContent";
+// import Button from "@mui/material/Button";
+// import Typography from "@mui/material/Typography";
+import OccupationalIcon from "@mui/icons-material/Factory";
+import HospitalIcon from "@mui/icons-material/LocalHospital";
+import HealthCheckIcon from "@mui/icons-material/Check";
+import HeartIcon from "@mui/icons-material/Favorite";
+import { SvgIconTypeMap } from "@mui/material";
+import { stat } from "fs";
+
 const assertNever = (value: never): never => {
   throw new Error(
     `Unhandled discriminated union member: ${JSON.stringify(value)}`
@@ -41,89 +53,49 @@ const DiagnosesList = (props: DiagnosesListProps) => {
 };
 
 const FormattedEntry = (props: Props) => {
+  const diagnosesList = (
+    <DiagnosesList
+      key={props.entry.id}
+      allDiagnoses={props.allDiagnoses}
+      codes={props.entry.diagnosisCodes}
+    />
+  );
+
+  const description = <p>{props.entry.description}</p>;
+
+  const footer = <p>diagnosed by {props.entry.specialist}</p>;
+
+  let visitTypeIcon: JSX.Element;
+  let healthStatusIcon: JSX.Element | null = null;
   switch (props.entry.type) {
     case "Hospital":
-      return (
-        <FormattedHospitalEntry
-          allDiagnoses={props.allDiagnoses}
-          entry={props.entry}
-        ></FormattedHospitalEntry>
-      );
+      visitTypeIcon = <HospitalIcon color="warning" />;
+      break;
     case "HealthCheck":
-      return (
-        <FormattedHealthCheckEntry
-          allDiagnoses={props.allDiagnoses}
-          entry={props.entry}
-        ></FormattedHealthCheckEntry>
-      );
+      visitTypeIcon = <HealthCheckIcon color="success" />;
+
+      const statusColors = ["green", "yellow", "red", "maroon"];
+      const heartColor = statusColors[props.entry.healthCheckRating];
+      healthStatusIcon = <HeartIcon style={{ color: heartColor }} />;
+
+      break;
     case "OccupationalHealthcare":
-      return (
-        <FormattedOccupationalHealthcareEntry
-          allDiagnoses={props.allDiagnoses}
-          entry={props.entry}
-        ></FormattedOccupationalHealthcareEntry>
+      visitTypeIcon = (
+        <>
+          <OccupationalIcon color="info" /> {props.entry.employerName};
+        </>
       );
+      break;
     default:
       return assertNever(props.entry);
   }
-};
-
-interface HospitalEntryProps {
-  entry: HospitalEntry;
-  allDiagnoses: Diagnosis[];
-}
-const FormattedHospitalEntry = (props: HospitalEntryProps) => {
-  const entry = props.entry;
 
   return (
-    <>
-      {entry.date}: <em>{entry.description}</em>
-      <DiagnosesList
-        key={entry.id}
-        allDiagnoses={props.allDiagnoses}
-        codes={entry.diagnosisCodes}
-      />
-    </>
-  );
-};
-
-interface HealthCheckEntryProps {
-  entry: HealthCheckEntry;
-  allDiagnoses: Diagnosis[];
-}
-const FormattedHealthCheckEntry = (props: HealthCheckEntryProps) => {
-  const entry = props.entry;
-
-  return (
-    <>
-      {entry.date}: <em>{entry.description}</em>
-      <DiagnosesList
-        key={entry.id}
-        allDiagnoses={props.allDiagnoses}
-        codes={entry.diagnosisCodes}
-      />
-    </>
-  );
-};
-
-interface OccupationalHealthcareEntryProps {
-  entry: OccupationalHealthcareEntry;
-  allDiagnoses: Diagnosis[];
-}
-
-const FormattedOccupationalHealthcareEntry = (
-  props: OccupationalHealthcareEntryProps
-) => {
-  const entry = props.entry;
-
-  return (
-    <div>
-      {entry.date}: <em>{entry.description}</em>
-      <DiagnosesList
-        key={entry.id}
-        allDiagnoses={props.allDiagnoses}
-        codes={entry.diagnosisCodes}
-      />
+    <div style={{ borderStyle: "solid" }}>
+      {props.entry.date} {visitTypeIcon} {healthStatusIcon}
+      {description}
+      {diagnosesList}
+      {footer}
     </div>
   );
 };
