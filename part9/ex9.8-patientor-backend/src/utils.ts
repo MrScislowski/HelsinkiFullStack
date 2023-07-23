@@ -62,6 +62,7 @@ export const toPatientSansRegistration = (
       ssn: parseString(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseString(object.occupation),
+      entries: [],
     };
   } else {
     throw new Error("missing fields");
