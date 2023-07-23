@@ -1,4 +1,5 @@
 import {
+  Diagnosis,
   Entry,
   HealthCheckEntry,
   HospitalEntry,
@@ -13,23 +14,52 @@ const assertNever = (value: never): never => {
 
 interface Props {
   entry: Entry;
+  allDiagnoses: Diagnosis[];
 }
+
+interface DiagnosesListProps {
+  codes: string[] | undefined;
+  allDiagnoses: Diagnosis[];
+}
+
+const DiagnosesList = (props: DiagnosesListProps) => {
+  if (!props.codes || props.codes.length === 0) {
+    return null;
+  }
+
+  return (
+    <ul>
+      {props.codes.map((code) => {
+        return (
+          <li key={code}>
+            {code}: {props.allDiagnoses.find((el) => el.code === code)?.name}
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 
 const FormattedEntry = (props: Props) => {
   switch (props.entry.type) {
     case "Hospital":
       return (
-        <FormattedHospitalEntry entry={props.entry}></FormattedHospitalEntry>
+        <FormattedHospitalEntry
+          allDiagnoses={props.allDiagnoses}
+          entry={props.entry}
+        ></FormattedHospitalEntry>
       );
     case "HealthCheck":
       return (
         <FormattedHealthCheckEntry
+          allDiagnoses={props.allDiagnoses}
           entry={props.entry}
         ></FormattedHealthCheckEntry>
       );
     case "OccupationalHealthcare":
       return (
         <FormattedOccupationalHealthcareEntry
+          allDiagnoses={props.allDiagnoses}
           entry={props.entry}
         ></FormattedOccupationalHealthcareEntry>
       );
@@ -40,6 +70,7 @@ const FormattedEntry = (props: Props) => {
 
 interface HospitalEntryProps {
   entry: HospitalEntry;
+  allDiagnoses: Diagnosis[];
 }
 const FormattedHospitalEntry = (props: HospitalEntryProps) => {
   const entry = props.entry;
@@ -47,19 +78,18 @@ const FormattedHospitalEntry = (props: HospitalEntryProps) => {
   return (
     <>
       {entry.date}: <em>{entry.description}</em>
-      {!entry.diagnosisCodes ? null : (
-        <ul>
-          {entry.diagnosisCodes.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-      )}
+      <DiagnosesList
+        key={entry.id}
+        allDiagnoses={props.allDiagnoses}
+        codes={entry.diagnosisCodes}
+      />
     </>
   );
 };
 
 interface HealthCheckEntryProps {
   entry: HealthCheckEntry;
+  allDiagnoses: Diagnosis[];
 }
 const FormattedHealthCheckEntry = (props: HealthCheckEntryProps) => {
   const entry = props.entry;
@@ -67,19 +97,18 @@ const FormattedHealthCheckEntry = (props: HealthCheckEntryProps) => {
   return (
     <>
       {entry.date}: <em>{entry.description}</em>
-      {!entry.diagnosisCodes ? null : (
-        <ul>
-          {entry.diagnosisCodes.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-      )}
+      <DiagnosesList
+        key={entry.id}
+        allDiagnoses={props.allDiagnoses}
+        codes={entry.diagnosisCodes}
+      />
     </>
   );
 };
 
 interface OccupationalHealthcareEntryProps {
   entry: OccupationalHealthcareEntry;
+  allDiagnoses: Diagnosis[];
 }
 
 const FormattedOccupationalHealthcareEntry = (
@@ -90,13 +119,11 @@ const FormattedOccupationalHealthcareEntry = (
   return (
     <div>
       {entry.date}: <em>{entry.description}</em>
-      {!entry.diagnosisCodes ? null : (
-        <ul>
-          {entry.diagnosisCodes.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-      )}
+      <DiagnosesList
+        key={entry.id}
+        allDiagnoses={props.allDiagnoses}
+        codes={entry.diagnosisCodes}
+      />
     </div>
   );
 };
