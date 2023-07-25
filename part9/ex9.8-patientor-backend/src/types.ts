@@ -1,3 +1,8 @@
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown
+  ? Omit<T, K>
+  : never;
+
 export enum Gender {
   Male = "male",
   Female = "female",
@@ -11,17 +16,16 @@ export enum HealthCheckRating {
   "CriticalRisk" = 3,
 }
 
-interface BaseEntry {
+export interface BaseEntry {
   id: string;
   date: string;
   description: string;
   specialist: string;
-  type: string;
+  type: EntryType;
   diagnosisCodes?: Array<Diagnosis["code"]>;
 }
 
 export interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
   discharge: {
     date: string;
     criteria: string;
@@ -29,7 +33,6 @@ export interface HospitalEntry extends BaseEntry {
 }
 
 export interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
   employerName: string;
   sickLeave?: {
     startDate: string;
@@ -38,8 +41,13 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
 }
 
 export interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
   healthCheckRating: HealthCheckRating;
+}
+
+export enum EntryType {
+  HospitalEntry = "Hospital",
+  OccupationalHealthCare = "OccupationalHealthcare",
+  HealthCheck = "HealthCheck",
 }
 
 export type Entry =
@@ -57,6 +65,7 @@ export interface Patient {
   entries: Entry[];
 }
 
+export type EntrySansRegistration = UnionOmit<Entry, "id">;
 export type PatientSansRegistration = Omit<Patient, "id">;
 
 export type PatientNonSensitiveInfo = Omit<Patient, "ssn" | "entries">;

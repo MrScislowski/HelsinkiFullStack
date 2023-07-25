@@ -1,7 +1,7 @@
 import express from "express";
 import patientService from "../services/patientService";
-import { toPatientSansRegistration } from "../utils";
-import { PatientSansRegistration } from "../types";
+import { toEntry, toPatientSansRegistration } from "../utils";
+import { EntrySansRegistration, PatientSansRegistration } from "../types";
 
 const router = express.Router();
 
@@ -28,6 +28,19 @@ router.post("/", (req, res) => {
     );
     const newPatientObject = patientService.addPatient(newPatientInfo);
     res.json(newPatientObject);
+  } catch (error: unknown) {
+    let errorMessage = "error adding post";
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
+    res.status(400).send(errorMessage);
+  }
+});
+
+router.post("/:id/entries", (req, res) => {
+  try {
+    const newEntry: EntrySansRegistration = toEntry(req.body);
+    res.json(newEntry);
   } catch (error: unknown) {
     let errorMessage = "error adding post";
     if (error instanceof Error) {
