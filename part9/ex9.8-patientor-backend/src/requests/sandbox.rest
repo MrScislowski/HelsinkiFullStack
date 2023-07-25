@@ -20,7 +20,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://localhost:3001/api/patients/exampleid/entries
+POST http://localhost:3001/api/patients/d2773c6e-f723-11e9-8f0b-362b9e155667/entries
 Content-Type: application/json
 
 {
@@ -31,4 +31,17 @@ Content-Type: application/json
   "employerName": "provo",
   "diagnosisCodes": ["2", "HC3"],
   "healthCheckRating": 3
+}
+
+###
+POST http://localhost:3001/api/patients/d2773c6e-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+  "date": "2027-01-03", 
+  "description": "bloat",
+  "specialist": "auld manny rickets",
+  "type": "Hospital",
+  "diagnosisCodes": ["3", "HC4"],
+  "discharge": {"date": "2027-02-01", "criteria": "has resolved"}
 }

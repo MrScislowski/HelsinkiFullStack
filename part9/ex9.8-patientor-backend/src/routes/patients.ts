@@ -39,14 +39,24 @@ router.post("/", (req, res) => {
 
 router.post("/:id/entries", (req, res) => {
   try {
-    const newEntry: EntrySansRegistration = toEntry(req.body);
-    res.json(newEntry);
+    const foundPatient = patientService.getPatientById(req.params.id);
+    if (!foundPatient) {
+      return res
+        .status(404)
+        .json({ error: `patient with id ${req.params.id} not found` });
+    }
+    const proposedEntry: EntrySansRegistration = toEntry(req.body);
+    const newEntry = patientService.addEntryToPatient(
+      foundPatient,
+      proposedEntry
+    );
+    return res.json(newEntry);
   } catch (error: unknown) {
     let errorMessage = "error adding post";
     if (error instanceof Error) {
       errorMessage += error.message;
     }
-    res.status(400).send(errorMessage);
+    return res.status(400).send(errorMessage);
   }
 });
 
