@@ -1,6 +1,7 @@
 import { Diagnosis, Patient } from "../types";
 import { Male, Female } from "@mui/icons-material";
 import FormattedEntry from "./FormattedEntry";
+import AddEntryForm from "./AddEntryModal/AddEntryForm";
 
 interface Props {
   patient: Patient | null | undefined;
@@ -21,6 +22,8 @@ const SinglePatient = (props: Props) => {
 
       <p>occupation: {props.patient.occupation}</p>
       <p>ssn: {props.patient.ssn}</p>
+
+      <AddEntryForm />
 
       <h4>Entries</h4>
       {props.patient.entries.map((entry) => {
