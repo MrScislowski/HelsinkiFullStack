@@ -92,6 +92,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
       </Table>
       <AddPatientModal
         modalOpen={modalOpen}
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onSubmit={submitNewPatient}
         error={error}
         onClose={closeModal}

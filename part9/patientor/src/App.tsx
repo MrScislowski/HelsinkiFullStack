@@ -29,7 +29,7 @@ const App = () => {
   }, []);
 
   const match = useMatch("/patients/:id");
-  let selectedId = match ? match.params.id : null;
+  const selectedId = match ? match.params.id : null;
 
   useEffect(() => {
     const getSinglePatient = async (id: string) => {
@@ -45,10 +45,16 @@ const App = () => {
     if (!selectedId) {
       setSelectedPatient(null);
     } else {
-      getSinglePatient(selectedId);
-      getDiagnosisCodes();
+      getSinglePatient(selectedId)
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .then(() => {})
+        .catch((err) => console.error(err));
+      getDiagnosisCodes()
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .then(() => {})
+        .catch((err) => console.error(err));
     }
-  }, [selectedId]);
+  }, [selectedId, patients]);
 
   return (
     <div className="App">
@@ -67,6 +73,8 @@ const App = () => {
               <SinglePatient
                 patient={selectedPatient}
                 allDiagnoses={diagnoses}
+                patients={patients}
+                setPatients={setPatients}
               />
             }
           />

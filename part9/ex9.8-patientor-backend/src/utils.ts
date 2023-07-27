@@ -146,20 +146,18 @@ const parseEntryType = (obj: unknown): EntryType => {
 };
 
 const isHealthCheckRating = (obj: unknown): obj is HealthCheckRating => {
-  if (!obj || typeof obj !== "number") {
+  if (typeof obj !== "number") {
     return false;
   }
-
-  Object.values(HealthCheckRating);
 
   return Object.keys(HealthCheckRating)
     .map((x) => parseInt(x))
     .filter((x) => !isNaN(x))
-    .includes(obj);
+    .includes(Number(obj));
 };
 
 const parseHealthCheckRating = (obj: unknown): HealthCheckRating => {
-  if (!obj || !isHealthCheckRating(obj)) {
+  if (!isHealthCheckRating(obj)) {
     throw new Error(
       `Health check rating can have these values: ${Object.keys(
         HealthCheckRating

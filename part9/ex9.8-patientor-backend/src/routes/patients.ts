@@ -29,7 +29,7 @@ router.post("/", (req, res) => {
     const newPatientObject = patientService.addPatient(newPatientInfo);
     res.json(newPatientObject);
   } catch (error: unknown) {
-    let errorMessage = "error adding post";
+    let errorMessage = "Error adding post!\n";
     if (error instanceof Error) {
       errorMessage += error.message;
     }
@@ -52,7 +52,7 @@ router.post("/:id/entries", (req, res) => {
     );
     return res.json(newEntry);
   } catch (error: unknown) {
-    let errorMessage = "error adding post";
+    let errorMessage = "Error adding post!\n";
     if (error instanceof Error) {
       errorMessage += error.message;
     }

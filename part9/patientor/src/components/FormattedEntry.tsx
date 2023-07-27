@@ -1,10 +1,4 @@
-import {
-  Diagnosis,
-  Entry,
-  HealthCheckEntry,
-  HospitalEntry,
-  OccupationalHealthcareEntry,
-} from "../types";
+import { Diagnosis, Entry } from "../types";
 
 // import Card from "@mui/material/Card";
 // import CardActions from "@mui/material/CardActions";
@@ -15,8 +9,6 @@ import OccupationalIcon from "@mui/icons-material/Factory";
 import HospitalIcon from "@mui/icons-material/LocalHospital";
 import HealthCheckIcon from "@mui/icons-material/Check";
 import HeartIcon from "@mui/icons-material/Favorite";
-import { SvgIconTypeMap } from "@mui/material";
-import { stat } from "fs";
 
 const assertNever = (value: never): never => {
   throw new Error(

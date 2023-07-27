@@ -6,6 +6,8 @@ import AddEntryForm from "./AddEntryModal/AddEntryForm";
 interface Props {
   patient: Patient | null | undefined;
   allDiagnoses: Diagnosis[];
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
 }
 
 const SinglePatient = (props: Props) => {
@@ -23,7 +25,11 @@ const SinglePatient = (props: Props) => {
       <p>occupation: {props.patient.occupation}</p>
       <p>ssn: {props.patient.ssn}</p>
 
-      <AddEntryForm />
+      <AddEntryForm
+        patients={props.patients}
+        setPatients={props.setPatients}
+        patientId={props.patient.id}
+      />
 
       <h4>Entries</h4>
       {props.patient.entries.map((entry) => {
