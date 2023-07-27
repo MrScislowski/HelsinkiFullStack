@@ -1,5 +1,7 @@
 import { useState } from "react";
 import patientService from "../../services/patients";
+import { Entry, EntryType, UnionOmit } from "../../types";
+import { assertNever } from "../../utils";
 
 import Button from "@mui/material/Button";
 import TextField, { StandardTextFieldProps } from "@mui/material/TextField";
@@ -8,8 +10,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { HealthCheckEntry, Patient } from "../../types";
+import { Patient } from "../../types";
 import { AxiosError } from "axios";
+import { MenuItem, Select } from "@mui/material";
 
 const textFieldProperties: StandardTextFieldProps = {
   autoFocus: true,
@@ -45,29 +48,111 @@ const AddEntryForm = (props: AddEntryFormProps) => {
   const [open, setOpen] = useState(false);
   const [notification, setNotification] = useState("");
 
+  const [entryType, setEntryType] = useState<EntryType>(EntryType.HealthCheck);
+
   const dateField = useTextField("date", "text");
   const descriptionField = useTextField("description", "text");
   const specialistField = useTextField("specialist", "text");
   const diagnosesField = useTextField("diagnosisCodes", "text");
+
   const healthCheckRatingField = useTextField("healthCheckRating", "text");
 
-  const formFields = [
+  const dischargeCriteriaField = useTextField("dischargeCriteria", "text");
+  const dischargeDateField = useTextField("dischargeDate", "text");
+
+  const employerField = useTextField("employer", "text");
+  const sickLeaveStartField = useTextField("sickLeaveStart", "text");
+  const sickLeaveEndField = useTextField("sickLeaveEnd", "text");
+
+  const baseFormFields = [
     dateField,
     descriptionField,
     specialistField,
     diagnosesField,
-    healthCheckRatingField,
   ];
 
-  const fieldsToObject = (): Omit<HealthCheckEntry, "id"> => {
-    return {
-      type: "HealthCheck",
+  let formFields: Array<{
+    id: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    label: string;
+  }> = [];
+
+  switch (entryType) {
+    case EntryType.Hospital:
+      formFields = [
+        ...baseFormFields,
+        dischargeCriteriaField,
+        dischargeDateField,
+      ];
+      break;
+    case EntryType.OccupationalHealthcare:
+      formFields = [
+        ...baseFormFields,
+        employerField,
+        sickLeaveStartField,
+        sickLeaveEndField,
+      ];
+      break;
+    case EntryType.HealthCheck:
+      formFields = [...baseFormFields, healthCheckRatingField];
+      break;
+    default:
+      console.log("in main part...");
+      console.log(
+        `Here are the possible values: ${EntryType.Hospital}, ${EntryType.HealthCheck}, ${EntryType.OccupationalHealthcare}`
+      );
+      console.log(`Here is what I got: ${entryType}`);
+      console.log(
+        `Tests for equality... ${EntryType.Hospital === entryType}, ${
+          EntryType.HealthCheck === entryType
+        }, ${EntryType.OccupationalHealthcare === entryType}`
+      );
+      console.log(
+        `Types: ${typeof EntryType.OccupationalHealthcare}, ${typeof entryType}`
+      );
+      return assertNever(entryType);
+  }
+
+  const fieldsToObject = (): UnionOmit<Entry, "id"> => {
+    const baseEntry = {
+      type: entryType,
       date: dateField.value,
       description: descriptionField.value,
       specialist: specialistField.value,
       diagnosisCodes: diagnosesField.value.split(",").map((el) => el.trim()),
-      healthCheckRating: parseInt(healthCheckRatingField.value),
     };
+
+    switch (baseEntry.type) {
+      case EntryType.Hospital:
+        return {
+          ...baseEntry,
+          discharge: {
+            criteria: dischargeCriteriaField.value,
+            date: dischargeDateField.value,
+          },
+        };
+      case EntryType.OccupationalHealthcare:
+        return {
+          ...baseEntry,
+          employerName: employerField.value,
+          sickLeave: {
+            startDate: sickLeaveStartField.value,
+            endDate: sickLeaveEndField.value,
+          },
+        };
+      case EntryType.HealthCheck:
+        return {
+          ...baseEntry,
+          healthCheckRating: parseInt(healthCheckRatingField.value),
+        };
+
+      default:
+        console.log(
+          `Here are the possible values: ${EntryType.Hospital}, ${EntryType.HealthCheck}, ${EntryType.OccupationalHealthcare}`
+        );
+        console.log(`Here is what I got: ${baseEntry.type}`);
+        return assertNever(baseEntry.type);
+    }
   };
 
   const clearFields = () => {
@@ -131,6 +216,24 @@ const AddEntryForm = (props: AddEntryFormProps) => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Medical Entry</DialogTitle>
         <DialogContent>
+          <Select
+            labelId="entry-type-select-label"
+            id="entry-type-select"
+            value={entryType}
+            label="Entry Type"
+            onChange={(e) => {
+              setEntryType(e.target.value as EntryType);
+            }}
+          >
+            {Object.keys(EntryType)
+              .filter((key) => isNaN(Number(key)))
+              .map((opt) => (
+                <MenuItem value={opt} key={opt}>
+                  {opt}
+                </MenuItem>
+              ))}
+          </Select>
+
           <DialogContentText color={"red"}>{notification}</DialogContentText>
           {formFields.map((field) => (
             <TextField key={field.label} {...field} />

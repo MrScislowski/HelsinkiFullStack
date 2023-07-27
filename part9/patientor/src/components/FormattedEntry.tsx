@@ -1,25 +1,16 @@
-import { Diagnosis, Entry } from "../types";
+import {
+  Diagnosis,
+  Entry,
+  EntryType,
+  HealthCheckEntry,
+  OccupationalHealthcareEntry,
+} from "../types";
 
-// import Card from "@mui/material/Card";
-// import CardActions from "@mui/material/CardActions";
-// import CardContent from "@mui/material/CardContent";
-// import Button from "@mui/material/Button";
-// import Typography from "@mui/material/Typography";
 import OccupationalIcon from "@mui/icons-material/Factory";
 import HospitalIcon from "@mui/icons-material/LocalHospital";
 import HealthCheckIcon from "@mui/icons-material/Check";
 import HeartIcon from "@mui/icons-material/Favorite";
-
-const assertNever = (value: never): never => {
-  throw new Error(
-    `Unhandled discriminated union member: ${JSON.stringify(value)}`
-  );
-};
-
-interface Props {
-  entry: Entry;
-  allDiagnoses: Diagnosis[];
-}
+import { assertNever } from "../utils";
 
 interface DiagnosesListProps {
   codes: string[] | undefined;
@@ -44,6 +35,11 @@ const DiagnosesList = (props: DiagnosesListProps) => {
   );
 };
 
+interface Props {
+  entry: Entry;
+  allDiagnoses: Diagnosis[];
+}
+
 const FormattedEntry = (props: Props) => {
   const diagnosesList = (
     <DiagnosesList
@@ -59,27 +55,30 @@ const FormattedEntry = (props: Props) => {
 
   let visitTypeIcon: JSX.Element;
   let healthStatusIcon: JSX.Element | null = null;
-  switch (props.entry.type) {
-    case "Hospital":
+  const entry: Entry = props.entry;
+  switch (entry.type) {
+    case EntryType.Hospital:
       visitTypeIcon = <HospitalIcon color="warning" />;
       break;
-    case "HealthCheck":
+    case EntryType.HealthCheck:
       visitTypeIcon = <HealthCheckIcon color="success" />;
 
       const statusColors = ["green", "yellow", "red", "maroon"];
-      const heartColor = statusColors[props.entry.healthCheckRating];
+      const heartColor =
+        statusColors[(entry as HealthCheckEntry).healthCheckRating];
       healthStatusIcon = <HeartIcon style={{ color: heartColor }} />;
 
       break;
-    case "OccupationalHealthcare":
+    case EntryType.OccupationalHealthcare:
       visitTypeIcon = (
         <>
-          <OccupationalIcon color="info" /> {props.entry.employerName};
+          <OccupationalIcon color="info" />{" "}
+          {(entry as OccupationalHealthcareEntry).employerName};
         </>
       );
       break;
     default:
-      return assertNever(props.entry);
+      return assertNever(entry.type);
   }
 
   return (
