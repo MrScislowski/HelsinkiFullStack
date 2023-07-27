@@ -1,6 +1,6 @@
 import { useState } from "react";
 import patientService from "../../services/patients";
-import { Entry, EntryType, UnionOmit } from "../../types";
+import { Diagnosis, Entry, EntryType, UnionOmit } from "../../types";
 import { assertNever } from "../../utils";
 
 import Button from "@mui/material/Button";
@@ -12,7 +12,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Patient } from "../../types";
 import { AxiosError } from "axios";
-import { MenuItem, Select } from "@mui/material";
+import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
 
 const textFieldProperties: StandardTextFieldProps = {
   autoFocus: true,
@@ -42,6 +42,7 @@ interface AddEntryFormProps {
   patientId: string;
   patients: Patient[];
   setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
+  allDiagnoses: Diagnosis[];
 }
 
 const AddEntryForm = (props: AddEntryFormProps) => {
@@ -49,11 +50,14 @@ const AddEntryForm = (props: AddEntryFormProps) => {
   const [notification, setNotification] = useState("");
 
   const [entryType, setEntryType] = useState<EntryType>(EntryType.HealthCheck);
+  const [selectedDiagnosisCodes, setSelectedDiagnosisCodes] = useState<
+    string[]
+  >([]);
 
   const dateField = useTextField("date", "text");
   const descriptionField = useTextField("description", "text");
   const specialistField = useTextField("specialist", "text");
-  const diagnosesField = useTextField("diagnosisCodes", "text");
+  // const diagnosesField = useTextField("diagnosisCodes", "text");
 
   const healthCheckRatingField = useTextField("healthCheckRating", "text");
 
@@ -68,7 +72,7 @@ const AddEntryForm = (props: AddEntryFormProps) => {
     dateField,
     descriptionField,
     specialistField,
-    diagnosesField,
+    // diagnosesField,
   ];
 
   let formFields: Array<{
@@ -119,7 +123,7 @@ const AddEntryForm = (props: AddEntryFormProps) => {
       date: dateField.value,
       description: descriptionField.value,
       specialist: specialistField.value,
-      diagnosisCodes: diagnosesField.value.split(",").map((el) => el.trim()),
+      // diagnosisCodes: diagnosesField.value.split(",").map((el) => el.trim()),
     };
 
     switch (baseEntry.type) {
@@ -238,6 +242,27 @@ const AddEntryForm = (props: AddEntryFormProps) => {
           {formFields.map((field) => (
             <TextField key={field.label} {...field} />
           ))}
+
+          <Select
+            labelId="diagnoses-select-label"
+            id="diagnoses-select"
+            multiple
+            value={selectedDiagnosisCodes}
+            label="Diagnoses"
+            onChange={(e: SelectChangeEvent<typeof selectedDiagnosisCodes>) => {
+              setSelectedDiagnosisCodes(
+                typeof e.target.value === "string"
+                  ? e.target.value.split(",")
+                  : e.target.value
+              );
+            }}
+          >
+            {props.allDiagnoses.map((d) => (
+              <MenuItem key={d.code} value={d.code}>
+                {d.code}
+              </MenuItem>
+            ))}
+          </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>

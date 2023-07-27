@@ -29,6 +29,7 @@ const SinglePatient = (props: Props) => {
         patients={props.patients}
         setPatients={props.setPatients}
         patientId={props.patient.id}
+        allDiagnoses={props.allDiagnoses}
       />
 
       <h4>Entries</h4>
