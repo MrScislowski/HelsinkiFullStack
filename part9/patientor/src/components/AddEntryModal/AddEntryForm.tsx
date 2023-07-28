@@ -4,7 +4,7 @@ import { Diagnosis, Entry, EntryType, UnionOmit } from "../../types";
 import { assertNever } from "../../utils";
 
 import Button from "@mui/material/Button";
-import TextField, { StandardTextFieldProps } from "@mui/material/TextField";
+import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -12,29 +12,68 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Patient } from "../../types";
 import { AxiosError } from "axios";
-import { MenuItem, Select, SelectChangeEvent } from "@mui/material";
+import {
+  InputLabel,
+  MenuItem,
+  // OutlinedInput,
+  Select,
+  SelectChangeEvent,
+} from "@mui/material";
 
-const textFieldProperties: StandardTextFieldProps = {
-  autoFocus: true,
-  margin: "dense",
-  fullWidth: true,
-};
+interface InputField {
+  properties: {
+    type: "text" | "date";
+    id: string;
+    label: string;
+    value: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    [others: string]: unknown;
+  };
+  clear: () => void;
+}
 
-const useTextField = (
+const useInputField = (
+  id: string,
   label: string,
-  type: React.InputHTMLAttributes<unknown>["type"]
-) => {
-  const [value, setValue] = useState("");
+  type: InputField["properties"]["type"]
+): InputField => {
+  let defaultValue: string;
+
+  switch (type) {
+    case "text":
+      defaultValue = "";
+      break;
+    case "date":
+      defaultValue = new Date().toISOString().substring(0, 10);
+      break;
+    default:
+      return assertNever(type);
+  }
+  const [value, setValue] = useState<string>(defaultValue);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setValue(e.target.value);
+  };
+
+  const clear = () => {
+    setValue(defaultValue);
+  };
+
+  const formattingProperties = {
+    // margin: "dense",
+    fullWidth: true,
+  };
 
   return {
-    ...textFieldProperties,
-    id: label,
-    label,
-    type,
-
-    value,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-      setValue(e.target.value),
+    properties: {
+      id,
+      label,
+      type,
+      value,
+      onChange,
+      ...formattingProperties,
+    },
+    clear,
   };
 };
 
@@ -54,32 +93,43 @@ const AddEntryForm = (props: AddEntryFormProps) => {
     string[]
   >([]);
 
-  const dateField = useTextField("date", "text");
-  const descriptionField = useTextField("description", "text");
-  const specialistField = useTextField("specialist", "text");
-  // const diagnosesField = useTextField("diagnosisCodes", "text");
+  const dateField = useInputField("entrydate", "Date of Service", "date");
+  const descriptionField = useInputField("description", "Description", "text");
+  const specialistField = useInputField(
+    "specialist",
+    "Specialist Name",
+    "text"
+  );
+  const healthCheckRatingField = useInputField(
+    "healthCheckRating",
+    "Health Check Rating",
+    "text"
+  );
+  const dischargeCriteriaField = useInputField(
+    "dischargeCriteria",
+    "Discharge Criteria",
+    "text"
+  );
+  const dischargeDateField = useInputField(
+    "dischargeDate",
+    "Discharge Date",
+    "date"
+  );
+  const employerField = useInputField("employer", "Employer Name", "text");
+  const sickLeaveStartField = useInputField(
+    "sickLeaveStart",
+    "Sick Leave Start Date",
+    "date"
+  );
+  const sickLeaveEndField = useInputField(
+    "sickLeaveEnd",
+    "Sick Leave End Date",
+    "date"
+  );
 
-  const healthCheckRatingField = useTextField("healthCheckRating", "text");
+  const baseFormFields = [dateField, descriptionField, specialistField];
 
-  const dischargeCriteriaField = useTextField("dischargeCriteria", "text");
-  const dischargeDateField = useTextField("dischargeDate", "text");
-
-  const employerField = useTextField("employer", "text");
-  const sickLeaveStartField = useTextField("sickLeaveStart", "text");
-  const sickLeaveEndField = useTextField("sickLeaveEnd", "text");
-
-  const baseFormFields = [
-    dateField,
-    descriptionField,
-    specialistField,
-    // diagnosesField,
-  ];
-
-  let formFields: Array<{
-    id: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    label: string;
-  }> = [];
+  let formFields: Array<InputField> = [];
 
   switch (entryType) {
     case EntryType.Hospital:
@@ -101,29 +151,15 @@ const AddEntryForm = (props: AddEntryFormProps) => {
       formFields = [...baseFormFields, healthCheckRatingField];
       break;
     default:
-      console.log("in main part...");
-      console.log(
-        `Here are the possible values: ${EntryType.Hospital}, ${EntryType.HealthCheck}, ${EntryType.OccupationalHealthcare}`
-      );
-      console.log(`Here is what I got: ${entryType}`);
-      console.log(
-        `Tests for equality... ${EntryType.Hospital === entryType}, ${
-          EntryType.HealthCheck === entryType
-        }, ${EntryType.OccupationalHealthcare === entryType}`
-      );
-      console.log(
-        `Types: ${typeof EntryType.OccupationalHealthcare}, ${typeof entryType}`
-      );
       return assertNever(entryType);
   }
 
   const fieldsToObject = (): UnionOmit<Entry, "id"> => {
     const baseEntry = {
       type: entryType,
-      date: dateField.value,
-      description: descriptionField.value,
-      specialist: specialistField.value,
-      // diagnosisCodes: diagnosesField.value.split(",").map((el) => el.trim()),
+      date: dateField.properties.value,
+      description: descriptionField.properties.value,
+      specialist: specialistField.properties.value,
     };
 
     switch (baseEntry.type) {
@@ -131,40 +167,28 @@ const AddEntryForm = (props: AddEntryFormProps) => {
         return {
           ...baseEntry,
           discharge: {
-            criteria: dischargeCriteriaField.value,
-            date: dischargeDateField.value,
+            criteria: dischargeCriteriaField.properties.value,
+            date: dischargeDateField.properties.value,
           },
         };
       case EntryType.OccupationalHealthcare:
         return {
           ...baseEntry,
-          employerName: employerField.value,
+          employerName: employerField.properties.value,
           sickLeave: {
-            startDate: sickLeaveStartField.value,
-            endDate: sickLeaveEndField.value,
+            startDate: sickLeaveStartField.properties.value,
+            endDate: sickLeaveEndField.properties.value,
           },
         };
       case EntryType.HealthCheck:
         return {
           ...baseEntry,
-          healthCheckRating: parseInt(healthCheckRatingField.value),
+          healthCheckRating: parseInt(healthCheckRatingField.properties.value),
         };
 
       default:
-        console.log(
-          `Here are the possible values: ${EntryType.Hospital}, ${EntryType.HealthCheck}, ${EntryType.OccupationalHealthcare}`
-        );
-        console.log(`Here is what I got: ${baseEntry.type}`);
         return assertNever(baseEntry.type);
     }
-  };
-
-  const clearFields = () => {
-    formFields.forEach((field) =>
-      field.onChange({
-        target: { value: "" },
-      } as React.ChangeEvent<HTMLInputElement>)
-    );
   };
 
   const handleClickOpen = () => {
@@ -181,7 +205,7 @@ const AddEntryForm = (props: AddEntryFormProps) => {
       .addEntry(props.patientId, fieldsToObject())
       .then((res) => {
         console.dir(res);
-        clearFields();
+        formFields.forEach((field) => field.clear());
         setOpen(false);
         setNotification("");
         // put entry into this patient...
@@ -239,16 +263,19 @@ const AddEntryForm = (props: AddEntryFormProps) => {
           </Select>
 
           <DialogContentText color={"red"}>{notification}</DialogContentText>
+
           {formFields.map((field) => (
-            <TextField key={field.label} {...field} />
+            <TextField key={field.properties.id} {...field.properties} />
           ))}
 
+          <InputLabel id="diagnoses-select-label">Diagnoses</InputLabel>
           <Select
             labelId="diagnoses-select-label"
             id="diagnoses-select"
             multiple
             value={selectedDiagnosisCodes}
             label="Diagnoses"
+            // input={<OutlinedInput label="Diagnosis Codes" />}
             onChange={(e: SelectChangeEvent<typeof selectedDiagnosisCodes>) => {
               setSelectedDiagnosisCodes(
                 typeof e.target.value === "string"
