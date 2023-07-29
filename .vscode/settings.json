@@ -10,6 +10,7 @@
         "./part9/flight-diary",
         "./part9/ex9.14",
         "./part9/ex9.16",
-        "./part9/patientor"
+        "./part9/patientor",
+        "./part10/rate-repository-app"
     ]
 }
