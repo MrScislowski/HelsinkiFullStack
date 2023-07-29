@@ -1,23 +1,21 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-
-export default function App() {
-  console.log("console message...");
-  console.log("another console message...");
-
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+import RepositoryList from "./src/components/RepositoryList";
+import Constants from "expo-constants";
+import { View, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    marginTop: Constants.statusBarHeight,
+    flexGrow: 1,
+    flexShrink: 1,
   },
 });
+
+const App = () => {
+  return (
+    <View style={styles.container}>
+      <RepositoryList />
+    </View>
+  );
+};
+
+export default App;

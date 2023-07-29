@@ -1,1 +1,1 @@
-https://fullstackopen.com/en/part10/introduction_to_react_native#debugging
+https://fullstackopen.com/en/part10/react_native_basics
