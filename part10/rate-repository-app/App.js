@@ -1,6 +1,7 @@
 import RepositoryList from "./src/components/RepositoryList";
 import Constants from "expo-constants";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
+import AppBar from "./src/components/AppBar";
 
 const styles = StyleSheet.create({
   container: {
@@ -12,7 +13,8 @@ const styles = StyleSheet.create({
 
 const App = () => {
   return (
-    <View style={styles.container}>
+    <View>
+      <AppBar />
       <RepositoryList />
     </View>
   );

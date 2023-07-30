@@ -1,4 +1,5 @@
-import { FlatList, View, StyleSheet, Text } from "react-native";
+import { FlatList, View, StyleSheet } from "react-native";
+import Text from "./Text";
 
 const styles = StyleSheet.create({
   separator: {
@@ -73,7 +74,6 @@ const RepositoryList = () => {
           </>
         );
       }}
-      // other props
     />
   );
 };
