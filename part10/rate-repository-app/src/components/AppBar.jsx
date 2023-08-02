@@ -1,8 +1,8 @@
 import { View, StyleSheet } from "react-native";
 import Constants from "expo-constants";
-import Text from "./Text";
 import theme from "../theme";
 import AppBarTab from "./AppBarTab";
+import styled from "styled-components/native";
 
 const styles = StyleSheet.create({
   container: {
@@ -11,18 +11,25 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.primary,
     display: "flex",
     flexDirection: "row",
-    justifyContent: "center",
-    // ...
+    justifyContent: "space-around",
   },
-  item: {},
-  // ...
 });
+
+const MyAppBar = styled.View`
+  padding-top: ${Constants.statusBarHeight * 2}px;
+  padding-bottom: ${Constants.statusBarHeight}px;
+  background-color: ${theme.colors.primary};
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+`;
 
 const AppBar = () => {
   return (
-    <View style={styles.container}>
+    <MyAppBar>
       <AppBarTab title="REPOSITORIES" />
-    </View>
+      <AppBarTab title="ABOUT" />
+    </MyAppBar>
   );
 };
 

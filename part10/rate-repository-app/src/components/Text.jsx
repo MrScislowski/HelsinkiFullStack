@@ -8,6 +8,8 @@ const styles = StyleSheet.create({
     fontSize: theme.fontSizes.body,
     fontFamily: theme.fonts.main,
     fontWeight: theme.fontWeights.normal,
+    flex: 1,
+    flexWrap: "wrap",
   },
   colorTextSecondary: {
     color: theme.colors.textSecondary,
@@ -21,15 +23,27 @@ const styles = StyleSheet.create({
   fontWeightBold: {
     fontWeight: theme.fontWeights.bold,
   },
+  coloredBackground: {
+    backgroundColor: theme.colors.primary,
+    color: "white",
+  },
 });
 
-const Text = ({ color, fontSize, fontWeight, style, ...props }) => {
+const Text = ({
+  color,
+  fontSize,
+  fontWeight,
+  style,
+  coloredBackground,
+  ...props
+}) => {
   const textStyle = [
     styles.text,
     color === "textSecondary" && styles.colorTextSecondary,
     color === "primary" && styles.colorPrimary,
     fontSize === "subheading" && styles.fontSizeSubheading,
     fontWeight === "bold" && styles.fontWeightBold,
+    coloredBackground && styles.coloredBackground,
     style,
   ];
 

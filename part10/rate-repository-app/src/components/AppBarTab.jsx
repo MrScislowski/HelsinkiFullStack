@@ -1,18 +1,8 @@
-import { Pressable, StyleSheet } from "react-native";
-import Text from "./Text";
-
-const styles = StyleSheet.create({
-  item: {},
-});
+import { Pressable, Text } from "react-native";
 
 const AppBarTab = (props) => {
   return (
-    <Pressable
-      style={styles.item}
-      onPress={() => {
-        console.log("app bar pressed");
-      }}
-    >
+    <Pressable>
       <Text>{props.title}</Text>
     </Pressable>
   );
