@@ -1,10 +1,11 @@
-import { Pressable, Text } from "react-native";
+import { Text } from "react-native";
+import { Link } from "react-router-native";
 
 const AppBarTab = (props) => {
   return (
-    <Pressable>
+    <Link to={props.link}>
       <Text>{props.title}</Text>
-    </Pressable>
+    </Link>
   );
 };
 

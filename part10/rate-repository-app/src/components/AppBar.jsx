@@ -15,8 +15,9 @@ const Container = styled.View`
 const AppBar = () => {
   return (
     <Container>
-      <AppBarTab title="REPOSITORIES" />
-      <AppBarTab title="ABOUT" />
+      <AppBarTab title="REPOSITORIES" link="/" />
+      <AppBarTab title="SIGN IN" link="/SignIn" />
+      <AppBarTab title="ABOUT" link="/About" />
     </Container>
   );
 };
