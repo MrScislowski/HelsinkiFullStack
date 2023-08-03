@@ -24,10 +24,6 @@ const AppBar = () => {
         <AppBarTab title="REPOSITORIES" link="/" />
         <AppBarTab title="SIGN IN" link="/SignIn" />
         <AppBarTab title="ABOUT" link="/About" />
-        <AppBarTab title="ABOUT2" link="/About2" />
-        <AppBarTab title="ABOUT3" link="/About3" />
-        <AppBarTab title="ABOUT4" link="/About4" />
-        <AppBarTab title="ABOUT5" link="/About5" />
       </ScrollView>
     </Container>
   );

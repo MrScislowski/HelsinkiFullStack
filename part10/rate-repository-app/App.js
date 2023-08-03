@@ -21,7 +21,6 @@ const App = () => {
           <Route path="/" element={<RepositoryList />} exact />
           <Route path="/About" element={<About />} />
           <Route path="/SignIn" element={<SignIn />} />
-
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </View>
