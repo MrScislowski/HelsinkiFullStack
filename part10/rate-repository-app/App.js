@@ -1,21 +1,26 @@
 import RepositoryList from "./src/components/RepositoryList";
 import Constants from "expo-constants";
-import { StyleSheet, View, Pressable, Text } from "react-native";
+import { StyleSheet, View, Platform } from "react-native";
 import { NativeRouter, Route, Routes, Navigate } from "react-router-native";
+import styled from "styled-components/native";
 import AppBar from "./src/components/AppBar";
 import About from "./src/components/About";
 import SignIn from "./src/components/SignIn";
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: Constants.statusBarHeight,
-  },
+const fontFamily = Platform.select({
+  ios: "Arial",
+  android: "Roboto",
 });
+
+const Container = styled.View`
+  margin-top: ${Constants.statusBarHeight}px;
+  font-family: ${fontFamily};
+`;
 
 const App = () => {
   return (
     <NativeRouter>
-      <View style={styles.container}>
+      <Container>
         <AppBar />
         <Routes>
           <Route path="/" element={<RepositoryList />} exact />
@@ -23,7 +28,7 @@ const App = () => {
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </View>
+      </Container>
     </NativeRouter>
   );
 };
