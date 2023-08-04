@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { Pressable, TextInput, Text } from "react-native";
+import { TextInput, Text } from "react-native";
 import styled from "styled-components/native";
+import { useFormik } from "formik";
 
 const Container = styled.View``;
 
@@ -27,25 +28,34 @@ const FormField = (props) => {
 };
 
 const SignInForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const formik = useFormik({
+    initialValues: {
+      username: "",
+      password: "",
+    },
+    onSubmit: (values) => {
+      console.log(
+        `submitting username:${values.username}, password:${values.password}`
+      );
+    },
+  });
 
   return (
     <Container>
       <FormField
-        value={username}
+        value={formik.values.username}
+        onChangeText={formik.handleChange("username")}
         placeholder="username"
-        onChangeText={setUsername}
       />
 
       <FormField
-        value={password}
+        value={formik.values.password}
         placeholder="password"
-        onChangeText={setPassword}
+        onChangeText={formik.handleChange("password")}
         secureTextEntry
       />
 
-      <SignInButton onPress={() => console.log("button pressed!")}>
+      <SignInButton onPress={formik.handleSubmit}>
         <Text>Sign in</Text>
       </SignInButton>
     </Container>
