@@ -20,7 +20,8 @@
     "react-native": "0.72.3",
     "react-native-web": "~0.19.6",
     "react-router-native": "^6.14.2",
-    "styled-components": "^6.0.5"
+    "styled-components": "^6.0.5",
+    "yup": "^1.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
