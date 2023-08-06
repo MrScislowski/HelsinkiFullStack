@@ -6,6 +6,9 @@ import styled from "styled-components/native";
 import AppBar from "./src/components/AppBar";
 import About from "./src/components/About";
 import SignIn from "./src/components/SignIn";
+import { ApolloProvider } from "@apollo/client";
+import createApolloClient from "./src/utils/apolloClient";
+const apolloClient = createApolloClient();
 
 const fontFamily = Platform.select({
   ios: "Arial",
@@ -20,15 +23,17 @@ const Container = styled.View`
 const App = () => {
   return (
     <NativeRouter>
-      <Container>
-        <AppBar />
-        <Routes>
-          <Route path="/" element={<RepositoryList />} exact />
-          <Route path="/About" element={<About />} />
-          <Route path="/SignIn" element={<SignIn />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Container>
+      <ApolloProvider client={apolloClient}>
+        <Container>
+          <AppBar />
+          <Routes>
+            <Route path="/" element={<RepositoryList />} exact />
+            <Route path="/About" element={<About />} />
+            <Route path="/SignIn" element={<SignIn />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Container>
+      </ApolloProvider>
     </NativeRouter>
   );
 };
