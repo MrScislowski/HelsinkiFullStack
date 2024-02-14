@@ -1,5 +1,3 @@
-
-
 The following diagram shows the user visiting the single page app at [https://studies.cs.helsinki.fi/exampleapp/spa](https://studies.cs.helsinki.fi/exampleapp/spa):
 
 ```mermaid
