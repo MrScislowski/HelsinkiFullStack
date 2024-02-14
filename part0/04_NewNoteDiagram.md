@@ -3,7 +3,7 @@
 NB: I istalled VSCode extension [Markdown Preview Mermaid Support](https://marketplace.visualstudio.com/items?itemName=bierner.markdown-mermaid) to view mermaid diagram in previews.
 
 
-The f ollowing diagram shows user creating a new note on [https://studies.cs.helsinki.fi/exampleapp/notes](https://studies.cs.helsinki.fi/exampleapp/notes):
+The following diagram shows user creating a new note on [https://studies.cs.helsinki.fi/exampleapp/notes](https://studies.cs.helsinki.fi/exampleapp/notes):
 
 ```mermaid
 sequenceDiagram
