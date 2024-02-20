@@ -78,3 +78,9 @@ janja.greet();
   - [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS)
 
 ## Notes on c - Component state, event handlers
+
+Write a note about not being allowed to mutate state directly; have to setState() to a new object.
+
+## Notes on d -
+
+Update of the state is asynchronous - copy this down because this has definitely happened to me!
