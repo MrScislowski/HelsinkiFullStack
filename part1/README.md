@@ -77,10 +77,87 @@ janja.greet();
 - some resources recommended for Javascript:
   - [You-Dont-Know-JS](https://github.com/getify/You-Dont-Know-JS)
 
-## Notes on c - Component state, event handlers
+## Notes on cd- Component state, event handlers
 
-Write a note about not being allowed to mutate state directly; have to setState() to a new object.
+### mutating state
 
-## Notes on d -
+It is forbidden in React to mutate state directly... always set state to a new object.
 
-Update of the state is asynchronous - copy this down because this has definitely happened to me!
+```javascript
+const [items, setItems] = useState([1, 2, 3, 4, 5]);
+
+// BAD
+items.push(6);
+const newItems = items;
+setItems(newItems);
+
+// GOOD
+const newItems = [...items, 6];
+// OR
+const newItems = items.concat(6);
+
+setItems(newItems);
+```
+
+## Notes on d - A more complex state, debugging React apps
+
+### Update of the state is asynchronous
+
+```javascript
+const Component = () => {
+  const [a, setA] = useState(0);
+  const [b, setB] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  return (
+    <>
+      <p>Total is: {total}</p>
+      <button
+        onClick={() => {
+          console.log(`a = ${a}`);
+          setA(a + 1);
+          console.log(`a = ${a}`);
+          setTotal(a + b);
+        }}
+      >
+        Increase a by 1
+      </button>
+    </>
+  );
+};
+```
+
+This doesn't work, because the value of `a` hadn't updated by the time setTotal was called. State updates asynchronously (at some point before the component is rendered again). Each render's state values are fixed.
+
+So in fact, this button only increases the value by 1:
+
+```javascript
+import { useState } from "react";
+
+export default function Counter() {
+  const [number, setNumber] = useState(0);
+
+  return (
+    <>
+      <h1>{number}</h1>
+      <button
+        onClick={() => {
+          setNumber(number + 1);
+          setNumber(number + 1);
+          setNumber(number + 1);
+        }}
+      >
+        +3
+      </button>
+    </>
+  );
+}
+```
+
+React waits until all code in event handlers run before processing state updates. It "batches" things, so it can update multiple state variables without running too many re-renders.
+
+If you want to update the same state variable multiple times before the next re-render, instead of passing the next state value, you can pass a function that calculates the new state based on the previous one. (This is called an _updater function_ ). All updates get queued and run in order:
+
+```javascript
+setNumber((n) => n + 1);
+```
