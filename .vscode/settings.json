@@ -1,16 +1,6 @@
 {
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "eslint.workingDirectories": [
-        "./part9/partb",
-        "./part9/ex9.1",
-        "./part9/partc",
-        "./part9/ex9.8-patientor-backend",
-        "./part9/flight-diary",
-        "./part9/ex9.14",
-        "./part9/ex9.16",
-        "./part9/patientor",
-        "./part10/rate-repository-app"
-    ]
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  }
 }
