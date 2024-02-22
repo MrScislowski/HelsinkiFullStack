@@ -12,11 +12,24 @@ const App = () => {
     "The only way to go fast, is to go well.",
   ];
 
+  const votesArray = Array.from(Array(anecdotes.length)).map(() => 0);
+
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(votesArray);
 
   return (
     <>
       <div>{anecdotes[selected]}</div>
+      <div>({votes[selected]} votes)</div>
+      <button
+        onClick={() => {
+          const newVotes = [...votes];
+          newVotes[selected]++;
+          setVotes(newVotes);
+        }}
+      >
+        vote
+      </button>
       <button
         onClick={() =>
           setSelected(Math.floor(Math.random() * anecdotes.length))
