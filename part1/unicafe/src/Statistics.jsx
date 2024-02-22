@@ -6,9 +6,10 @@ const StatisticLine = (props) => {
   const { text, value } = props;
 
   return (
-    <p>
-      {text}: {value}
-    </p>
+    <tr>
+      <td>{text}:</td>
+      <td>{value}</td>
+    </tr>
   );
 };
 
@@ -31,15 +32,19 @@ const Statistics = (props) => {
   return (
     <>
       <StatisticsHeader />
-      <StatisticLine text="good" value={good} />
-      <StatisticLine text="neutral" value={neutral} />
-      <StatisticLine text="bad" value={bad} />
-      <StatisticLine text="total votes" value={total} />
-      <StatisticLine text="average feedback score" value={avg.toFixed(2)} />
-      <StatisticLine
-        text="percent positive feedback"
-        value={`${percentPos.toFixed(1)}%`}
-      />
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={good} />
+          <StatisticLine text="neutral" value={neutral} />
+          <StatisticLine text="bad" value={bad} />
+          <StatisticLine text="total votes" value={total} />
+          <StatisticLine text="average feedback score" value={avg.toFixed(2)} />
+          <StatisticLine
+            text="percent positive feedback"
+            value={`${percentPos.toFixed(1)}%`}
+          />
+        </tbody>
+      </table>
     </>
   );
 };
