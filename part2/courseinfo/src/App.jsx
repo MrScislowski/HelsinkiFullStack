@@ -5,6 +5,7 @@ const Course = (props) => {
     <>
       <Header title={name} />
       <Content content={parts} />
+      <Footer content={parts} />
     </>
   );
 };
@@ -29,6 +30,21 @@ const Part = (props) => {
   return (
     <p>
       {name}: {exercises}
+    </p>
+  );
+};
+
+const Footer = (props) => {
+  const { content } = props;
+
+  const exerciseCount = content.reduce(
+    (total, part) => total + part.exercises,
+    0
+  );
+
+  return (
+    <p>
+      <strong>Total of {exerciseCount} exercises</strong>
     </p>
   );
 };
