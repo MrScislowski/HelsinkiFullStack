@@ -156,8 +156,29 @@ export default function Counter() {
 
 React waits until all code in event handlers run before processing state updates. It "batches" things, so it can update multiple state variables without running too many re-renders.
 
-If you want to update the same state variable multiple times before the next re-render, instead of passing the next state value, you can pass a function that calculates the new state based on the previous one. (This is called an _updater function_ ). All updates get queued and run in order:
+If you want to update the same state variable multiple times before the next re-render, instead of passing the next state value, you can pass a function that calculates the new state based on the previous one. (This is called an _updater function_). All updates get queued and run in order:
 
 ```javascript
 setNumber((n) => n + 1);
 ```
+
+### State in React
+
+Since 16.8.0, the `useState` hook was available. Before that, state had to be embedded in class components, using Javascript class syntax.
+
+### console.log-ing objects
+
+```javascript
+// java-like fashion doesn't work well:
+console.log("props value is " + props); // "props value is [object Object]"
+// use this instead
+console.log("props value is ", props); // "props value is [object Object]"
+```
+
+### `debugger` statement
+
+You can write `debugger;` on any line in javascript. It will pause execution there, and you can inspect variable values in the console.
+
+### never assign components inside other components
+
+(because then React can't optimize renders)
