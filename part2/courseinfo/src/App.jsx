@@ -1,59 +1,62 @@
-import { useState } from "react";
+const Course = (props) => {
+  const { name, parts } = props.course;
 
-const StatisticLine = ({ label, value }) => {
   return (
-    <tr>
-      <td>{label}</td>
-      <td>{value}</td>
-    </tr>
+    <>
+      <Header title={name} />
+      <Content content={parts} />
+    </>
   );
 };
 
-const Statistics = ({ good, neutral, bad }) => {
-  const total = good + bad + neutral;
+const Header = (props) => {
+  const { title } = props;
 
-  if (total === 0) {
-    return (
-      <div>
-        <h2>Statistics</h2>
-        <div>no feedback given</div>
-      </div>
-    );
-  }
+  return <h1>{title}</h1>;
+};
+
+const Content = (props) => {
+  const { content } = props;
+
+  return content.map((part) => (
+    <Part key={part.id} name={part.name} exercises={part.exercises} />
+  ));
+};
+
+const Part = (props) => {
+  const { name, exercises } = props;
 
   return (
-    <div>
-      <h2>Statistics</h2>
-      <table>
-        <tbody>
-          <StatisticLine label="good" value={good} />
-          <StatisticLine label="neutral" value={neutral} />
-          <StatisticLine label="bad" value={bad} />
-          <StatisticLine label="all" value={good + neutral + bad} />
-          <StatisticLine label="average" value={(good - bad) / total} />
-          <StatisticLine label="positive" value={(100 * good) / total + " %"} />
-        </tbody>
-      </table>
-    </div>
+    <p>
+      {name}: {exercises}
+    </p>
   );
 };
 
 const App = () => {
-  const [good, setGood] = useState(0);
-  const [neutral, setNeutral] = useState(0);
-  const [bad, setBad] = useState(0);
+  const course = {
+    id: 1,
+    name: "Half Stack application development",
+    parts: [
+      {
+        name: "Fundamentals of React",
+        exercises: 10,
+        id: 1,
+      },
+      {
+        name: "Using props to pass data",
+        exercises: 7,
+        id: 2,
+      },
+      {
+        name: "State of a component",
+        exercises: 14,
+        id: 3,
+      },
+    ],
+  };
 
-  return (
-    <div>
-      <h2>Give feedback</h2>
-      <div>
-        <button onClick={() => setGood(good + 1)}>good</button>
-        <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
-        <button onClick={() => setBad(bad + 1)}>bad</button>
-      </div>
-      <Statistics good={good} neutral={neutral} bad={bad} />
-    </div>
-  );
+  return <Course course={course} />;
 };
 
 export default App;
