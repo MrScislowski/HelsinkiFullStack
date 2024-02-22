@@ -182,3 +182,7 @@ You can write `debugger;` on any line in javascript. It will pause execution the
 ### never assign components inside other components
 
 (because then React can't optimize renders)
+
+### naming
+
+In React, it’s conventional to use onSomething names for props which represent events and handleSomething for the function definitions which handle those events.
