@@ -1,3 +1,9 @@
+const Button = (props) => {
+  const { name, setter } = props;
+
+  return <button onClick={() => setter((n) => n + 1)}>{name}</button>;
+};
+
 const Feedback = (props) => {
   const { setGood, setNeutral, setBad } = props;
 
@@ -8,9 +14,9 @@ const Feedback = (props) => {
   return (
     <>
       <h2>Give feedback</h2>
-      <button onClick={() => setGood((n) => n + 1)}>good</button>
-      <button onClick={() => setNeutral((n) => n + 1)}>neutral</button>
-      <button onClick={() => setBad((n) => n + 1)}>bad</button>
+      <Button name="good" setter={setGood} />
+      <Button name="neutral" setter={setNeutral} />
+      <Button name="bad" setter={setBad} />
     </>
   );
 };
