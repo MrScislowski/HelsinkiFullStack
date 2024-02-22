@@ -17,8 +17,12 @@ const App = () => {
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(votesArray);
 
+  const mostVotes = votes.reduce((max, cur) => (cur > max ? cur : max), 0);
+  const winningPosition = votes.findIndex((item) => item === mostVotes);
+
   return (
     <>
+      <h2>Anecdote of the day</h2>
       <div>{anecdotes[selected]}</div>
       <div>({votes[selected]} votes)</div>
       <button
@@ -37,6 +41,10 @@ const App = () => {
       >
         Next anecdote
       </button>
+
+      <h2>Anecdote with most votes</h2>
+      <div>{anecdotes[winningPosition]}</div>
+      <div>({votes[winningPosition]} votes)</div>
     </>
   );
 };
