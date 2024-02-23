@@ -10,8 +10,27 @@ const AddEntryForm = (props) => {
         onSubmit={(e) => {
           e.preventDefault();
 
-          if (persons.find((person) => person.name === newName)) {
-            alert(`${newName} is already in the phonebook`);
+          const foundPerson = persons.find((person) => person.name === newName);
+
+          if (foundPerson) {
+            const shouldReplace = window.confirm(
+              `${newName} is already in the phonebook. Replace their number?`
+            );
+
+            if (!shouldReplace) {
+              return;
+            }
+            const updatedPerson = {
+              ...foundPerson,
+              number: newNumber,
+            };
+            personService.updatePerson(updatedPerson).then((response) => {
+              setPersons(
+                persons.map((p) => (p.id !== foundPerson.id ? p : response))
+              );
+              setNewName("");
+              setNewNumber("");
+            });
           } else {
             const newPerson = {
               name: newName,
