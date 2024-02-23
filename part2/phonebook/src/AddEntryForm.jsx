@@ -1,4 +1,4 @@
-import axios from "axios";
+import personService from "./personService";
 
 const AddEntryForm = (props) => {
   const { persons, setPersons, newName, setNewName, newNumber, setNewNumber } =
@@ -17,11 +17,10 @@ const AddEntryForm = (props) => {
               name: newName,
               number: newNumber,
             };
-
-            axios
-              .post("http://localhost:3001/persons", newPerson)
+            personService
+              .addPerson(newPerson)
               .then((response) => {
-                setPersons(persons.concat(response.data));
+                setPersons(persons.concat(response));
                 setNewName("");
                 setNewNumber("");
               })

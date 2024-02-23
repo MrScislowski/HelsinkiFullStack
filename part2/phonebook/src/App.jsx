@@ -3,7 +3,7 @@ import FilterForm from "./FilterForm";
 import AddEntryForm from "./AddEntryForm";
 import NumbersDisplay from "./NumbersDisplay";
 import { useEffect } from "react";
-import axios from "axios";
+import personService from "./personService";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -12,9 +12,7 @@ const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
-      setPersons(response.data);
-    });
+    personService.getAll().then((data) => setPersons(data));
   }, []);
 
   return (
