@@ -7,3 +7,25 @@ Using the array element as the key is a bad idea, because if you add something t
 ### controlled components
 
 If you define a piece of state as the value attribute of an input element, the component now _controls_ the behavior of the input element. To be able to edit it, you have to have an `onChange` event handler that updates the state accordingly.
+
+### `json-server`
+
+```bash
+npx json-server --port 3001 --watch db.json
+```
+
+### fetching from server
+
+XHR is an old event-based method of searching. It is no longer recommended.
+
+The `fetch` method is better, and uses promises.
+
+`axios` functions like fetch, but is more pleasant to use.
+
+### effects hooks
+
+Effects let a component connect to and synchronize with external systems. This includes dealing with network, browser DOM, animations, widgets written using a different UI library, and other non-React code.
+
+By default, effects run after every completed render, but you can choose to fire it only when certain values have changed.
+
+Using an empty array as 2nd parameter, the effect is only run along with the first render of the component.
