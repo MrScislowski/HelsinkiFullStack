@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const AddEntryForm = (props) => {
   const { persons, setPersons, newName, setNewName, newNumber, setNewNumber } =
     props;
@@ -11,15 +13,21 @@ const AddEntryForm = (props) => {
           if (persons.find((person) => person.name === newName)) {
             alert(`${newName} is already in the phonebook`);
           } else {
-            setPersons(
-              persons.concat({
-                name: newName,
-                number: newNumber,
-                id: persons.length + 1,
+            const newPerson = {
+              name: newName,
+              number: newNumber,
+            };
+
+            axios
+              .post("http://localhost:3001/persons", newPerson)
+              .then((response) => {
+                setPersons(persons.concat(response.data));
+                setNewName("");
+                setNewNumber("");
               })
-            );
-            setNewName("");
-            setNewNumber("");
+              .catch((err) => {
+                console.log(`error adding person`, err);
+              });
           }
         }}
       >
