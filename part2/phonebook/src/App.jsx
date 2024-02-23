@@ -27,7 +27,11 @@ const App = () => {
         newNumber={newNumber}
         setNewNumber={setNewNumber}
       />
-      <NumbersDisplay persons={persons} searchTerm={searchTerm} />
+      <NumbersDisplay
+        persons={persons}
+        setPersons={setPersons}
+        searchTerm={searchTerm}
+      />
     </div>
   );
 };
