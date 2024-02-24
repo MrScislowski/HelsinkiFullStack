@@ -1,8 +1,17 @@
 import personService from "./personService";
 
 const AddEntryForm = (props) => {
-  const { persons, setPersons, newName, setNewName, newNumber, setNewNumber } =
-    props;
+  const {
+    persons,
+    setPersons,
+    newName,
+    setNewName,
+    newNumber,
+    setNewNumber,
+    successNotification,
+    setSuccessNotification,
+  } = props;
+
   return (
     <>
       <h2>Add New</h2>
@@ -30,6 +39,9 @@ const AddEntryForm = (props) => {
               );
               setNewName("");
               setNewNumber("");
+
+              setSuccessNotification(`${updatedPerson.name}'s number updated`);
+              setTimeout(() => setSuccessNotification(null), 3000);
             });
           } else {
             const newPerson = {
@@ -42,6 +54,9 @@ const AddEntryForm = (props) => {
                 setPersons(persons.concat(response));
                 setNewName("");
                 setNewNumber("");
+
+                setSuccessNotification(`${newPerson.name} added`);
+                setTimeout(() => setSuccessNotification(null), 3000);
               })
               .catch((err) => {
                 console.log(`error adding person`, err);

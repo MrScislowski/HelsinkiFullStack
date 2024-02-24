@@ -5,11 +5,30 @@ import NumbersDisplay from "./NumbersDisplay";
 import { useEffect } from "react";
 import personService from "./personService";
 
+const SuccessNotification = (props) => {
+  const { message } = props;
+
+  const notifierStyle = {
+    width: "100%",
+    padding: 10,
+    backgroundColor: "#4CAF50",
+    color: "white",
+    fontSize: 16,
+  };
+
+  if (!message) {
+    return null;
+  }
+
+  return <div style={notifierStyle}>{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [successNotification, setSuccessNotification] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((data) => setPersons(data));
@@ -17,6 +36,7 @@ const App = () => {
 
   return (
     <div>
+      <SuccessNotification message={successNotification} />
       <h2>Phonebook</h2>
       <FilterForm searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       <AddEntryForm
@@ -26,6 +46,8 @@ const App = () => {
         setNewName={setNewName}
         newNumber={newNumber}
         setNewNumber={setNewNumber}
+        successNotification={successNotification}
+        setSuccessNotification={setSuccessNotification}
       />
       <NumbersDisplay
         persons={persons}
