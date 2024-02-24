@@ -1,7 +1,7 @@
 #!/bin/bash
 
 part="part2"
-appname="phonebook"
+appname="countries"
 
 cd $part
 pnpm create vite $appname --template react
