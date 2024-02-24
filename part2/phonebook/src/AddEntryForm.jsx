@@ -10,6 +10,8 @@ const AddEntryForm = (props) => {
     setNewNumber,
     successNotification,
     setSuccessNotification,
+    errorNotification,
+    setErrorNotification,
   } = props;
 
   return (
@@ -33,16 +35,30 @@ const AddEntryForm = (props) => {
               ...foundPerson,
               number: newNumber,
             };
-            personService.updatePerson(updatedPerson).then((response) => {
-              setPersons(
-                persons.map((p) => (p.id !== foundPerson.id ? p : response))
-              );
-              setNewName("");
-              setNewNumber("");
+            personService
+              .updatePerson(updatedPerson)
+              .then((response) => {
+                setPersons(
+                  persons.map((p) => (p.id !== foundPerson.id ? p : response))
+                );
+                setNewName("");
+                setNewNumber("");
 
-              setSuccessNotification(`${updatedPerson.name}'s number updated`);
-              setTimeout(() => setSuccessNotification(null), 3000);
-            });
+                setSuccessNotification(
+                  `${updatedPerson.name}'s number updated`
+                );
+                setTimeout(() => setSuccessNotification(null), 3000);
+              })
+              .catch((_err) => {
+                //
+                setNewName("");
+                setNewNumber("");
+
+                setErrorNotification(
+                  `Unable to update ${updatedPerson.name}. Their info is no longer in the database`
+                );
+                setTimeout(() => setErrorNotification(null), 3000);
+              });
           } else {
             const newPerson = {
               name: newName,

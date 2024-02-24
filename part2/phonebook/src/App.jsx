@@ -23,12 +23,31 @@ const SuccessNotification = (props) => {
   return <div style={notifierStyle}>{message}</div>;
 };
 
+const ErrorNotification = (props) => {
+  const { message } = props;
+
+  const notifierStyle = {
+    width: "100%",
+    padding: 10,
+    backgroundColor: "#F44336",
+    color: "white",
+    fontSize: 16,
+  };
+
+  if (!message) {
+    return null;
+  }
+
+  return <div style={notifierStyle}>{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [successNotification, setSuccessNotification] = useState(null);
+  const [errorNotification, setErrorNotification] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((data) => setPersons(data));
@@ -36,6 +55,7 @@ const App = () => {
 
   return (
     <div>
+      <ErrorNotification message={errorNotification} />
       <SuccessNotification message={successNotification} />
       <h2>Phonebook</h2>
       <FilterForm searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
@@ -48,6 +68,8 @@ const App = () => {
         setNewNumber={setNewNumber}
         successNotification={successNotification}
         setSuccessNotification={setSuccessNotification}
+        errorNotification={errorNotification}
+        setErrorNotification={setErrorNotification}
       />
       <NumbersDisplay
         persons={persons}
