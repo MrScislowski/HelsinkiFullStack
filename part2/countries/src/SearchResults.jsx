@@ -1,3 +1,5 @@
+import CountryDisplay from "./CountryDisplay";
+
 const SearchResults = (props) => {
   const { filteredCountries, countrySearch } = props;
 
@@ -6,16 +8,16 @@ const SearchResults = (props) => {
   }
 
   if (filteredCountries.length == 1) {
-    // TODO: CountryDisplay component
-    return <h1>{filteredCountries[0].name}</h1>;
+    const theCountry = filteredCountries[0];
+    return <CountryDisplay countryData={theCountry} />;
   }
 
-  const exactMatch = filteredCountries.find(
+  const exactCountryMatch = filteredCountries.find(
     (c) => c.name.toLowerCase() === countrySearch.toLowerCase()
   );
 
-  if (exactMatch) {
-    return <h1>{exactMatch.name}</h1>;
+  if (exactCountryMatch) {
+    return <CountryDisplay countryData={exactCountryMatch} />;
   }
 
   return (
