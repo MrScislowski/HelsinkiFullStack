@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import SearchResults from "./SearchResults";
 
 function App() {
   const [countrySearch, setCountrySearch] = useState("");
@@ -41,17 +42,10 @@ function App() {
         />
       </p>
 
-      <div>
-        {filteredCountries.length > 10 ? (
-          <p>too many countries; refine search</p>
-        ) : (
-          <ul>
-            {filteredCountries.map((cdata) => (
-              <li key={cdata.id}>{cdata.name}</li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <SearchResults
+        filteredCountries={filteredCountries}
+        countrySearch={countrySearch}
+      />
     </>
   );
 }
