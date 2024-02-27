@@ -45,6 +45,7 @@ function App() {
       <SearchResults
         filteredCountries={filteredCountries}
         countrySearch={countrySearch}
+        setCountrySearch={setCountrySearch}
       />
     </>
   );

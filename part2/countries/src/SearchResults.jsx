@@ -1,7 +1,8 @@
 import CountryDisplay from "./CountryDisplay";
+import CountrySelector from "./CountrySelector";
 
 const SearchResults = (props) => {
-  const { filteredCountries, countrySearch } = props;
+  const { filteredCountries, countrySearch, setCountrySearch } = props;
 
   if (filteredCountries.length > 10) {
     return <p>too many countries; refine search</p>;
@@ -23,7 +24,11 @@ const SearchResults = (props) => {
   return (
     <ul>
       {filteredCountries.map((cdata) => (
-        <li key={cdata.id}>{cdata.name}</li>
+        <CountrySelector
+          key={cdata.id}
+          countryData={cdata}
+          setCountrySearch={setCountrySearch}
+        />
       ))}
     </ul>
   );
