@@ -29,3 +29,20 @@ Effects let a component connect to and synchronize with external systems. This i
 By default, effects run after every completed render, but you can choose to fire it only when certain values have changed.
 
 Using an empty array as 2nd parameter, the effect is only run along with the first render of the component.
+
+### environment variables for Vite
+
+Running the application:
+
+```
+export VITE_SOME_KEY=54l41n3n4v41m34rv0 && npm run dev // For Linux/macOS Bash
+($env:VITE_SOME_KEY="54l41n3n4v41m34rv0") -and (npm run dev) // For Windows PowerShell
+set "VITE_SOME_KEY=54l41n3n4v41m34rv0" && npm run dev // For Windows cmd.exe
+```
+
+```javascript
+const api_key = import.meta.env.VITE_SOME_KEY;
+// variable api_key now has the value set in startup
+```
+
+NB: the environment variable name _must_ have the `VITE` prefix.
