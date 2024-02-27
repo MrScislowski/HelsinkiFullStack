@@ -51,7 +51,7 @@ const CountryDisplay = (props) => {
 
       <img src={flagUrl} />
 
-      <WeatherDisplay weather={weather} cityName={name} />
+      <WeatherDisplay weather={weather} cityName={capital} />
     </>
   );
 };
