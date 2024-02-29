@@ -386,3 +386,170 @@ delay(100) // step 1
 ```
 
 If you don't return a delay function call, it doesn't pause, because the promise is fulfilled immediately.
+
+#### basic error handling
+
+```javascript
+// step 1:
+request("http://some.url.1/")
+  // step 2:
+  .then(function (response1) {
+    foo.bar(); // undefined, error!
+
+    // never gets here
+    return request("http://some.url.2/?v=" + response1);
+  })
+  // step 3:
+  .then(
+    function fulfilled(response2) {
+      // never gets here
+    },
+    // rejection handler to catch the error
+    function rejected(err) {
+      console.log(err); // `TypeError` from `foo.bar()` error
+      return 42;
+    }
+  )
+  // step 4:
+  .then(function (msg) {
+    console.log(msg); // 42
+  });
+```
+
+If the error occurs in step 2, the rejection handler in step 3 catches it.
+If you don't have a rejection handler in step 3, step 3 gets rejected with the same reason, and the error propagates along the Promise chain until an explicitly defined rejection handler is encountered.
+
+You can do the same thing of omitting a resolution (fulfillment) handler; in that case, you're just writing a rejection handler:
+
+```javascript
+var p = Promise.resolve(42);
+
+p.then(
+  // assumed fulfillment handler, if omitted or
+  // any other non-function value passed
+  // function(v) {
+  //     return v;
+  // }
+  null,
+  function rejected(err) {
+    // never gets here
+  }
+);
+```
+
+This code has a shortcut... `p.catch(function rejected (err) ...)`
+
+#### naming. resolve vs fulfill in Promise callbacks
+
+What should you name the parameters of the callback to a promise?
+
+```javascript
+const p = new Promise(function (X, Y) {});
+```
+
+`Y` should be `reject` always.
+`X` should be `resolve` instead of `fulfill`
+
+```javascript
+var rejectedTh = {
+  then: function (resolved, rejected) {
+    rejected("Oops");
+  },
+};
+
+var rejectedPr = Promise.resolve(rejectedTh);
+
+rejectedPr.then(
+  (fulfill) => console.log("fulfilled with: ", fulfill),
+  (reject) => console.log("rejected with: ", reject)
+);
+```
+
+This promise is `resolve`d to a `reject`ed state, not a `fulfill`ed state. So resolve is the better name.
+
+#### resolve unwraps, reject does not
+
+If you pass a Promise/thenable value to `reject`, the untouched value will be set as the rejection reason.
+
+#### naming. resolve vs fulfill in `then` callbacks
+
+```javascript
+function onFulfilled(msg) {
+  console.log(msg);
+}
+
+function onRejected(err) {
+  console.error(err);
+}
+
+p.then(fulfilled, rejected);
+```
+
+The first parameter to `then` is always the fulfillment case, so there's no need for the ambiguity / duality of "resolve"
+
+#### More error handling
+
+`try..catch` doesn't work across async operations (without additional environmental support)
+
+"error first callback":
+
+```javascript
+function foo(cb) {
+  setTimeout(function () {
+    try {
+      var x = baz.bar();
+      cb(null, x); // success!
+    } catch (err) {
+      cb(err);
+    }
+  }, 100);
+}
+
+foo(function (err, val) {
+  if (err) {
+    console.log("an error was caught... here it is:");
+    console.error(err); // bummer :(
+  } else {
+    console.log("no error... here's the value:");
+    console.log(val);
+  }
+});
+```
+
+Promises don't use "error-first callback", but "split callback"... there's one callback for fulfillment, and one for rejection:
+
+```javascript
+var p = Promise.reject("Oops");
+
+p.then(
+  function fulfilled() {
+    // never gets here
+  },
+  function rejected(err) {
+    console.log(err); // "Oops"
+  }
+);
+```
+
+Errors within fulfillment code:
+
+```javascript
+var p = Promise.resolve(42);
+
+p.then(
+  function fulfilled(msg) {
+    // numbers don't have string functions,
+    // so will throw an error
+    console.log(msg.toLowerCase());
+  },
+  function rejected(err) {
+    // never gets here
+  }
+);
+```
+
+This error is swallowed up (you'd have to catch it in a `.then` chained to the end of this). Having errors swallowed is considered harmful.
+
+Promise error handling does this by default, which is problematic. Some people suggest having a `.catch` at the very end of any promise chain. But what if _that_ has an error in it. Who catches that?
+
+#### Uncaught handling
