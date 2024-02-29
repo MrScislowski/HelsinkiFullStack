@@ -46,3 +46,343 @@ const api_key = import.meta.env.VITE_SOME_KEY;
 ```
 
 NB: the environment variable name _must_ have the `VITE` prefix.
+
+## You Don't Know JS - Async & Performance Notes
+
+### [chapter 1 - ](https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch1.md)
+
+- `console.log` can actually be async, so can show confusing results. If you run into this, use `debugger` instead, or take a snapshot of the variable into an immutable string using `JSON.stringify()`, then console.log that snapshot.
+
+### [chapter 3 - promises](https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md)
+
+#### sync/async safe add function
+
+Adding two numbers which we may or may not have yet... using callbacks `cb`
+
+```javascript
+function add(getX, getY, cb) {
+  var x, y;
+  getX(function (xVal) {
+    x = xVal;
+    // both are ready?
+    if (y != undefined) {
+      cb(x + y); // send along sum
+    }
+  });
+  getY(function (yVal) {
+    y = yVal;
+    // both are ready?
+    if (x != undefined) {
+      cb(x + y); // send along sum
+    }
+  });
+}
+
+// `fetchX()` and `fetchY()` are sync or async
+// functions
+add(fetchX, fetchY, function (sum) {
+  console.log(sum); // that was easy, huh?
+});
+```
+
+...using promises
+
+```javascript
+function add(xPromise, yPromise) {
+  // `Promise.all([ .. ])` takes an array of promises,
+  // and returns a new promise that waits on them
+  // all to finish
+  return (
+    Promise.all([xPromise, yPromise])
+
+      // when that promise is resolved, let's take the
+      // received `X` and `Y` values and add them together.
+      .then(function (values) {
+        // `values` is an array of the messages from the
+        // previously resolved promises
+        return values[0] + values[1];
+      })
+  );
+}
+
+// `fetchX()` and `fetchY()` return promises for
+// their respective values, which may be ready
+// *now* or *later*.
+add(fetchX(), fetchY())
+  // we get a promise back for the sum of those
+  // two numbers.
+  // now we chain-call `then(..)` to wait for the
+  // resolution of that returned promise.
+  .then(function (sum) {
+    console.log(sum); // that was easier!
+  });
+```
+
+`Promise.all(...)` creates a promise (which is waiting on `promiseX` and `promiseY` to resolve). The chained call to `.then` creates another promise (which is immediately resolved by `return values[0] + values[1]`). The `.then` chained off the `add` function is operating on that second promise (the `.then` following the `Promise.all`). The `.then` chained to the `add` function creates another promise, but we're not chaining off it (but we could).
+
+#### fulfillment and rejection
+
+`.then(...)` call can take two functions: first for fulfillment, second for rejection.
+
+```javascript
+add(fetchX(), fetchY()).then(
+  (sum) => console.log(sum),
+  (err) => console.error(err)
+);
+```
+
+#### immutability
+
+Once a promise is resolved, it stays that way forever and becomes an immutable value, which can be observed repeatedly.
+
+#### constructing a promise
+
+```javascript
+function foo(x) {
+  // start doing something that could take a while
+
+  // construct and return a promise
+  return new Promise(function (resolve, reject) {
+    // eventually, call `resolve(..)` or `reject(..)`,
+    // which are the resolution callbacks for
+    // the promise.
+  });
+}
+
+const p = foo(42);
+```
+
+This way of making a promise uses the "revealing constructor". The person who uses it, knows the internals of the promise. But if we give the `p` object to others, they can't directly invoke them. Other functions could use it like:
+
+Approach 1:
+
+```javascript
+function bar(fooPromise) {
+  fooPromise.then(
+    function () {
+      // foo is finished, so do bar's task
+    },
+    function () {
+      // something went wrong in foo
+    }
+  );
+}
+
+// same for baz
+```
+
+Approach 2:
+
+```javascript
+const p = foo();
+
+function bar() {
+  // foo has finished, so do bar's task
+}
+
+function oopsBar() {
+  // something went wrong in foo, so bar doesn't run
+}
+
+p.then(bar, oopsBar);
+p.then(baz, oopsBaz);
+// NOT the same as p.then(bar, oopsBar).then(baz, oopsBaz)
+// that would be splitting/forking
+```
+
+#### thenable duck typing
+
+If you receive a promise from another browser window, you might not be able to use `p instanceof Promise` to see if it's a promise. (Some libraries roll their own Promises too)
+
+=> It was decided that anything with a `.then` method is a "thenable", and will be treated like a promise. This means no previous, current, or future library should ever have `.then` methods, as they'll be incorrectly treated like a promise.
+
+#### promises are always async
+
+So you don't have to be unsure about execution order / philosophy. Even this:
+
+```javascript
+new Promise(function (resolve) {
+  resolve(42);
+});
+```
+
+can only be observed by attaching a callback to `.then`, which will be executed asynchronously. As with other asynchronous stuff, order isn't guaranteed.
+
+#### resolve/reject take only one parameter
+
+(they silently ignore the rest)
+
+#### exceptions in promises
+
+The following code won't work, because `foo` hasn't been defined.
+
+```javascript
+var p = new Promise(function (resolve, reject) {
+  resolve(42);
+});
+
+p.then(
+  function fulfilled(msg) {
+    foo.bar();
+    console.log(msg); // never gets here :(
+  },
+  function rejected(err) {
+    // never gets here either :(
+  }
+);
+```
+
+The error happens upon successful resolution of the first promise, so to get this error we would have to attach to this additional promise created by the `.then`
+
+#### Promise.resolve(...) creates trustable promises
+
+You can pass a non-thenable to get a trivial promise back; these two are identical:
+
+```javascript
+var p1 = new Promise(function (resolve, reject) {
+  resolve(42);
+});
+
+var p2 = Promise.resolve(42);
+```
+
+If you pass a genuine promise in, you get the same promise back:
+
+```javascript
+var p1 = Promise.resolve(42);
+var p2 = Promise.resolve(p1);
+p1 === p2; // true
+```
+
+#### this thenable would work
+
+```javascript
+var p = {
+  then: function (cb) {
+    cb(42);
+  },
+};
+
+// this works OK, but only by good fortune
+p.then(
+  function fulfilled(val) {
+    console.log(val); // 42
+  },
+  function rejected(err) {
+    // never gets here
+  }
+);
+```
+
+#### this janky thenables could do unpredictable things
+
+```javascript
+var p = {
+  then: function (cb, errcb) {
+    cb(42);
+    errcb("evil laugh");
+  },
+};
+
+p.then(
+  function fulfilled(val) {
+    console.log(val); // 42
+  },
+  function rejected(err) {
+    // oops, shouldn't have run
+    console.log(err); // evil laugh
+  }
+);
+```
+
+#### but if we pass these to Promise.resolve, we get trustworthy promises back
+
+```javascript
+Promise.resolve(p).then(
+  function fulfilled(val) {
+    console.log(val); // 42
+  },
+  function rejected(err) {
+    // never gets here
+  }
+);
+```
+
+#### Best Practices To Wrap Promises Up
+
+```javascript
+// don't just do this:
+foo(42).then(function (v) {
+  console.log(v);
+});
+
+// instead, do this:
+Promise.resolve(foo(42)).then(function (v) {
+  console.log(v);
+});
+```
+
+Better because:
+
+- we get a well behaved promise back
+- if foo(42) actually returned synchronously, we'd be mixing sync and async code. But by wrapping in a promise, it's all async.
+
+#### Chaining promises
+
+This works because:
+
+- every time you call `.then`, it creates a new promise (that you can call `.then` on)
+- whatever you return from the `.then` fulfillment callback (first parameter) is sent as the fulfillment of the chained promise
+
+You can return promises / thenables from within the `.then` methods; they'll get unwrapped as resolutions of chained promises and it works out.
+
+```javascript
+var p = Promise.resolve(21);
+
+p.then(function (v) {
+  console.log(v); // 21
+  // create a promise to return
+  return new Promise(function (resolve, reject) {
+    // introduce asynchrony!
+    setTimeout(function () {
+      // fulfill with value `42`
+      resolve(v * 2);
+    }, 100);
+  });
+}).then(function (v) {
+  // runs after the 100ms delay in the previous step
+  console.log(v); // 42
+});
+```
+
+#### non-returning `this` methods
+
+Then an implicit `undefined` is assumed. Then these `.then` steps just cause resolution to be handled before moving on to the next step.
+
+#### a delayed chain example
+
+```javascript
+function delay(time) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(resolve, time);
+  });
+}
+
+delay(100) // step 1
+  .then(function STEP2() {
+    console.log("step 2 (after 100ms)");
+    return delay(200);
+  })
+  .then(function STEP3() {
+    console.log("step 3 (after another 200ms)");
+  })
+  .then(function STEP4() {
+    console.log("step 4 (next Job)");
+    return delay(50);
+  })
+  .then(function STEP5() {
+    console.log("step 5 (after another 50ms)");
+  });
+```
+
+If you don't return a delay function call, it doesn't pause, because the promise is fulfilled immediately.
