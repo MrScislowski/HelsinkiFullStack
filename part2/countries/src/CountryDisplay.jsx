@@ -15,16 +15,16 @@ const CountryDisplay = (props) => {
       .get(
         `http://api.openweathermap.org/geo/1.0/direct?q=${capital},${id}&limit=1&appid=${api_key}`
       )
-      .then((response) => {
-        const { lat, lon } = response.data[0];
+      .then((gps_response) => {
+        const { lat, lon } = gps_response.data[0];
         return axios.get(
           `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`
         );
       })
-      .then((response) => {
-        const temperature = response.data.main.temp - 273.15;
-        const wind = response.data.wind.speed;
-        const iconCode = response.data.weather[0].icon;
+      .then((weather_response) => {
+        const temperature = weather_response.data.main.temp - 273.15;
+        const wind = weather_response.data.wind.speed;
+        const iconCode = weather_response.data.weather[0].icon;
 
         const iconUrl = `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
 
