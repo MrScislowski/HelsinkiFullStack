@@ -553,3 +553,94 @@ This error is swallowed up (you'd have to catch it in a `.then` chained to the e
 Promise error handling does this by default, which is problematic. Some people suggest having a `.catch` at the very end of any promise chain. But what if _that_ has an error in it. Who catches that?
 
 #### Uncaught handling
+
+- some libraries have a "global unhandled rejection" handler, that fires if 3 seconds pass after a promise is rejected, and hasn't been handled. But this is a bit arbitrary, and there may be cases in which you want a promise to hold on to its rejected nature for a longer period of time.
+- another suggestion is for promises to have a `done(..)`, and that any error that happens in there gets thrown as a global uncaught error. This may be adopted in future, but isn't in ES6
+- browsers garbage collect, so may be able to catch many uncaught rejections
+
+Author's proposal:
+
+- promises default to logging any unhandled rejection
+- if you didn't want that, you could call a `defer()` method on it, which would suppress auto-reporting. It could still be handled by other handlers
+
+#### Promises Patterns
+
+`Promise.all([...])` takes an array of promises, and waits until all of them have completed. It passes on an array of fulfillment messages (in the order they were passed in, not fulfillment order). If any one of the promises is rejected, the entire construct passes on a rejection.
+
+`Promise.race([...])` will fulfill if and when any promise resolution is a fulfillment, and will reject when any resolution is a rejection. It passes on the winning fulfillment message.
+
+Promise timeout code:
+
+```javascript
+// `foo()` is a Promise-aware function
+
+// `timeoutPromise(..)`, defined ealier, returns
+// a Promise that rejects after a specified delay
+function timeoutPromise(delay) {
+  return new Promise(function (resolve, reject) {
+    setTimeout(function () {
+      reject("Timeout!");
+    }, delay);
+  });
+}
+
+// setup a timeout for `foo()`
+Promise.race([
+  foo(), // attempt `foo()`
+  timeoutPromise(3000), // give it 3 seconds
+]).then(
+  function () {
+    // `foo(..)` fulfilled in time!
+  },
+  function (err) {
+    // either `foo()` rejected, or it just
+    // didn't finish in time, so inspect
+    // `err` to know which
+  }
+);
+```
+
+#### finally
+
+This isn't a thing in ES6 promises. Some developers think it should exist to free up any resources in case the promise is rejected/times out or something.
+
+#### common but non vanilla patterns
+
+Promise patterns not built in to vanilla
+
+- `none([ .. ])` is like `all([ .. ])`, but fulfillments and rejections are transposed. All Promises need to be rejected -- rejections become the fulfillment values and vice versa.
+- `any([ .. ])` is like `all([ .. ])`, but it ignores any rejections, so only one needs to fulfill instead of all of them.
+- `first([ .. ])` is like a race with `any([ .. ])`, which is that it ignores any rejections and fulfills as soon as the first Promise fulfills.
+- `last([ .. ])` is like `first([ .. ])`, but only the latest fulfillment wins.
+
+NB: writing these myself might be really instructive. I could check answers with chatgpt or something.
+
+`Promise.none`:
+
+```javascript
+if (!Promise.none) {
+  Promise.none = (promiseArr) => {
+    const negatedPromises = promiseArr.map((p) => {
+      return new Promise((resolve, reject) => {
+        p.then(
+          (res) => reject(res),
+          (rej) => resolve(rej)
+        );
+      });
+    });
+    return Promise.all(negatedPromises);
+  };
+}
+```
+
+```javascript
+Promise.any;
+```
+
+```javascript
+Promise.first;
+```
+
+```javascript
+Promise.last;
+```
