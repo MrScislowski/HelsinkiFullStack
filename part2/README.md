@@ -633,14 +633,86 @@ if (!Promise.none) {
 }
 ```
 
-```javascript
-Promise.any;
-```
+`Promise.any`
+
+My version:
 
 ```javascript
-Promise.first;
+if (!Promise.any) {
+  Promise.any = function (pa) {
+    pa.forEach((p) => {
+      p.then((v) => {
+        return v;
+      });
+    });
+  };
+}
 ```
 
+`Promise.first`
+
 ```javascript
-Promise.last;
+if (!Promise.first) {
+  Promise.first = function (pa) {
+    return new Promise((resolve, reject) => {
+      pa.forEach((p) => {
+        p.then(
+          (fulfillment) => resolve(fulfillment),
+          () => console.log("rejected, but no worries")
+        );
+      });
+    });
+  };
+}
+```
+
+textbook version:
+
+```javascript
+// polyfill-safe guard check
+if (!Promise.first) {
+  Promise.first = function (prs) {
+    return new Promise(function (resolve, reject) {
+      // loop through all promises
+      prs.forEach(function (pr) {
+        // normalize the value
+        Promise.resolve(pr)
+          // whichever one fulfills first wins, and
+          // gets to resolve the main promise
+          .then(resolve);
+      });
+    });
+  };
+}
+```
+
+`Promise.last`
+
+```javascript
+if (!Promise.last) {
+  Promise.last = function (pa) {
+    return new Promise((resolve, reject) => {
+      let remaining = pa.length;
+      let mostRecent = null;
+      pa.forEach((p) => {
+        Promise.resolve(p)
+          .then(() => {
+            mostRecent = p;
+            remaining--;
+            if (remaining === 0) {
+              return resolve(mostRecent);
+            }
+          })
+          .catch(() => {
+            remaining--;
+            if (remaining === 0 && mostRecent) {
+              return resolve(mostRecent);
+            } else if (remaining === 0) {
+              return reject("no promises resolved");
+            }
+          });
+      });
+    });
+  };
+}
 ```
