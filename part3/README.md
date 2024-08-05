@@ -105,4 +105,17 @@ function(req, res) {
 
 ## Rest clients:
 
-https://fullstackopen.com/en/part3/node_js_and_express#postman
+- curl
+- postman (desktop app, or run in vscode)
+- VSCode REST Client by huachao mao
+- IntelliJ Webstorm - create a file with extension .rest
+
+
+## Parsing JSON in express
+
+Registering the built-in middleware function parses the request body, and attaches it to `req.body`:
+
+```js
+app.use(express.json())
+```
+
