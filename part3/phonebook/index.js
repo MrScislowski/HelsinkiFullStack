@@ -1,4 +1,6 @@
 const express = require('express')
+var morgan = require('morgan')
+
 const app = express()
 
 let persons = [
@@ -25,6 +27,7 @@ let persons = [
 ]
 
 app.use(express.json())
+app.use(morgan("tiny"))
 
 app.get("/api/persons", (req, res) => {
   res.json(persons)
@@ -40,7 +43,6 @@ app.get("/api/persons/:id", (req, res) => {
 
   const id = req.params.id
   const entry = persons.find(person => person.id === id);
-  console.log(`found person is: ${JSON.stringify(entry)}`)
   if (entry) {
     res.json(entry)
   } else {
