@@ -1,2 +1,6 @@
-###
+
+### All people
 GET http://localhost:3001/api/persons
+
+### Info (# phonebook entries, timestamp)
+GET http://localhost:3001/info
