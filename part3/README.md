@@ -230,7 +230,19 @@ Then
 fly deploy
 ```
 
+To check the number of allocated machines, did
 
+```
+fly scale show
+```
+
+Then to insist I only want to use one machine:
+
+```
+fly scale count 1
+```
+
+And now `https://phonebook-silent-mountain-480.fly.dev/` is working!
 
 ## Services
 
