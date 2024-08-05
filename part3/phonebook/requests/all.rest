@@ -1,9 +1,12 @@
 
-### All entries
+### Get all entries
 GET http://localhost:3001/api/persons
 
-### Info (# phonebook entries, timestamp)
+### Get info (# phonebook entries, timestamp)
 GET http://localhost:3001/info
 
-### Single entry
+### Get single entry
 GET http://localhost:3001/api/persons/3
+
+### Delete single entry
+DELETE http://localhost:3001/api/persons/3
