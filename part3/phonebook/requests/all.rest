@@ -11,7 +11,32 @@ GET http://localhost:3001/api/persons/3
 ### Delete single entry
 DELETE http://localhost:3001/api/persons/3
 
-### Add a single entry
+### Add a single entry correctly
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Alan Turing", 
+  "number": "56-78-910111"
+}
+
+### Fail to add a single entry - name missing
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "number": "12345"
+}
+
+### Fail to add a single entry - number missing
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "Don Knuth"
+}
+
+### Fail to add a single entry - name not unique
 POST http://localhost:3001/api/persons
 Content-Type: application/json
 
