@@ -119,3 +119,42 @@ Registering the built-in middleware function parses the request body, and attach
 app.use(express.json())
 ```
 
+## HTTP GET & HEAD should be safe
+
+GET and HEAD methods should not cause any side effects on the server (e.g. change the state of the DB).
+
+## HTTP requests (except POST) should be idempotent
+
+(running them more than once is the same as running them once)
+
+## middleware
+
+Receives 3 parameters, and calls `next` at the end of the function body to yield control to the next middleware
+
+e.g:
+
+```js
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+```
+
+We use it at the top of the routing file like:
+
+```js
+app.use(requestLogger)
+```
+
+After our routes, we could define a middleware to catch all unknown routes
+
+```js
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(unknownEndpoint)
+```
