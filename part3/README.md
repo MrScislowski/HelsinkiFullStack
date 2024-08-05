@@ -244,6 +244,47 @@ fly scale count 1
 
 And now `https://phonebook-silent-mountain-480.fly.dev/` is working!
 
+Also, I deployed it on render: `https://helsinkifullstack.onrender.com/`
+
+
+## Hosting frontend from within backend
+
+`npm run build` creates a production build, which creates a `dist` directory containing `index.html`, and a minified javascript file. You can then copy this `dist` directory into the backend repo, then tell express to show that static content:
+
+```
+app.use(express.static('dist'))
+```
+
+## Scripts to rebuild frontend & re-host
+
+
+For fly
+``` json
+{
+  "scripts": {
+    // ...
+    "build:ui": "rm -rf dist && cd ../notes-frontend/ && npm run build && cp -r dist ../notes-backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",    
+    "logs:prod": "fly logs"
+  }
+}
+```
+
+For render:
+
+```json
+{
+  "scripts": {
+    //...
+    "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
+    "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && git push"
+  }
+}
+```
+
+(I'll prefix all these unix commands with `shx` so they work on windows or unix)
+
 ## Services
 
 ### Platform as a Service (PaaS)
