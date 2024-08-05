@@ -158,3 +158,102 @@ const unknownEndpoint = (request, response) => {
 
 app.use(unknownEndpoint)
 ```
+
+## Same Origin Policy & CORS
+
+Consider this url: `http://example.com:80/index.html`
+
+It has a protocol (aka scheme) of "http".
+The host is "example.com".
+The port is 80.
+
+You visit example.com, and the response is an HTML file with references to external assets/resources. If their URLs have the same scheme+host+port, the browser processes the response without any issues.
+
+If the scheme+host+port isn't the same, the browser will check the `Access-Control-Allow-origin` response header. If it contains "*" on the URL of the source HTML, it will process the response. Otherwise it will throw an error.
+
+This is a security mechanism called `same-origin policy` that is implemented by browsers.
+
+CORS makes this flexible:
+
+```
+Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources (e.g. fonts) on a web page to be requested from another domain outside the domain from which the first resource was served. A web page may freely embed cross-origin images, stylesheets, scripts, iframes, and videos. Certain "cross-domain" requests, notably Ajax requests, are forbidden by default by the same-origin security policy.
+```
+
+Since our backend is running on `http://localhost:3001` and our frontend on `http://localhost:5173`, they do not have the same origin.
+
+We can allow requests from other origins by using Node's `cors` middleware
+
+```
+pnpm install cors
+```
+
+```
+const cors = require("cors")
+app.use(cors())
+```
+
+## Hosting on Fly.io
+
+On backend index.js change to:
+
+```js
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
+})
+```
+
+Follow [installation instructions](https://fly.io/docs/flyctl/install/) that required:
+
+```powershell
+powershell.exe -Command "iwr https://fly.io/install.ps1 -useb | iex"
+```
+
+Then I signed up for an account.
+
+Then
+
+```powershell
+fly auth login
+```
+
+Initializing the app using:
+
+```
+fly launch --no-deploy
+```
+
+Causes a fly.toml file, Dockerfile and .dockerignore to be created.
+
+Then 
+```
+fly deploy
+```
+
+
+
+## Services
+
+### Platform as a Service (PaaS)
+
+e.g. Heroku. Developers don't have to worry about servers and infrastructure.
+
+### Infrastructure as a Service (IaaS)
+
+e.g. AWS. Provides compute, storage, networking, etc.
+
+### Function as a Service (FaaS)
+
+Running specific functions or pieces of code without managing the underlying infrastructure.
+
+Example: AWS Lambda, Google Cloud Functions
+
+### Containers as a Service (CaaS)
+
+Focus: Managing and deploying containerized applications.
+Example: Docker, Kubernetes
+
+### Database as a Service (DBaaS)
+
+Focus: Managing and providing database services without the complexities of database administration.
+Example: Amazon RDS, Google Cloud SQL
