@@ -349,6 +349,55 @@ note.save().then(result => {
 })
 ```
 
+## Authentication using env
+
+```
+pnpm install dotenv
+```
+
+`.env` file:
+```
+MONGODB_URI="mongodb+srv://fullstack:password@db.gwcmebp.mongodb.net/?retryWrites=true&w=majority&appName=db"
+```
+
+`.gitignore` file:
+```
+.env
+```
+
+any `.js` file that you want to use the environment variable:
+
+```js
+require('dotenv').config()
+const url = process.env.MONGODB_URI
+```
+
+## env authentication on fly.io
+
+- make sure `.env` is listed in the `.dockerignore`
+- run
+  ```sh
+  fly secrets set
+  MONGODB_URI="momongodb+srv://fullstack:thepasswordishere@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority"
+  ```
+
+## have mongoose ignore the __v and rename _id to id:
+
+```js
+noteSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
+})
+```
+
+
+
+
+
+
 
 
 ## Services
