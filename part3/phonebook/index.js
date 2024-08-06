@@ -1,32 +1,16 @@
 const express = require('express')
-var morgan = require('morgan')
+const morgan = require('morgan')
+const cors = require("cors")
+
+
+require('dotenv').config()
+
+const Person = require('./models/Person')
 
 const app = express()
 
-let persons = [
-  { 
-    "id": "1",
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": "2",
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": "3",
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": "4",
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
-
 app.use(express.json())
+app.use(cors())
 app.use(express.static('dist'))
 
 app.use(morgan((tokens, req, res) => {
@@ -41,36 +25,41 @@ app.use(morgan((tokens, req, res) => {
 }))
 
 app.get("/api/persons", (req, res) => {
-  res.json(persons)
+  Person.find({}).then(persons => {
+    res.json(persons)
+  })
 })
 
 app.get("/info", (req, res) => {
-  const message = `Phonebook has info for ${persons.length} people <br /> ${new Date().toUTCString()}`
-
-  res.send(message)
+  Person.find({}).then(persons => {
+    const message = `Phonebook has info for ${persons.length} people <br /> ${new Date().toUTCString()}`
+    res.send(message)
+  })
 })
 
 app.get("/api/persons/:id", (req, res) => {
 
   const id = req.params.id
-  const entry = persons.find(person => person.id === id);
-  if (entry) {
-    res.json(entry)
-  } else {
-    res.status(404).end()
-  }
+  Person.findOne({_id: id}).then(person => {
+    if (person) {
+      return res.json(person)
+    } else {
+      return res.status(404).end()
+    }
+  })
 })
 
 app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id
-  persons = persons.filter(person => person.id !== id);
-
-  res.status(204).end()
+  Person.findOneAndDelete({_id: id}).then(response => {
+    if (response) {
+      return res.json(response).status(204).end()
+    } else {
+      return res.status(404).end()
+    }
+    
+  })
 })
-
-const generateId = () => {
-  return Math.floor(Math.random() * 1000000)
-}
 
 app.post("/api/persons", (req, res) => {
   const providedBody = req.body;

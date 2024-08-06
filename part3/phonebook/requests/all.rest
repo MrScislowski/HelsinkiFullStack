@@ -1,19 +1,19 @@
 ########## LOCALHOST ##########
 
 ### Get all entries
-GET https://phonebook-silent-mountain-480.fly.dev/api/persons
+GET http://localhost:3001/api/persons
 
 ### Get info (# phonebook entries, timestamp)
-GET https://phonebook-silent-mountain-480.fly.dev/info
+GET http://localhost:3001/info
 
 ### Get single entry
-GET https://phonebook-silent-mountain-480.fly.dev/api/persons/3
+GET http://localhost:3001/api/persons/66b26d27ea8b1a8fe3c51eda
 
 ### Delete single entry
-DELETE https://phonebook-silent-mountain-480.fly.dev/api/persons/3
+DELETE http://localhost:3001/api/persons/66b26d27ea8b1a8fe3c51eda
 
 ### Add a single entry correctly
-POST https://phonebook-silent-mountain-480.fly.dev/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
@@ -22,7 +22,7 @@ Content-Type: application/json
 }
 
 ### Fail to add a single entry - name missing
-POST https://phonebook-silent-mountain-480.fly.dev/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### Fail to add a single entry - number missing
-POST https://phonebook-silent-mountain-480.fly.dev/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
@@ -38,7 +38,7 @@ Content-Type: application/json
 }
 
 ### Fail to add a single entry - name not unique
-POST https://phonebook-silent-mountain-480.fly.dev/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
