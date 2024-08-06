@@ -308,6 +308,12 @@ export default defineConfig({
 })
 ```
 
+## MongoDB
+
+```
+The reason for using Mongo as the database is its lower complexity compared to a relational database. Part 13 of the course shows how to build Node.js backends that use a relational database.
+```
+
 ## Services
 
 ### Platform as a Service (PaaS)
