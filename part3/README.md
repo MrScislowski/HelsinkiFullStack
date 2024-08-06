@@ -285,6 +285,29 @@ For render:
 
 (I'll prefix all these unix commands with `shx` so they work on windows or unix)
 
+## Proxies in vite config
+
+If frontend is deployed in `dist` within backend distribution, you can use relative URLs to fetch backend data from the frontend. But when developing locally, this will cause URL errors (as the two services run on different ports). To fix this, you can add a proxy in the frontend `vite.config.js`:
+
+```js
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    }
+  },
+})
+```
+
 ## Services
 
 ### Platform as a Service (PaaS)
