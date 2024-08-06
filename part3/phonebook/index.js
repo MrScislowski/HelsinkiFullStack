@@ -72,19 +72,19 @@ app.post("/api/persons", (req, res) => {
     return res.status(400).json({error: "missing number"})
   }
 
-  if (persons.find(person => person.name === providedBody.name)) {
-    return res.status(409).json({error: "name must be unique"});
-  }
+  // // Ignore this check, according to https://fullstackopen.com/en/part3/saving_data_to_mongo_db#exercises-3-13-3-14
+  // if (persons.find(person => person.name === providedBody.name)) {
+  //   return res.status(409).json({error: "name must be unique"});
+  // }
 
-  const newEntry = {
-    id: generateId(),
+  const proposedNewEntry = new Person({
     name: providedBody.name,
     number: providedBody.number,
-  }
+  })
 
-  persons = persons.concat(newEntry);
-
-  res.json(newEntry)
+  proposedNewEntry.save().then(result => {
+    res.json(result)
+  })
 })
 
 
