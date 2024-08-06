@@ -310,9 +310,46 @@ export default defineConfig({
 
 ## MongoDB
 
+### connecting
+
 ```
 The reason for using Mongo as the database is its lower complexity compared to a relational database. Part 13 of the course shows how to build Node.js backends that use a relational database.
 ```
+
+This is my atlas connection string:
+
+```mongodb+srv://danieljscislowski:<password>@cluster0.chxji.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0```
+
+This connection string will put it in the database called "helsinkifullstackPhonebook":
+
+```mongodb+srv://danieljscislowski:${password}@cluster0.chxji.mongodb.net/helsinkifullstackPhonebook?retryWrites=true&w=majority&appName=Cluster0```
+
+### schema w/ Mongoose
+
+```js
+// create schema
+const noteSchema = new mongoose.Schema({
+  content: String,
+  important: Boolean,
+})
+
+// create model
+const Note = mongoose.model('Note', noteSchema)
+
+// create instance
+const note = new Note({
+  content: 'HTML is Easy',
+  important: false,
+})
+
+// save to database
+note.save().then(result => {
+  console.log('note saved!')
+  mongoose.connection.close()
+})
+```
+
+
 
 ## Services
 
