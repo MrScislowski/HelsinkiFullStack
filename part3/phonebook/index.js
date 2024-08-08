@@ -26,12 +26,12 @@ app.use(morgan((tokens, req, res) => {
 
 const errorHandler = (error, req, res, next) => {
 
-  console.log("Error being handled by error handler...")
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })
-  } 
-  console.log(`An error has happened!!!`);
-  console.log(`error: ${JSON.stringify(error)}`)
+  } else if (error.name === "ValidationError") {
+    return res.status(400).json({ error: error.message })
+  }
+  console.log(`Error handler got: ${JSON.stringify(error)}`)
   next(error)
 }
 
@@ -127,7 +127,7 @@ app.put("/api/persons/:id", (req, res, next) => {
     number:req.body.number,
   }
 
-  Person.findOneAndUpdate({_id: id}, proposedNewEntry, {new: true})
+  Person.findOneAndUpdate({_id: id}, proposedNewEntry, {new: true, runValidators: true, context: 'query'})
   .then(updated => res.json(updated))
   .catch(error => next(error))
 })

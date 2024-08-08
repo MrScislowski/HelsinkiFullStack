@@ -49,14 +49,12 @@ const AddEntryForm = (props) => {
                 );
                 setTimeout(() => setSuccessNotification(null), 3000);
               })
-              .catch((_err) => {
+              .catch((err) => {
                 //
                 setNewName("");
                 setNewNumber("");
 
-                setErrorNotification(
-                  `Unable to update ${updatedPerson.name}. Their info is no longer in the database`
-                );
+                setErrorNotification(err.response.data.error);
                 setTimeout(() => setErrorNotification(null), 3000);
               });
           } else {
@@ -75,7 +73,8 @@ const AddEntryForm = (props) => {
                 setTimeout(() => setSuccessNotification(null), 3000);
               })
               .catch((err) => {
-                console.log(`error adding person`, err);
+                setErrorNotification(err.response.data.error);
+                setTimeout(() => setErrorNotification(null), 3000);
               });
           }
         }}

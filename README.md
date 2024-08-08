@@ -33,6 +33,10 @@ https://studies.cs.helsinki.fi/stats/courses/fullstackopen
 
 Learning Promises well, [from You Don't Know JS](https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md), keeps getting recommended
 
+## Using `nvm` to manage node versions
+
+`nvm use node` updates to the newest version
+
 ## Misc Notes
 
 ## Services

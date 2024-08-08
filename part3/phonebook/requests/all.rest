@@ -55,6 +55,24 @@ Content-Type: application/json
   "number": "555"
 }
 
+### Fail to add a single entry - name too short
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "ab", 
+  "number": "911"
+}
+
+### Fail to update an existing name with new number b/c new name too short
+PUT http://localhost:3001/api/persons/66b4ec0e5d1097490942cf45
+Content-Type: application/json
+
+{
+  "name": "a",
+  "number": "555"
+}
+
 ########## fly.io ##########
 ### Get all entries
 GET https://phonebook-silent-mountain-480.fly.dev/api/persons
