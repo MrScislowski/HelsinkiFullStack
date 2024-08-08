@@ -487,3 +487,77 @@ Can add this to the error handler too:
     return response.status(400).json({ error: error.message })
   }
 ```
+
+## Linting using eslint
+
+```
+pnpm install eslint @eslint/js --save-dev
+npx eslint --init
+pnpm install --save-dev @stylistic/eslint-plugin-js
+```
+
+Change `eslint.config.mjs` file to contain:
+
+```mjs
+import globals from "globals";
+import js from '@eslint/js'
+import stylisticJs from '@stylistic/eslint-plugin-js'
+
+
+export default [
+  js.configs.recommended,
+  {
+    plugins: {
+      '@stylistic/js': stylisticJs
+    },
+    rules: {
+      '@stylistic/js/indent': [
+        'error',
+        2
+      ],
+      '@stylistic/js/linebreak-style': [
+        'error',
+        'unix'
+      ],
+      '@stylistic/js/quotes': [
+        'error',
+        'single'
+      ],
+      '@stylistic/js/semi': [
+        'error',
+        'never'
+      ],
+    },
+
+    files: ["**/*.js"],
+    ignores: ["dist/**"],
+    languageOptions: {
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+      },
+      ecmaVersion: "latest",
+    },
+  },
+]
+```
+
+Inspect a file with `npx eslint index.js`, or put a npm script in package.json:
+
+```json
+"scripts": {
+  // ...
+  "lint": "eslint ."
+}
+```
+
+Install [VSCode Eslint plugin](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+NB: AirBnb's ESlint is [here](https://github.com/airbnb/javascript/tree/master/packages/eslint-config-airbnb)
+
+### Fixing as well as flagging problems
+
+Use the `--fix` option
+```
+npx eslint --fix index.js
+```

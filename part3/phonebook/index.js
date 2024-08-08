@@ -1,6 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
-const cors = require("cors")
+const cors = require('cors')
 
 
 require('dotenv').config()
@@ -19,16 +19,16 @@ app.use(morgan((tokens, req, res) => {
     tokens.url(req, res),
     tokens.status(req, res),
     tokens.res(req, res, 'content-length'), '-',
-    tokens['response-time'](req, res), 'ms', 
-    tokens.method(req, res) === "POST" ? JSON.stringify(req.body) : ""
-  ].join(" ")
+    tokens['response-time'](req, res), 'ms',
+    tokens.method(req, res) === 'POST' ? JSON.stringify(req.body) : ''
+  ].join(' ')
 }))
 
 const errorHandler = (error, req, res, next) => {
 
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === "ValidationError") {
+  } else if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message })
   }
   console.log(`Error handler got: ${JSON.stringify(error)}`)
@@ -36,44 +36,44 @@ const errorHandler = (error, req, res, next) => {
 }
 
 
-app.get("/api/persons", (req, res, next) => {
+app.get('/api/persons', (req, res, next) => {
   Person.find({})
-  .then(persons => {
-    res.json(persons)
-  })
-  .catch(error => next(error))
+    .then(persons => {
+      res.json(persons)
+    })
+    .catch(error => next(error))
 })
 
-app.get("/info", (req, res, next) => {
+app.get('/info', (req, res, next) => {
   Person.find({})
-  .then(persons => {
-    const message = `Phonebook has info for ${persons.length} people <br /> ${new Date().toUTCString()}`
-    res.send(message)
-  })
-  .catch(error => next(error))
+    .then(persons => {
+      const message = `Phonebook has info for ${persons.length} people <br /> ${new Date().toUTCString()}`
+      res.send(message)
+    })
+    .catch(error => next(error))
 })
 
-app.get("/api/persons/:id", (req, res, next) => {
+app.get('/api/persons/:id', (req, res, next) => {
 
   const id = req.params.id
-  Person.findOne({_id: id})
-  .then(person => {
-    if (person) {
-      return res.json(person)
-    } else {
-      return res.status(404).end()
-    }
-  })
-  .catch(error => {
-    console.log("An error has happened...")
-    console.log(`Error name is ${error.name}`)
-    next(error)
-  })
+  Person.findOne({ _id: id })
+    .then(person => {
+      if (person) {
+        return res.json(person)
+      } else {
+        return res.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log('An error has happened...')
+      console.log(`Error name is ${error.name}`)
+      next(error)
+    })
 })
 
-app.delete("/api/persons/:id", (req, res, next) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
-  Person.findOneAndDelete({_id: id})
+  Person.findOneAndDelete({ _id: id })
     .then(response => {
       if (response) {
         return res.json(response).status(204).end()
@@ -84,15 +84,15 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post("/api/persons", (req, res, next) => {
-  const providedBody = req.body;
+app.post('/api/persons', (req, res, next) => {
+  const providedBody = req.body
 
   // check that name exists, number exists, name is unique
   if (!providedBody.name) {
-    return res.status(400).json({error: "missing name"})
+    return res.status(400).json({ error: 'missing name' })
   }
   if (!providedBody.number) {
-    return res.status(400).json({error: "missing number"})
+    return res.status(400).json({ error: 'missing number' })
   }
 
   // // Ignore this check, according to https://fullstackopen.com/en/part3/saving_data_to_mongo_db#exercises-3-13-3-14
@@ -106,30 +106,30 @@ app.post("/api/persons", (req, res, next) => {
   })
 
   proposedNewEntry.save()
-  .then(result => {
-    res.json(result)
-  })
-  .catch(error => next(error))
+    .then(result => {
+      res.json(result)
+    })
+    .catch(error => next(error))
 })
 
-app.put("/api/persons/:id", (req, res, next) => {
+app.put('/api/persons/:id', (req, res, next) => {
   const id = req.params.id
 
   if (!req.body.name) {
-    return res.status(400).json({error: "missing name"})
+    return res.status(400).json({ error: 'missing name' })
   }
   if (!req.body.number) {
-    return res.status(400).json({error: "missing number"})
+    return res.status(400).json({ error: 'missing number' })
   }
 
   const proposedNewEntry = {
-    name: req.body.name, 
+    name: req.body.name,
     number:req.body.number,
   }
 
-  Person.findOneAndUpdate({_id: id}, proposedNewEntry, {new: true, runValidators: true, context: 'query'})
-  .then(updated => res.json(updated))
-  .catch(error => next(error))
+  Person.findOneAndUpdate({ _id: id }, proposedNewEntry, { new: true, runValidators: true, context: 'query' })
+    .then(updated => res.json(updated))
+    .catch(error => next(error))
 })
 
 app.use(errorHandler)
