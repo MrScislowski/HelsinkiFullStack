@@ -51,14 +51,18 @@ app.get("/api/persons/:id", (req, res) => {
 
 app.delete("/api/persons/:id", (req, res) => {
   const id = req.params.id
-  Person.findOneAndDelete({_id: id}).then(response => {
-    if (response) {
-      return res.json(response).status(204).end()
-    } else {
-      return res.status(404).end()
-    }
-    
-  })
+  Person.findOneAndDelete({_id: id})
+    .then(response => {
+      if (response) {
+        return res.json(response).status(204).end()
+      } else {
+        return res.status(404).end()
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      res.status(500).end()
+    })
 })
 
 app.post("/api/persons", (req, res) => {
