@@ -112,6 +112,26 @@ app.post("/api/persons", (req, res, next) => {
   .catch(error => next(error))
 })
 
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id
+
+  if (!req.body.name) {
+    return res.status(400).json({error: "missing name"})
+  }
+  if (!req.body.number) {
+    return res.status(400).json({error: "missing number"})
+  }
+
+  const proposedNewEntry = {
+    name: req.body.name, 
+    number:req.body.number,
+  }
+
+  Person.findOneAndUpdate({_id: id}, proposedNewEntry, {new: true})
+  .then(updated => res.json(updated))
+  .catch(error => next(error))
+})
+
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001

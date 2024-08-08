@@ -46,6 +46,15 @@ Content-Type: application/json
   "number": "56-78-910111"
 }
 
+### Update an existing name with new number
+PUT http://localhost:3001/api/persons/66b4ec0e5d1097490942cf45
+Content-Type: application/json
+
+{
+  "name": "person99",
+  "number": "555"
+}
+
 ########## fly.io ##########
 ### Get all entries
 GET https://phonebook-silent-mountain-480.fly.dev/api/persons
