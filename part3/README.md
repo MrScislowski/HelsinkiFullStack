@@ -434,5 +434,5 @@ app.get("/api/notes/:id", (request, response, next) => {
 ## middleware order
 
 - `app.use(express.json())` should be first, so that `req.body` is available
-- the `unknownEndpoint` handler should come after all the route definitions
+- the `unknownEndpoint` handler should come after all the route definitions (express handles each middleware in the order it's defined, so if you define middleware after the error one, it won't be able to throw errors to the error handler)
 - the error handling middleware has to be the _last_ defined middleware
