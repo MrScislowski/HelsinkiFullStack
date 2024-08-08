@@ -110,13 +110,12 @@ function(req, res) {
 - VSCode REST Client by huachao mao
 - IntelliJ Webstorm - create a file with extension .rest
 
-
 ## Parsing JSON in express
 
 Registering the built-in middleware function parses the request body, and attaches it to `req.body`:
 
 ```js
-app.use(express.json())
+app.use(express.json());
 ```
 
 ## HTTP GET & HEAD should be safe
@@ -135,28 +134,28 @@ e.g:
 
 ```js
 const requestLogger = (request, response, next) => {
-  console.log('Method:', request.method)
-  console.log('Path:  ', request.path)
-  console.log('Body:  ', request.body)
-  console.log('---')
-  next()
-}
+  console.log("Method:", request.method);
+  console.log("Path:  ", request.path);
+  console.log("Body:  ", request.body);
+  console.log("---");
+  next();
+};
 ```
 
 We use it at the top of the routing file like:
 
 ```js
-app.use(requestLogger)
+app.use(requestLogger);
 ```
 
 After our routes, we could define a middleware to catch all unknown routes
 
 ```js
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
-}
+  response.status(404).send({ error: "unknown endpoint" });
+};
 
-app.use(unknownEndpoint)
+app.use(unknownEndpoint);
 ```
 
 ## Same Origin Policy & CORS
@@ -169,7 +168,7 @@ The port is 80.
 
 You visit example.com, and the response is an HTML file with references to external assets/resources. If their URLs have the same scheme+host+port, the browser processes the response without any issues.
 
-If the scheme+host+port isn't the same, the browser will check the `Access-Control-Allow-origin` response header. If it contains "*" on the URL of the source HTML, it will process the response. Otherwise it will throw an error.
+If the scheme+host+port isn't the same, the browser will check the `Access-Control-Allow-origin` response header. If it contains "\*" on the URL of the source HTML, it will process the response. Otherwise it will throw an error.
 
 This is a security mechanism called `same-origin policy` that is implemented by browsers.
 
@@ -197,10 +196,10 @@ app.use(cors())
 On backend index.js change to:
 
 ```js
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`);
+});
 ```
 
 Follow [installation instructions](https://fly.io/docs/flyctl/install/) that required:
@@ -225,7 +224,8 @@ fly launch --no-deploy
 
 Causes a fly.toml file, Dockerfile and .dockerignore to be created.
 
-Then 
+Then
+
 ```
 fly deploy
 ```
@@ -246,7 +246,6 @@ And now `https://phonebook-silent-mountain-480.fly.dev/` is working!
 
 Also, I deployed it on render: `https://helsinkifullstack.onrender.com/`
 
-
 ## Hosting frontend from within backend
 
 `npm run build` creates a production build, which creates a `dist` directory containing `index.html`, and a minified javascript file. You can then copy this `dist` directory into the backend repo, then tell express to show that static content:
@@ -257,15 +256,15 @@ app.use(express.static('dist'))
 
 ## Scripts to rebuild frontend & re-host
 
-
 For fly
-``` json
+
+```json
 {
   "scripts": {
     // ...
     "build:ui": "rm -rf dist && cd ../notes-frontend/ && npm run build && cp -r dist ../notes-backend",
     "deploy": "fly deploy",
-    "deploy:full": "npm run build:ui && npm run deploy",    
+    "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs"
   }
 }
@@ -290,8 +289,8 @@ For render:
 If frontend is deployed in `dist` within backend distribution, you can use relative URLs to fetch backend data from the frontend. But when developing locally, this will cause URL errors (as the two services run on different ports). To fix this, you can add a proxy in the frontend `vite.config.js`:
 
 ```js
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -299,13 +298,13 @@ export default defineConfig({
 
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
+      "/api": {
+        target: "http://localhost:3001",
         changeOrigin: true,
       },
-    }
+    },
   },
-})
+});
 ```
 
 ## MongoDB
@@ -318,11 +317,11 @@ The reason for using Mongo as the database is its lower complexity compared to a
 
 This is my atlas connection string:
 
-```mongodb+srv://danieljscislowski:<password>@cluster0.chxji.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0```
+`mongodb+srv://danieljscislowski:<password>@cluster0.chxji.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`
 
 This connection string will put it in the database called "helsinkifullstackPhonebook":
 
-```mongodb+srv://danieljscislowski:${password}@cluster0.chxji.mongodb.net/helsinkifullstackPhonebook?retryWrites=true&w=majority&appName=Cluster0```
+`mongodb+srv://danieljscislowski:${password}@cluster0.chxji.mongodb.net/helsinkifullstackPhonebook?retryWrites=true&w=majority&appName=Cluster0`
 
 ### schema w/ Mongoose
 
@@ -331,22 +330,22 @@ This connection string will put it in the database called "helsinkifullstackPhon
 const noteSchema = new mongoose.Schema({
   content: String,
   important: Boolean,
-})
+});
 
 // create model
-const Note = mongoose.model('Note', noteSchema)
+const Note = mongoose.model("Note", noteSchema);
 
 // create instance
 const note = new Note({
-  content: 'HTML is Easy',
+  content: "HTML is Easy",
   important: false,
-})
+});
 
 // save to database
-note.save().then(result => {
-  console.log('note saved!')
-  mongoose.connection.close()
-})
+note.save().then((result) => {
+  console.log("note saved!");
+  mongoose.connection.close();
+});
 ```
 
 ## Authentication using env
@@ -356,11 +355,13 @@ pnpm install dotenv
 ```
 
 `.env` file:
+
 ```
 MONGODB_URI="mongodb+srv://fullstack:password@db.gwcmebp.mongodb.net/?retryWrites=true&w=majority&appName=db"
 ```
 
 `.gitignore` file:
+
 ```
 .env
 ```
@@ -368,8 +369,8 @@ MONGODB_URI="mongodb+srv://fullstack:password@db.gwcmebp.mongodb.net/?retryWrite
 any `.js` file that you want to use the environment variable:
 
 ```js
-require('dotenv').config()
-const url = process.env.MONGODB_URI
+require("dotenv").config();
+const url = process.env.MONGODB_URI;
 ```
 
 ## env authentication on fly.io
@@ -381,47 +382,57 @@ const url = process.env.MONGODB_URI
   MONGODB_URI="momongodb+srv://fullstack:thepasswordishere@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority"
   ```
 
-## have mongoose ignore the __v and rename _id to id:
+## have mongoose ignore the \_\_v and rename \_id to id:
 
 ```js
-noteSchema.set('toJSON', {
+noteSchema.set("toJSON", {
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
-})
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  },
+});
 ```
 
+## error handling middleware
 
+Error handlers in express take 4 arguments instead of 3: `(error, req, res, next)`. Whenever `next` is called with one argument instead of none, the error handler is called instead of the other middlewares.
 
+Defining error handling middleware:
 
+```js
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
 
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
 
+  next(error);
+};
 
+// this has to be the last loaded middleware, also all the routes should be registered before this!
+app.use(errorHandler);
+```
 
-## Services
+Using error handling middleware:
 
-### Platform as a Service (PaaS)
+```js
+app.get("/api/notes/:id", (request, response, next) => {
+  Note.findById(request.params.id)
+    .then((note) => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => next(error));
+});
+```
 
-e.g. Heroku. Developers don't have to worry about servers and infrastructure.
+## middleware order
 
-### Infrastructure as a Service (IaaS)
-
-e.g. AWS. Provides compute, storage, networking, etc.
-
-### Function as a Service (FaaS)
-
-Running specific functions or pieces of code without managing the underlying infrastructure.
-
-Example: AWS Lambda, Google Cloud Functions
-
-### Containers as a Service (CaaS)
-
-Focus: Managing and deploying containerized applications.
-Example: Docker, Kubernetes
-
-### Database as a Service (DBaaS)
-
-Focus: Managing and providing database services without the complexities of database administration.
-Example: Amazon RDS, Google Cloud SQL
+- `app.use(express.json())` should be first, so that `req.body` is available
+- the `unknownEndpoint` handler should come after all the route definitions
+- the error handling middleware has to be the _last_ defined middleware

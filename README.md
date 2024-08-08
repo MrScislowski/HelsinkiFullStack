@@ -27,13 +27,36 @@ package.json:
     "test": "echo \"Error: no test specified\" && exit 1"
 ```
 
-
-
-
 ## Submitting Exercises
 
 https://studies.cs.helsinki.fi/stats/courses/fullstackopen
 
-
 Learning Promises well, [from You Don't Know JS](https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md), keeps getting recommended
 
+## Misc Notes
+
+## Services
+
+### Platform as a Service (PaaS)
+
+e.g. Heroku. Developers don't have to worry about servers and infrastructure.
+
+### Infrastructure as a Service (IaaS)
+
+e.g. AWS. Provides compute, storage, networking, etc.
+
+### Function as a Service (FaaS)
+
+Running specific functions or pieces of code without managing the underlying infrastructure.
+
+Example: AWS Lambda, Google Cloud Functions
+
+### Containers as a Service (CaaS)
+
+Focus: Managing and deploying containerized applications.
+Example: Docker, Kubernetes
+
+### Database as a Service (DBaaS)
+
+Focus: Managing and providing database services without the complexities of database administration.
+Example: Amazon RDS, Google Cloud SQL
