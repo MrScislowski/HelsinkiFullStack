@@ -24,32 +24,54 @@ app.use(morgan((tokens, req, res) => {
   ].join(" ")
 }))
 
-app.get("/api/persons", (req, res) => {
-  Person.find({}).then(persons => {
+const errorHandler = (error, req, res, next) => {
+
+  console.log("Error being handled by error handler...")
+  if (error.name === 'CastError') {
+    return res.status(400).send({ error: 'malformatted id' })
+  } 
+  console.log(`An error has happened!!!`);
+  console.log(`error: ${JSON.stringify(error)}`)
+  next(error)
+}
+
+
+app.get("/api/persons", (req, res, next) => {
+  Person.find({})
+  .then(persons => {
     res.json(persons)
   })
+  .catch(error => next(error))
 })
 
-app.get("/info", (req, res) => {
-  Person.find({}).then(persons => {
+app.get("/info", (req, res, next) => {
+  Person.find({})
+  .then(persons => {
     const message = `Phonebook has info for ${persons.length} people <br /> ${new Date().toUTCString()}`
     res.send(message)
   })
+  .catch(error => next(error))
 })
 
-app.get("/api/persons/:id", (req, res) => {
+app.get("/api/persons/:id", (req, res, next) => {
 
   const id = req.params.id
-  Person.findOne({_id: id}).then(person => {
+  Person.findOne({_id: id})
+  .then(person => {
     if (person) {
       return res.json(person)
     } else {
       return res.status(404).end()
     }
   })
+  .catch(error => {
+    console.log("An error has happened...")
+    console.log(`Error name is ${error.name}`)
+    next(error)
+  })
 })
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   const id = req.params.id
   Person.findOneAndDelete({_id: id})
     .then(response => {
@@ -59,13 +81,10 @@ app.delete("/api/persons/:id", (req, res) => {
         return res.status(404).end()
       }
     })
-    .catch(error => {
-      console.log(error)
-      res.status(500).end()
-    })
+    .catch(error => next(error))
 })
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const providedBody = req.body;
 
   // check that name exists, number exists, name is unique
@@ -86,11 +105,14 @@ app.post("/api/persons", (req, res) => {
     number: providedBody.number,
   })
 
-  proposedNewEntry.save().then(result => {
+  proposedNewEntry.save()
+  .then(result => {
     res.json(result)
   })
+  .catch(error => next(error))
 })
 
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
