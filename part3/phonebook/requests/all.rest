@@ -43,7 +43,7 @@ Content-Type: application/json
 
 {
   "name": "Alan Turing", 
-  "number": "56-78-910111"
+  "number": "56-123456"
 }
 
 ### Update an existing name with new number
@@ -71,6 +71,15 @@ Content-Type: application/json
 {
   "name": "a",
   "number": "555"
+}
+
+### Fail to add a single entry - number wrong format
+POST http://localhost:3001/api/persons
+Content-Type: application/json
+
+{
+  "name": "example", 
+  "number": "911111111"
 }
 
 ########## fly.io ##########
