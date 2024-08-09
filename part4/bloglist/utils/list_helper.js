@@ -79,7 +79,27 @@ const mostBlogs = (blogs) => {
 //   return { author, blogs };
 // };
 
+const mostLikes = (blogs) => {
+  if (blogs.length === 0) return null
+
+
+  const authorHistogram = blogs.reduce((histogram, blog) => {
+    histogram[blog.author] = (histogram[blog.author] || 0) + blog.likes
+    return histogram
+  }, {})
+
+
+  const [author, likes] = Object.entries(authorHistogram)
+    .reduce(([winningAuthor, winningLikes], [curAuthor, curLikes]) =>
+      curLikes > winningLikes ? [curAuthor, curLikes] : [winningAuthor, winningLikes]
+    )
+
+  return {
+    author,
+    likes
+  }
+}
 
 module.exports = {
-  dummy, totalLikes, favoriteBlog, mostBlogs
+  dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes
 }
