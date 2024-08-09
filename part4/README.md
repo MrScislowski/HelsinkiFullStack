@@ -353,3 +353,56 @@ Important details when using async/await:
     }
     main()
   ```
+
+
+#### eliminating try-catch
+
+Install the library:
+
+```sh
+npm install express-async-errors
+```
+
+Introduce library in `app.js` before any routes are imported
+```js
+require('express-async-errors')
+```
+
+If an exception occurs in an async route, the execution is automatically passed to the error handling middleware.
+
+#### async/await in foreach
+
+This code is problematic, because the forEach moves on before the notes are actually save:
+```js
+beforeEach(async () => {
+  await Note.deleteMany({})
+  console.log('cleared')
+
+  helper.initialNotes.forEach(async (note) => {
+    let noteObject = new Note(note)
+    await noteObject.save()
+    console.log('saved')
+  })
+  console.log('done')
+})
+
+test('notes are returned as json', async () => {
+  console.log('entered test')
+  // ...
+})
+```
+
+The solution is to use `Promise.all`:
+
+```js
+beforeEach(async () => {
+  await Note.deleteMany({})
+
+  const noteObjects = helper.initialNotes
+    .map(note => new Note(note))
+  const promiseArray = noteObjects.map(note => note.save())
+  await Promise.all(promiseArray)
+})
+```
+
+If the promises need to be executed in a particular order, using a `for...of` block can guarantee this.
