@@ -310,13 +310,13 @@ beforeEach(async () => {
 
 ##### running only some tests
 
-- `test.only` instead of `test` in the testing file, then `npm test -- --test-only
+- `test.only` instead of `test` in the testing file, and `node --test --test-only` from the command line
   ```js
   test.only('...')
   ```
 - specify test files:
   ```
-  npm test -- tests/note_api.test.js
+  node test -- tests/note_api.test.js
   ```
 
 #### random notes on promises and async/await
