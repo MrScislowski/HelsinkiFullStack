@@ -281,4 +281,75 @@ module.exports = {
 }
 ```
 
+##### clearing out the db before each test...
 
+```js
+const { beforeEach } = require('node:test')
+const Note = require('../models/note')
+
+const initialNotes = [
+  {
+    content: 'HTML is easy',
+    important: false,
+  },
+  {
+    content: 'Browser can execute only JavaScript',
+    important: true,
+  },
+]
+
+beforeEach(async () => {
+  await Note.deleteMany({})
+  let noteObject = new Note(initialNotes[0])
+  await noteObject.save()
+  noteObject = new Note(initialNotes[1])
+  await noteObject.save()
+})
+
+```
+
+##### running only some tests
+
+- `test.only` instead of `test` in the testing file, then `npm test -- --test-only
+  ```js
+  test.only('...')
+  ```
+- specify test files:
+  ```
+  npm test -- tests/note_api.test.js
+  ```
+
+#### random notes on promises and async/await
+
+- promises:
+  ```js
+  Note.find({})
+  .then(notes => {
+    return notes[0].deleteOne()
+  })
+  .then(response => {
+    console.log('the first note is removed')
+    // more code here
+  })
+  ```
+- await:
+  ```js
+  const notes = await Note.find({})
+  const response = await notes[0].deleteOne()
+
+  console.log('the first note is removed')
+  ```
+
+Important details when using async/await:
+
+- to use `await` w/ async operations, they have to return a promise
+- using await is only possible inside of an async function; so you sometimes wind up wrapping things like this:
+    ```js
+    const main = async () => {
+      const notes = await Note.find({})
+      const response = await notes[0].deleteOne()
+
+      console.log('the first note is removed')
+    }
+    main()
+  ```
