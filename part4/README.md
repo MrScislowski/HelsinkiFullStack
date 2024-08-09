@@ -172,3 +172,113 @@ But node also comes with a built-in library, `node:test`
   })
   ```
 
+### Testing backend
+
+#### Mocking database
+
+Not done in this course b/c the backend is pretty simple, but if you needed to mock the db, you could use something like [this](https://github.com/nodkz/mongodb-memory-server)
+
+#### Test environment (NODE_ENV)
+
+To set NODE_ENV on multiple operating systems:
+
+```sh
+pnpm install cross-env
+```
+
+Then edit `package.json`:
+
+```json
+ "scripts": {
+    "start": "cross-env NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "test": "cross-env  NODE_ENV=test node --test",
+ }
+```
+
+#### Using different DB in test/development mode...
+
+`utils/config.js`
+
+```js
+const MONGODB_URI = process.env.NODE_ENV === 'test' 
+  ? process.env.TEST_MONGODB_URI
+  : process.env.MONGODB_URI
+```
+
+and `.env`
+```
+MONGODB_URI=mongodb+srv://fullstack:thepasswordishere@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority
+PORT=3001
+
+TEST_MONGODB_URI=mongodb+srv://fullstack:thepasswordishere@cluster0.o1opl.mongodb.net/testNoteApp?retryWrites=true&w=majority
+```
+
+When I run `mongosh` I get something like:
+`mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.2.12`
+
+#### testing the API using `supertest`
+
+Install
+
+```
+pnpm install --save-dev supertest
+```
+
+Use (note that we're only using `app.js`, not `index.js`: supertest deals w/ listening on ports etc)
+```js
+const { test, after } = require('node:test')
+const mongoose = require('mongoose')
+const supertest = require('supertest')
+const app = require('../app')
+
+const api = supertest(app)
+
+test('notes are returned as json', async () => {
+  await api
+    .get('/api/notes')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+})
+
+test('there are two notes', async () => {
+  const response = await api.get('/api/notes')
+
+  assert.strictEqual(response.body.length, 2)
+})
+
+test('the first note is about HTTP methods', async () => {
+  const response = await api.get('/api/notes')
+
+  const contents = response.body.map(e => e.content)
+  assert(contents.includes('HTML is easy'))
+})
+
+after(async () => {
+  await mongoose.connection.close()
+})
+```
+
+##### ommitting logging when using tests:
+`utils/logger.js`
+```js
+const info = (...params) => {
+
+  if (process.env.NODE_ENV !== 'test') { 
+    console.log(...params)
+  }
+}
+
+const error = (...params) => {
+
+  if (process.env.NODE_ENV !== 'test') { 
+    console.error(...params)
+  }
+}
+
+module.exports = {
+  info, error
+}
+```
+
+
