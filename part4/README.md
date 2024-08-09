@@ -129,3 +129,46 @@ const { f2, f3 } = require('multiple')
 
 const lib = require('multiple')
 // now use lib.f2(), lib.f3()
+```
+
+## Testing
+
+### Test Libraries
+
+`Mocha` was the original popular runner for JavaScript. A few years ago, `Jest` became the new standard. `Vitest` is a newcomer.
+
+But node also comes with a built-in library, `node:test`
+
+### Setting up `node:test`
+
+- `package.json`:
+
+  ```json
+  "scripts": {
+    // ...
+    "test": "node --test"
+  }
+  ```
+
+- `mkdir tests`
+
+- Now suppose you're testing a utility called "reverse"... make a file `tests/reverse.test.js`:
+  ```js
+  const { test, describe } = require('node:test')
+  const assert = require('node:assert')
+
+  const reverse = require('../utils/for_testing').reverse
+
+  describe('reverse', () => {
+    test('reverse of a', () => {
+      const result = reverse('a')
+      assert.strictEqual(result, 'a')
+    })
+
+    test('reverse of react', () => {
+      const result = reverse('react')
+      assert.strictEqual(result, 'tcaer')
+    })
+  })
+  ```
+
