@@ -48,7 +48,7 @@ describe('GET api tests on backend', async () => {
   })
 })
 
-describe('POST api tests on backend', async () => {
+describe('well-formed POST requests', async () => {
   test('posting a new blog increases the number in the DB by one', async () => {
     const blogsBefore = (await api.get('/api/blogs')).body
     await api.post('/api/blogs').send({
@@ -95,6 +95,27 @@ describe('POST api tests on backend', async () => {
     const createdBlog = blogsAfter.find(blog => blog.title === title && blog.author === author && blog.url === url)
     assert.strictEqual(createdBlog.likes, 0)
   })
+})
+
+describe('malformed POST requests', async () => {
+  test('missing title causes 400 response', async () => {
+    const postBody = {
+      author: generateRandomString(),
+      url: generateRandomString(),
+    }
+
+    await api.post('/api/blogs').send(postBody).expect(400)
+  })
+
+  test('missing url causes 400 response', async () => {
+    const postBody = {
+      title: generateRandomString(),
+      author: generateRandomString(),
+    }
+
+    await api.post('/api/blogs').send(postBody).expect(400)
+  })
+
 })
 
 after(async () => {
