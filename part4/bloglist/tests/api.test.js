@@ -26,7 +26,7 @@ beforeEach(async () => {
   )
 })
 
-describe('api tests on backend', async () => {
+describe('GET api tests on backend', async () => {
   test('blogs are returned in json format', async () => {
     await api
       .get('/api/blogs')
@@ -46,7 +46,9 @@ describe('api tests on backend', async () => {
 
     assert.strictEqual(allBlogs.every(blog => 'id' in blog && !('_id' in blog)), true, `blog with _id instead of id: ${JSON.stringify(allBlogs, null, 2)}`)
   })
+})
 
+describe('POST api tests on backend', async () => {
   test('posting a new blog increases the number in the DB by one', async () => {
     const blogsBefore = (await api.get('/api/blogs')).body
     await api.post('/api/blogs').send({
@@ -76,6 +78,22 @@ describe('api tests on backend', async () => {
     const foundAfter = blogsAfter.find(blog => blog.title === title && blog.author === author && blog.url === url)
     assert.strictEqual(foundBefore, undefined, 'shouldnt find the created blog before its posted')
     assert.ok('id' in foundAfter, `blogsAfter should have contained ${JSON.stringify(newBlog, null, 2)}. Blogs after was: ${JSON.stringify(blogsAfter, null, 2)}`)
+  })
+
+  test('posting a blog missing likes defaults to zero', async () => {
+    const title = generateRandomString()
+    const author = generateRandomString()
+    const url = generateRandomString()
+    const newBlog = {
+      title, author, url
+    }
+
+    await api.post('/api/blogs').send(newBlog)
+
+    const blogsAfter = (await api.get('/api/blogs')).body
+
+    const createdBlog = blogsAfter.find(blog => blog.title === title && blog.author === author && blog.url === url)
+    assert.strictEqual(createdBlog.likes, 0)
   })
 })
 
