@@ -32,13 +32,9 @@ describe('api tests on backend', async () => {
 
   test('correct number of blogs returned', async () => {
     const response = await api.get('/api/blogs')
-    console.log(`got response ${JSON.stringify(response)}`)
-
     assert.strictEqual(response.body.length, initialBlogs.length)
   })
 })
-
-
 
 after(async () => {
   await mongoose.connection.close()
