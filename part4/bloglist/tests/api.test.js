@@ -34,6 +34,15 @@ describe('api tests on backend', async () => {
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body.length, initialBlogs.length)
   })
+
+  test('blog posts have "id" field, not "_id" field', async () => {
+    const response = await api.get('/api/blogs')
+    // const allBlogs = JSON.parse(response.body)
+    const allBlogs = response.body
+
+
+    assert.strictEqual(allBlogs.every(blog => 'id' in blog && !('_id' in blog)), true, `blog with _id instead of id: ${JSON.stringify(allBlogs, null, 2)}`)
+  })
 })
 
 after(async () => {
