@@ -115,7 +115,39 @@ describe('malformed POST requests', async () => {
 
     await api.post('/api/blogs').send(postBody).expect(400)
   })
+})
 
+describe('DELETE requests', async () => {
+  test('resource is removed after valid delete request', async () => {
+    const initialBlogs = (await api.get('/api/blogs')).body
+
+    const blogToDelete = initialBlogs[Math.floor(Math.random() * initialBlogs.length)]
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+
+    const finalBlogs = (await api.get('/api/blogs')).body
+
+
+    assert.strictEqual(finalBlogs.length + 1, initialBlogs.length)
+    assert.strictEqual(finalBlogs.find(blog => blog.id === blogToDelete.id), undefined)
+  })
+
+  test('attempting to remove a nonexistent id gives status 404', async () => {
+    const title = generateRandomString()
+    const author = generateRandomString()
+    const url = generateRandomString()
+    const newBlog = {
+      title, author, url
+    }
+
+    const blogInDB = (await api.post('/api/blogs').send(newBlog))
+    await api.delete(`/api/blogs/${blogInDB.id}`).expect(204)
+
+    api.delete(`/api/blogs/${blogInDB.id}`).expect(404)
+  })
+
+  test('attempting to remove an invalidly formatted id gives status 400', async () => {
+    api.delete('/api/blogs/notvalidid').expect(400)
+  })
 })
 
 after(async () => {
