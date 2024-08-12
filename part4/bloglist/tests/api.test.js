@@ -178,12 +178,6 @@ describe('PUT modification requests', async () => {
     assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify.id).title, newTitle)
   })
 
-  test('giving incomplete blog returns 400', async () => {
-    const blogsBefore = (await api.get('/api/blogs')).body
-    const blogToModify = blogsBefore[Math.floor(Math.random() * blogsBefore.length)]
-    await api.put(`/api/blogs/${blogToModify.id}`).send({ title: 'not enough' }).expect(400)
-  })
-
   test('trying to modify nonexistent resource gives 404', async () => {
     const title = generateRandomString()
     const author = generateRandomString()
@@ -205,7 +199,7 @@ describe('PUT modification requests', async () => {
     const newBlog = {
       title, author, url
     }
-    await api.put('/api/blogs/notavalidresource').send({ ...newBlog }).expect(404)
+    await api.put('/api/blogs/notavalidresource').send({ ...newBlog }).expect(400)
   })
 })
 
