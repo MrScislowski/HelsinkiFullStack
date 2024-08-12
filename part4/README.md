@@ -515,3 +515,63 @@ usersRouter.get('/', async (request, response) => {
   response.json(users)
 })
 ```
+
+## Authentication
+
+### Token-based authentication
+
+#### how it works
+
+Sequence of events:
+
+- user logs in using a login form in react
+- react code sends username & password to backend as POST request
+- if un/pw are correct, server generates a "digitally signed" token that identifies the logged-in user, and responds to the POST request with this info
+- the browser saves the token (e.g. to the state of a react application)
+- when the user does an operation requiring identification, the react code sends the token to the server with the request
+- the server uses the token to identify the user
+
+#### code for use
+
+install:
+
+```sh
+pnpm install jsonwebtoken
+```
+
+Use:
+
+```js
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const loginRouter = require('express').Router()
+const User = require('../models/user')
+
+loginRouter.post('/', async (request, response) => {
+  const { username, password } = request.body
+
+  const user = await User.findOne({ username })
+  const passwordCorrect = user === null
+    ? false
+    : await bcrypt.compare(password, user.passwordHash)
+
+  if (!(user && passwordCorrect)) {
+    return response.status(401).json({
+      error: 'invalid username or password'
+    })
+  }
+
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  }
+
+  const token = jwt.sign(userForToken, process.env.SECRET)
+
+  response
+    .status(200)
+    .send({ token, username: user.username, name: user.name })
+})
+
+module.exports = loginRouter
+```
