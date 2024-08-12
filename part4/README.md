@@ -14,7 +14,7 @@
 ├── utils
 │   ├── config.js
 │   ├── logger.js
-│   └── middleware.js  
+│   └── middleware.js
 ```
 
 ### Logging module
@@ -37,7 +37,7 @@ module.exports = {
 
 ### Environment variable (config) module:
 
-`utils/config.js`: 
+`utils/config.js`:
 
 ```js
 require('dotenv').config()
@@ -106,7 +106,7 @@ module.exports = {
 
 ## Note on exports
 
-`single.js`: 
+`single.js`:
 
 ```js
 module.exports = f1
@@ -201,7 +201,7 @@ Then edit `package.json`:
 `utils/config.js`
 
 ```js
-const MONGODB_URI = process.env.NODE_ENV === 'test' 
+const MONGODB_URI = process.env.NODE_ENV === 'test'
   ? process.env.TEST_MONGODB_URI
   : process.env.MONGODB_URI
 ```
@@ -264,14 +264,14 @@ after(async () => {
 ```js
 const info = (...params) => {
 
-  if (process.env.NODE_ENV !== 'test') { 
+  if (process.env.NODE_ENV !== 'test') {
     console.log(...params)
   }
 }
 
 const error = (...params) => {
 
-  if (process.env.NODE_ENV !== 'test') { 
+  if (process.env.NODE_ENV !== 'test') {
     console.error(...params)
   }
 }
@@ -406,3 +406,112 @@ beforeEach(async () => {
 ```
 
 If the promises need to be executed in a particular order, using a `for...of` block can guarantee this.
+
+####  MongoDB and joins / aggregations
+
+Traditionally document databases don't support join queries used to aggregate data from multiple tables. Version >= 3.2 of Mongo added $lookup aggregation queries (not used in this course). Functionality similar to join queries usually by making multiple queries to the database. Mongoose sometimes *looks* like it's joining/aggregating data, but it's actually making multiple queries to the database in the background.
+
+#### Document vs Relational Databases
+
+Chosen schema must support the use cases of the application; this is not a simple design decision. Schema-less dbs require developers to make more radical design decisions about data organization at the beginning of the project than relationship dbs with schemas do. Often, relational databases offer a roughly suitable way of organizing data.
+
+#### references (like foreign keys) in mongoose
+
+The `ref` field is for mongoose; Mongo does not really know what the field references. This design is in contrast to relational db conventions because references are stored in both documents
+
+```js
+const userSchema = new mongoose.Schema({
+  username: String,
+  name: String,
+  passwordHash: String,
+  notes: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Note'
+    }
+  ],
+})
+
+userSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+    // the passwordHash should not be revealed
+    delete returnedObject.passwordHash
+  }
+})
+
+const noteSchema = new mongoose.Schema({
+  content: {
+    type: String,
+    required: true,
+    minlength: 5
+  },
+  important: Boolean,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
+  }
+})
+```
+
+#### Passwords and hashes
+
+`bcrypt` generates password hashes. Use it. It's way more secure than other hashing algorithms.
+
+Installing:
+
+```sh
+pnpm install bcrypt
+```
+
+Using:
+
+```js
+const saltRounds = 10 // higher numbers take longer to generate
+const passwordHash = await bcrypt.hash(password, saltRounds)
+```
+
+#### Avoiding duplicates (uniqueness) in mongo / mongoose
+
+MongoDB can ensure uniqueness of single fields or compound ones using [uniqueness index](https://www.mongodb.com/docs/manual/core/index-unique/). In mongoose:
+
+```js
+const userSchema = mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true // this ensures the uniqueness of username
+  },
+  //...
+})
+```
+
+This only works if the database is in a healthy state (there aren't already duplicates)
+
+#### populate in mongoose is like join in sql
+
+mongoose does multiple queries. In sql, join queries are "transactional", which means the state of the database doesn't change during the time the query is made. Nothing guarantees this in mongoose.
+
+Basic usage:
+
+```js
+usersRouter.get('/', async (request, response) => {
+  const users = await User
+    .find({}).populate('notes')
+
+  response.json(users)
+})
+```
+
+Selecting only some fields:
+
+```js
+usersRouter.get('/', async (request, response) => {
+  const users = await User
+    .find({}).populate('notes', { content: 1, important: 1 })
+
+  response.json(users)
+})
+```
