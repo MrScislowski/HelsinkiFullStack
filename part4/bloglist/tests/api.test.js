@@ -139,14 +139,14 @@ describe('DELETE requests', async () => {
       title, author, url
     }
 
-    const blogInDB = (await api.post('/api/blogs').send(newBlog))
+    const blogInDB = (await api.post('/api/blogs').send(newBlog)).body
     await api.delete(`/api/blogs/${blogInDB.id}`).expect(204)
 
-    api.delete(`/api/blogs/${blogInDB.id}`).expect(404)
+    await api.delete(`/api/blogs/${blogInDB.id}`).expect(404)
   })
 
   test('attempting to remove an invalidly formatted id gives status 400', async () => {
-    api.delete('/api/blogs/notvalidid').expect(400)
+    await api.delete('/api/blogs/notvalidid').expect(400)
   })
 })
 
