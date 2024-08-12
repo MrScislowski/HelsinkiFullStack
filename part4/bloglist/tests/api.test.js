@@ -150,6 +150,37 @@ describe('DELETE requests', async () => {
   })
 })
 
+describe('PUT modification requests', async () => {
+  test('incrementing likes works', async () => {
+    const blogsBefore = (await api.get('/api/blogs')).body
+
+    const blogToModify = blogsBefore[Math.floor(Math.random() * blogsBefore.length)]
+
+    await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, likes: blogToModify.likes + 1 }).expect(200)
+
+    const blogsAfter = (await api.get('/api/blogs')).body
+
+    assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify.id).likes, blogToModify.likes + 1)
+
+  })
+
+  test('replacing title works', async () => {
+
+  })
+
+  test('giving incomplete blog returns 400', async () => {
+
+  })
+
+  test('trying to modify nonexistent resource gives 404', async () => {
+
+  })
+
+  test('trying to modify bad id resource gives 400', async () => {
+
+  })
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
