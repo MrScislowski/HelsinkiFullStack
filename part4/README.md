@@ -575,3 +575,65 @@ loginRouter.post('/', async (request, response) => {
 
 module.exports = loginRouter
 ```
+
+#### browser sending token to server
+
+Using the "Authorization" header is just one of several ways. We use the `Bearer` scheme, which means if the token is `eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW`, the Authorization header will be: `Bearer eyJhbGciOiJIUzI1NiIsInR5c2VybmFtZSI6Im1sdXVra2FpIiwiaW`
+
+```js
+const jwt = require('jsonwebtoken')
+
+// ...
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
+notesRouter.post('/', async (request, response) => {
+  const body = request.body
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+```
+
+#### JWT validation middleware / prepackaged solutions
+
+If application has multiple interfaces, putting validation in its own middleware makes sense. An existing library like `express-jwt` could also be used.
+
+
+#### Security issues
+
+If token gets in wrong hands, there's blind trust, which is a problem. Two solutions
+
+#### simple: limit validity period of token
+
+(Once it's expired, client app needs to get new token, usually by logging in again)
+
+Code:
+
+```js
+  // token expires in 60*60 seconds, that is, in one hour
+  const token = jwt.sign(
+    userForToken,
+    process.env.SECRET,
+    { expiresIn: 60*60 }
+  )
+```
+
+
+#### complicated: sever-side session
+
+(save info about each token to the backend db, and check for each API request if access rights corresponding to the tokens are still valid). Access rights can be revoked at any time in this scheme.
+
+This makes the backend more complex, and more database calls are required (db access much slower than checking validity of token). To speed this up, often a "key-value" db is used fo r this (e.g. Redis).
+
+In this scheme, the token is often just a random string (that doesn't include any info about the user). For each API request, the server fetches the relevant info about the identity of the user from the db. Also, it's common that instead of using "Authorization" headers, cookies are used to transfer the token between client and server.
+
+#### HTTPS
+
+Whenever usernames / passwords / token authentication is used, need to use HTTPS. Node has https servers (but they require more configuration). Often PaaS will route all traffic between browser and servers through HTTPS.
