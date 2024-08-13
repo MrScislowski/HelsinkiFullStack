@@ -77,6 +77,27 @@ describe.only('POST user api tests on backend', async () => {
     await api.post('/api/users').send(newUser).expect(201)
     await api.post('/api/users').send(newUser).expect(400)
   })
+
+  test('username must be long enough', async () => {
+    const newUser = {
+      username: 'ab',
+      password: generateRandomString(),
+      name: generateRandomString(),
+    }
+
+    await api.post('/api/users').send(newUser).expect(400)
+  })
+
+  test('password must be long enough', async () => {
+    const newUser = {
+      username: generateRandomString(),
+      password: 'cd',
+      name: generateRandomString(),
+    }
+
+    await api.post('/api/users').send(newUser).expect(400)
+  })
+
 })
 
 after(async () => {

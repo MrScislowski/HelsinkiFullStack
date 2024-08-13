@@ -34,3 +34,13 @@ Content-Type: application/json
   "password": "pw1",
   "name": "Amy Smith"
 }
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "pi",
+  "password": "pw1",
+  "name": "Bella Ching"
+}
