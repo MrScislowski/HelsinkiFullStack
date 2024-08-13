@@ -26,12 +26,7 @@ blogsRouter.post('/', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
   const id = request.params.id
 
-  let dbResponse
-  try {
-    dbResponse = await Blog.findByIdAndDelete(id)
-  } catch {
-    response.status(400).send()
-  }
+  const dbResponse = await Blog.findByIdAndDelete(id)
 
   if (dbResponse) {
     response.status(204).send()
@@ -43,12 +38,7 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   const id = request.params.id
 
-  let dbResponse
-  try {
-    dbResponse = await Blog.findByIdAndUpdate(id, request.body,  { new: true, runValidators: true, context: 'query' })
-  } catch {
-    response.status(400).send()
-  }
+  const dbResponse = await Blog.findByIdAndUpdate(id, request.body,  { new: true, runValidators: true, context: 'query' })
 
   if (dbResponse) {
     response.status(200).send()
