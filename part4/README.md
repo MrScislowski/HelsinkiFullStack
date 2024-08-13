@@ -637,3 +637,7 @@ In this scheme, the token is often just a random string (that doesn't include an
 #### HTTPS
 
 Whenever usernames / passwords / token authentication is used, need to use HTTPS. Node has https servers (but they require more configuration). Often PaaS will route all traffic between browser and servers through HTTPS.
+
+#### Checking Object Equality
+
+I was looking to find an equivalent to assert.deepEquals, and people recommended LoDash's `_.isEquals()`, so I'm using that.

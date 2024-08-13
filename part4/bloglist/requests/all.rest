@@ -1,7 +1,7 @@
 ###
 GET http://localhost:3003/api/blogs
 
-### 
+###
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
@@ -10,4 +10,17 @@ Content-Type: application/json
   "author": "name2",
   "url": "url2",
   "likes": "19"
+}
+
+###
+GET http://localhost:3003/api/users
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "opensesame",
+  "name": "David Brent"
 }
