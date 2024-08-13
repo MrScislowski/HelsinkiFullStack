@@ -1,7 +1,8 @@
-###
+#********BLOGS********
+### GET all blogs
 GET http://localhost:3003/api/blogs
 
-###
+### POST a new blog
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
@@ -12,10 +13,11 @@ Content-Type: application/json
   "likes": "19"
 }
 
-###
+#********USERS********
+### GET all users
 GET http://localhost:3003/api/users
 
-###
+### POST to create a new user
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
@@ -25,22 +27,22 @@ Content-Type: application/json
   "name": "David Brent"
 }
 
-###
-POST http://localhost:3003/api/users
-Content-Type: application/json
-
-{
-  "username": "example",
-  "password": "pw1",
-  "name": "Amy Smith"
-}
-
-###
+### username too short
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
   "username": "pi",
   "password": "pw1",
+  "name": "Bella Ching"
+}
+
+### password too short
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "username1",
+  "password": "pw",
   "name": "Bella Ching"
 }
