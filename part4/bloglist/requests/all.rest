@@ -5,6 +5,7 @@ GET http://localhost:3003/api/blogs
 ### POST a new blog
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmNkMGE2YjgwZmMwODViMjg3MGNhMCIsInVzZXJuYW1lIjoicm9vdCIsImlhdCI6MTcyMzY1MTc2MX0.VeCW8bU0ZMjIMgRghwh2wWGns9jxxAW0_PEoqHe9lLM
 
 {
   "title": "random",
@@ -48,7 +49,7 @@ Content-Type: application/json
 }
 
 #************TOKENS*****************
-### successful login
+### successful login to get token
 POST http://localhost:3003/api/login
 Content-Type: application/json
 

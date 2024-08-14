@@ -1,35 +1,48 @@
 const blogsRouter = require('express').Router()
 
+const jwt = require('jsonwebtoken')
+const config = require('../utils/config')
+
 const Blog = require('../models/Blog')
 const User = require('../models/User')
 
-
+// GET all blogs
 blogsRouter.get('/', async (request, response) => {
   const allBlogs = await Blog.find({}).populate('user')
   response.json(allBlogs)
 })
 
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '')
+  }
+  return null
+}
+
+// POST a new blog
 blogsRouter.post('/', async (request, response) => {
 
-  if (!('title' in request.body) || !('url' in request.body)) {
-    return response.status(400).send()
+  const token = getTokenFrom(request)
+  if (!('title' in request.body) || !('url' in request.body) || !token) {
+    return response.status(401).send({ 'error': 'title & url for blog required, and authorization token required' })
   }
 
-  // get a user id to assign to the blog
-  const allUsers = await User.find({})
-  const userId = allUsers[Math.floor(Math.random()*allUsers.length)]._id
-  console.log(`userid ${userId} being used...`)
+  // throws an error if token isn't valid which is caught by middleware
+  const userFromToken = jwt.verify(token, config.SECRET)
+
+  console.log(`user identified as ${JSON.stringify(userFromToken)}`)
 
 
   const blog = new Blog({
     likes: request.body.likes || 0,
-    user: userId,
+    user: userFromToken.id,
     ...request.body
   })
 
   const savedBlog = await blog.save()
 
-  const user = await User.findById(userId)
+  const user = await User.findById(userFromToken.id)
 
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
