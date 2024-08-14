@@ -2,6 +2,8 @@ const blogsRouter = require('express').Router()
 
 const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
+// eslint-disable-next-line no-unused-vars
+const logger = require('../utils/logger')
 
 const Blog = require('../models/Blog')
 const User = require('../models/User')
@@ -12,24 +14,17 @@ blogsRouter.get('/', async (request, response) => {
   response.json(allBlogs)
 })
 
-const getTokenFrom = request => {
-  const authorization = request.get('authorization')
-  if (authorization && authorization.startsWith('Bearer ')) {
-    return authorization.replace('Bearer ', '')
-  }
-  return null
-}
+
 
 // POST a new blog
 blogsRouter.post('/', async (request, response) => {
 
-  const token = getTokenFrom(request)
-  if (!('title' in request.body) || !('url' in request.body) || !token) {
-    return response.status(401).send({ 'error': 'title & url for blog required, and authorization token required' })
+  if (!('title' in request.body) || !('url' in request.body)) {
+    return response.status(401).send({ 'error': 'title & url for blog required' })
   }
 
   // throws an error if token isn't valid which is caught by middleware
-  const userFromToken = jwt.verify(token, config.SECRET)
+  const userFromToken = jwt.verify(request.token, config.SECRET)
 
   const blog = new Blog({
     likes: request.body.likes || 0,
@@ -40,6 +35,10 @@ blogsRouter.post('/', async (request, response) => {
   const savedBlog = await blog.save()
 
   const user = await User.findById(userFromToken.id)
+
+  if (!user) {
+    return response.status(500).json({ 'error': 'could not find user referenced by token' })
+  }
 
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
