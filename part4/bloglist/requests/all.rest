@@ -46,3 +46,31 @@ Content-Type: application/json
   "password": "pw",
   "name": "Bella Ching"
 }
+
+#************TOKENS*****************
+### successful login
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "opensesame"
+}
+
+### unsuccessful login - no such user
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "aji233",
+  "password": "289sadf"
+}
+
+### unsuccessful login - incorrect password
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "root",
+  "password": "opensesame-plusextra"
+}
