@@ -1,7 +1,4 @@
 const blogsRouter = require('express').Router()
-
-const jwt = require('jsonwebtoken')
-const config = require('../utils/config')
 // eslint-disable-next-line no-unused-vars
 const logger = require('../utils/logger')
 
@@ -25,8 +22,7 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(401).send({ 'error': 'title & url for blog required' })
   }
 
-  // throws an error if token isn't valid which is caught by middleware
-  const userFromToken = jwt.verify(request.token, config.SECRET)
+  const userFromToken = request.user
 
   const blog = new Blog({
     likes: request.body.likes || 0,
@@ -58,7 +54,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     return response.status(404).send()
   }
 
-  if (blogEntry.user._id.toString() !== jwt.decode(request.token).id) {
+  if (blogEntry.user._id.toString() !== request.user.id) {
     return response.status(403).send()
   }
 
