@@ -31,9 +31,6 @@ blogsRouter.post('/', async (request, response) => {
   // throws an error if token isn't valid which is caught by middleware
   const userFromToken = jwt.verify(token, config.SECRET)
 
-  console.log(`user identified as ${JSON.stringify(userFromToken)}`)
-
-
   const blog = new Blog({
     likes: request.body.likes || 0,
     user: userFromToken.id,
