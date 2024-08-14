@@ -14,6 +14,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmI2NmQyM
   "likes": "19"
 }
 
+### DELETE your blog
+DELETE http://localhost:3003/api/blogs/66bce6312b22c667b726b645
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmI2NmQyMTU2MjJkNDZlOWFhNjBiOSIsInVzZXJuYW1lIjoicm9vdCIsImlhdCI6MTcyMzY1NDYxMH0.ZvqrEUbrKz8_7NW9IGOr5YqsDvl52jy18n6Roub1Dgo
+
+### DELETE someone else's blog
+DELETE http://localhost:3003/api/blogs/66bce6982b22c667b726b650
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmNlNjZhMmIyMmM2NjdiNzI2YjY0YyIsInVzZXJuYW1lIjoibm9ucm9vdCIsImlhdCI6MTcyMzY1NTgxNH0.0f6kllDR0_MOsAy3tYqGiPeQCnPQwd6ip8zIElXhdRo
+
 #********USERS********
 ### GET all users
 GET http://localhost:3003/api/users
@@ -26,6 +34,16 @@ Content-Type: application/json
   "username": "root",
   "password": "opensesame",
   "name": "David Brent"
+}
+
+### POST to create secondary user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+  "username": "nonroot",
+  "password": "otherpw",
+  "name": "Finchy"
 }
 
 ### username too short
@@ -56,6 +74,15 @@ Content-Type: application/json
 {
   "username": "root",
   "password": "opensesame"
+}
+
+### successful login to get token for other user
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+  "username": "nonroot",
+  "password": "otherpw"
 }
 
 ### unsuccessful login - no such user

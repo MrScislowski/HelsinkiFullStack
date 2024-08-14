@@ -48,10 +48,22 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
+// DELETE a blog
 blogsRouter.delete('/:id', async (request, response) => {
-  const id = request.params.id
+  const blogId = request.params.id
 
-  const dbResponse = await Blog.findByIdAndDelete(id)
+  // check if it's authorized (user id of blog is the same as id from token)
+  const blogEntry = await Blog.findById(blogId)
+  if (!blogEntry) {
+    return response.status(404).send()
+  }
+
+  if (blogEntry.user._id.toString() !== jwt.decode(request.token).id) {
+    return response.status(403).send()
+  }
+
+  // TODO: could I have done blogEntry.deleteOne() or something like that? Since I've already found it
+  const dbResponse = await Blog.findByIdAndDelete(blogId)
 
   if (dbResponse) {
     response.status(204).send()
@@ -60,6 +72,7 @@ blogsRouter.delete('/:id', async (request, response) => {
   }
 })
 
+// UPDATE a blog using PUT
 blogsRouter.put('/:id', async (request, response) => {
   const id = request.params.id
 
