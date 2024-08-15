@@ -62,7 +62,7 @@ describe('GET api tests on backend', async () => {
 })
 
 describe('well-formed POST requests', async () => {
-  test.only('posting a new blog increases the number in the DB by one', async () => {
+  test('posting a new blog increases the number in the DB by one', async () => {
     const blogsBefore = (await api.get('/api/blogs').expect(200)).body
 
     await api.post('/api/blogs')
@@ -74,6 +74,15 @@ describe('well-formed POST requests', async () => {
       }).expect(201)
     const blogsAfter = (await api.get('/api/blogs').expect(200)).body
     assert.strictEqual(blogsBefore.length + 1, blogsAfter.length)
+  })
+
+  test('posting without a token results in 401', async () => {
+    await api.post('/api/blogs')
+      .send({
+        title: generateRandomString(),
+        author: generateRandomString(),
+        url: generateRandomString(),
+      }).expect(401)
   })
 
   test('the contents of the created blog are faithful to intention', async () => {
