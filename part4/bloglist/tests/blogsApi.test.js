@@ -170,11 +170,11 @@ describe('DELETE requests', async () => {
 
 describe('PUT modification requests', async () => {
   test('incrementing likes works', async () => {
-    const blogsBefore = (await api.get('/api/blogs').expect(200)).body
+    const myBlog = await Blog.findOne({ user: userIds['user1'] })
 
-    const blogToModify = blogsBefore[Math.floor(Math.random() * blogsBefore.length)]
+    const blogToModify = myBlog
 
-    await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, likes: blogToModify.likes + 1 }).expect(200)
+    await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, likes: blogToModify.likes + 1 }).set({ Authorization: user1Token }).expect(200)
 
     const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
