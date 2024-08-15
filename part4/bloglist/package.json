@@ -9,7 +9,7 @@
     "test:all": "cross-env NODE_ENV=test node --test",
     "test:only": "cross-env NODE_ENV=test node --test --test-only",
     "test:some": "cross-env NODE_ENV=test node --test --test-name-pattern",
-    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"incrementing likes works\""
+    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"replacing title works\""
   },
   "keywords": [],
   "author": "",

@@ -187,15 +187,15 @@ describe('PUT modification requests', async () => {
   test('replacing title works', async () => {
     const blogsBefore = (await api.get('/api/blogs').expect(200)).body
 
-    const blogToModify = blogsBefore[Math.floor(Math.random() * blogsBefore.length)]
+    const blogToModify = (await Blog.findOne({ user: userIds['user1'] })).toObject()
 
     const newTitle = generateRandomString()
 
-    await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, title: newTitle }).expect(200)
+    await api.put(`/api/blogs/${blogToModify._id}`).set({ Authorization: user1Token }).send({ ...blogToModify, title: newTitle }).expect(200)
 
     const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
-    assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify.id).title, newTitle)
+    assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify._id.toString()).title, newTitle)
   })
 
   test('trying to modify nonexistent resource gives 404', async () => {
