@@ -7,7 +7,9 @@
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
     "test:all": "cross-env NODE_ENV=test node --test",
-    "test:only": "cross-env NODE_ENV=test node --test --test-only"
+    "test:only": "cross-env NODE_ENV=test node --test --test-only",
+    "test:some": "cross-env NODE_ENV=test node --test --test-name-pattern",
+    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"resource is removed after valid delete request\""
   },
   "keywords": [],
   "author": "",

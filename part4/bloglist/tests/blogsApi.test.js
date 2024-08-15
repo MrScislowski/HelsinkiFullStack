@@ -6,6 +6,7 @@ const app = require('../app')
 const Blog = require('../models/Blog')
 const User = require('../models/User')
 const testData = require('./testData')
+const logger = require('../utils/logger')
 
 const api = supertest(app)
 
@@ -14,6 +15,7 @@ const generateRandomString = () => {
 }
 
 let user1Token
+let userIds
 
 
 beforeEach(async () => {
@@ -21,7 +23,7 @@ beforeEach(async () => {
   await Blog.deleteMany({})
 
   // will contain ids for each user in DB; e.g. {'user1': 'lkdjaf98e892fsa', 'user2': 98fjkdlf28fds'}
-  const userIds = {}
+  userIds = {}
   for (let userData of testData.usersContent) {
     const createdUser = await (new User(userData)).save()
     userIds[userData.username] = createdUser._id
@@ -133,16 +135,19 @@ describe('malformed POST requests', async () => {
 
 describe('DELETE requests', async () => {
   test('resource is removed after valid delete request', async () => {
-    const initialBlogs = (await api.get('/api/blogs').expect(200)).body
+    const allBlogsInitially = await Blog.find({})
+    const myBlogs = await Blog.find({ user: userIds['user1'] })
+    logger.info(`here are the blogs I can delete: ${JSON.stringify(myBlogs, null, 2)}`)
 
-    const blogToDelete = initialBlogs[Math.floor(Math.random() * initialBlogs.length)]
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    const blogToDelete = myBlogs[Math.floor(Math.random() * myBlogs.length)]
+    logger.info(`about to delete blog with ID ${blogToDelete.id}`)
+    await api.delete(`/api/blogs/${blogToDelete.id}`).set({ Authorization: user1Token }).expect(204)
 
-    const finalBlogs = (await api.get('/api/blogs').expect(200)).body
+    const allBlogsFinally = (await api.get('/api/blogs').expect(200)).body
 
 
-    assert.strictEqual(finalBlogs.length + 1, initialBlogs.length)
-    assert.strictEqual(finalBlogs.find(blog => blog.id === blogToDelete.id), undefined)
+    assert.strictEqual(allBlogsFinally.length + 1, allBlogsInitially.length)
+    assert.strictEqual(allBlogsFinally.find(blog => blog.id === blogToDelete.id), undefined)
   })
 
   test('attempting to remove a nonexistent id gives status 404', async () => {

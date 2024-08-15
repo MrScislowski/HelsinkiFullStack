@@ -53,16 +53,21 @@ blogsRouter.delete('/:id', async (request, response) => {
 
   // check if it's authorized (user id of blog is the same as id from token)
   const blogEntry = await Blog.findById(blogId)
+  logger.info(`found blog entry: ${JSON.stringify(blogEntry, null, 2)}`)
   if (!blogEntry) {
     return response.status(404).send()
   }
+  logger.info(`token user id is: ${JSON.stringify(request.user, null, 2)}`)
+  logger.info(`blog user id is: ${JSON.stringify(blogEntry.user, null, 2)}`)
 
   if (blogEntry.user._id.toString() !== request.user.id) {
     return response.status(403).send()
   }
 
   // TODO: could I have done blogEntry.deleteOne() or something like that? Since I've already found it
+  logger.info('about to delete the blog...')
   const dbResponse = await Blog.findByIdAndDelete(blogId)
+  logger.info(`deleted... db response is: ${JSON.stringify(dbResponse, null, 2)}`)
 
   if (dbResponse) {
     response.status(204).send()
