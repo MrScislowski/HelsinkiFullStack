@@ -219,7 +219,7 @@ describe('PUT modification requests', async () => {
     const newBlog = {
       title, author, url
     }
-    await api.put('/api/blogs/notavalidresource').send({ ...newBlog }).expect(400)
+    await api.put('/api/blogs/notavalidresource').set({ Authorization: user1Token }).send({ ...newBlog }).expect(400)
   })
 })
 
