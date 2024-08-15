@@ -170,15 +170,17 @@ describe('DELETE requests', async () => {
 
 describe('PUT modification requests', async () => {
   test('incrementing likes works', async () => {
-    const myBlog = await Blog.findOne({ user: userIds['user1'] })
+    const oldBlog = (await Blog.findOne({ user: userIds['user1'] })).toObject()
 
-    const blogToModify = myBlog
+    const proposedNewBlog = { ...oldBlog, likes: oldBlog.likes + 1 }
 
-    await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, likes: blogToModify.likes + 1 }).set({ Authorization: user1Token }).expect(200)
+    await api.put(`/api/blogs/${oldBlog._id}`).send(proposedNewBlog).set({ Authorization: user1Token }).expect(200)
 
-    const blogsAfter = (await api.get('/api/blogs').expect(200)).body
+    const newBlogs = (await api.get('/api/blogs').expect(200)).body
+    const newBlog = newBlogs.find(blog => blog.id === oldBlog._id.toString())
 
-    assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify.id).likes, blogToModify.likes + 1)
+
+    assert.strictEqual(newBlog.likes, oldBlog.likes + 1)
 
   })
 

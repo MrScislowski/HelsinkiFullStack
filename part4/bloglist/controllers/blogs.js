@@ -80,6 +80,22 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   const id = request.params.id
 
+
+  const userFromToken = request.user
+  if (!userFromToken) {
+    return response.status(401).send({ 'error': 'authorization token required' })
+  }
+
+  // check if it's authorized (user id of blog is the same as id from token)
+  const blogEntry = await Blog.findById(id)
+  if (!blogEntry) {
+    return response.status(404).send()
+  }
+
+  if (blogEntry.user._id.toString() !== request.user.id) {
+    return response.status(403).send()
+  }
+
   const dbResponse = await Blog.findByIdAndUpdate(id, request.body,  { new: true, runValidators: true, context: 'query' })
 
   if (dbResponse) {
