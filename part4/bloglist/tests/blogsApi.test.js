@@ -83,7 +83,7 @@ describe('well-formed POST requests', async () => {
       title, author, url
     }
 
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs').set({ Authorization: user1Token }).send(newBlog)
 
     const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
@@ -101,11 +101,12 @@ describe('well-formed POST requests', async () => {
       title, author, url
     }
 
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs').set({ Authorization: user1Token }).send(newBlog)
 
     const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
     const createdBlog = blogsAfter.find(blog => blog.title === title && blog.author === author && blog.url === url)
+    assert.ok(createdBlog, `Expected to find ${JSON.stringify(newBlog, null, 2)} in ${JSON.stringify(blogsAfter, null, 2)}`)
     assert.strictEqual(createdBlog.likes, 0)
   })
 })
@@ -117,7 +118,7 @@ describe('malformed POST requests', async () => {
       url: generateRandomString(),
     }
 
-    await api.post('/api/blogs').send(postBody).expect(400)
+    await api.post('/api/blogs').set({ Authorization: user1Token }).send(postBody).expect(400)
   })
 
   test('missing url causes 400 response', async () => {
@@ -126,7 +127,7 @@ describe('malformed POST requests', async () => {
       author: generateRandomString(),
     }
 
-    await api.post('/api/blogs').send(postBody).expect(400)
+    await api.post('/api/blogs').set({ Authorization: user1Token }).send(postBody).expect(400)
   })
 })
 
@@ -152,7 +153,7 @@ describe('DELETE requests', async () => {
       title, author, url
     }
 
-    const blogInDB = (await api.post('/api/blogs').send(newBlog).expect(201)).body
+    const blogInDB = (await api.post('/api/blogs').set({ Authorization: user1Token }).send(newBlog).expect(201)).body
     await api.delete(`/api/blogs/${blogInDB.id}`).expect(204)
 
     await api.delete(`/api/blogs/${blogInDB.id}`).expect(404)
@@ -199,7 +200,7 @@ describe('PUT modification requests', async () => {
       title, author, url
     }
 
-    const blogInDB = (await api.post('/api/blogs').send(newBlog).expect(201)).body
+    const blogInDB = (await api.post('/api/blogs').set({ Authorization: user1Token }).send(newBlog).expect(201)).body
     await api.delete(`/api/blogs/${blogInDB.id}`).expect(204)
 
     await api.put(`/api/blogs/${blogInDB.id}`).send({ ...blogInDB, likes: 42 }).expect(404)

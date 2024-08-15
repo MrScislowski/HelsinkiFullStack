@@ -19,7 +19,7 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
 
   if (!('title' in request.body) || !('url' in request.body)) {
-    return response.status(401).send({ 'error': 'title & url for blog required' })
+    return response.status(400).send({ 'error': 'title & url for blog required' })
   }
 
   const userFromToken = request.user
