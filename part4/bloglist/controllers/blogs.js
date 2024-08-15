@@ -51,6 +51,11 @@ blogsRouter.post('/', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
   const blogId = request.params.id
 
+  const userFromToken = request.user
+  if (!userFromToken) {
+    return response.status(401).send({ 'error': 'authorization token required' })
+  }
+
   // check if it's authorized (user id of blog is the same as id from token)
   const blogEntry = await Blog.findById(blogId)
   if (!blogEntry) {

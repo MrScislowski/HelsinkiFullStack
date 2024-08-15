@@ -6,6 +6,7 @@ const app = require('../app')
 const Blog = require('../models/Blog')
 const User = require('../models/User')
 const testData = require('./testData')
+// eslint-disable-next-line no-unused-vars
 const logger = require('../utils/logger')
 
 const api = supertest(app)
@@ -157,9 +158,9 @@ describe('DELETE requests', async () => {
     }
 
     const blogInDB = (await api.post('/api/blogs').set({ Authorization: user1Token }).send(newBlog).expect(201)).body
-    await api.delete(`/api/blogs/${blogInDB.id}`).expect(204)
+    await api.delete(`/api/blogs/${blogInDB.id}`).set({ Authorization: user1Token }).expect(204)
 
-    await api.delete(`/api/blogs/${blogInDB.id}`).expect(404)
+    await api.delete(`/api/blogs/${blogInDB.id}`).set({ Authorization: user1Token }).expect(404)
   })
 
   test('attempting to remove an invalidly formatted id gives status 400', async () => {
