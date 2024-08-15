@@ -6,10 +6,10 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test:all": "cross-env NODE_ENV=test node --test",
-    "test:only": "cross-env NODE_ENV=test node --test --test-only",
-    "test:some": "cross-env NODE_ENV=test node --test --test-name-pattern",
-    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"trying to modify bad id resource gives 400\""
+    "test:all": "cross-env NODE_ENV=test node --test --test-concurrency=1",
+    "test:only": "cross-env NODE_ENV=test node --test --test-only --test-concurrency=1",
+    "test:some": "cross-env NODE_ENV=test node --test --test-concurrency=1 --test-name-pattern",
+    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"posting a new blog increases the number in the DB by one\" --test-concurrency=1"
   },
   "keywords": [],
   "author": "",
