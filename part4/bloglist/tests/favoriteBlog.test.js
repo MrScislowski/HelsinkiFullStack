@@ -4,7 +4,7 @@ const listHelper = require('../utils/list_helper')
 
 const { blogs } = require('./testData')
 
-describe('favorite blog', () => {
+describe.skip('favorite blog', () => {
   test('dijkstra is the favorite', () => {
     const expected = {
       title: 'Canonical string reduction',

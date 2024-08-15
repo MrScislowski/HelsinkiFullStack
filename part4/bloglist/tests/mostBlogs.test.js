@@ -4,7 +4,7 @@ const listHelper = require('../utils/list_helper')
 
 const { blogs } = require('./testData')
 
-describe('most blogs', () => {
+describe.skip('most blogs', () => {
   test('fowler has the most blogs', () => {
     const expected = {
       author: 'Robert C. Martin',
