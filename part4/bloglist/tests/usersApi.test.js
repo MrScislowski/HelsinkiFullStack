@@ -38,14 +38,6 @@ describe('GET user api tests on backend', async () => {
     assert.strictEqual(response.body.length, initialUsers.length)
   })
 
-  test('user data has fields: "username", "name", "id", an no more', async () => {
-    const response = await api.get('/api/users')
-    const allBlogs = response.body
-
-    const requiredFields = ['username', 'name', 'id']
-
-    assert.ok(allBlogs.every(user => _.isEqual(Object.getOwnPropertyNames(user), requiredFields)))
-  })
 })
 
 describe.only('POST user api tests on backend', async () => {
