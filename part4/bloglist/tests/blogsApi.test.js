@@ -137,10 +137,8 @@ describe('DELETE requests', async () => {
   test('resource is removed after valid delete request', async () => {
     const allBlogsInitially = await Blog.find({})
     const myBlogs = await Blog.find({ user: userIds['user1'] })
-    logger.info(`here are the blogs I can delete: ${JSON.stringify(myBlogs, null, 2)}`)
 
     const blogToDelete = myBlogs[Math.floor(Math.random() * myBlogs.length)]
-    logger.info(`about to delete blog with ID ${blogToDelete.id}`)
     await api.delete(`/api/blogs/${blogToDelete.id}`).set({ Authorization: user1Token }).expect(204)
 
     const allBlogsFinally = (await api.get('/api/blogs').expect(200)).body
