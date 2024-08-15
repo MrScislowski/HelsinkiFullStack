@@ -45,12 +45,12 @@ describe('GET api tests on backend', async () => {
   })
 
   test('correct number of blogs returned', async () => {
-    const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs').expect(200)
     assert.strictEqual(response.body.length, testData.blogsContent.length)
   })
 
   test('blog posts have "id" field, not "_id" field', async () => {
-    const response = await api.get('/api/blogs')
+    const response = await api.get('/api/blogs').expect(200)
     // const allBlogs = JSON.parse(response.body)
     const allBlogs = response.body
 
@@ -69,12 +69,12 @@ describe('well-formed POST requests', async () => {
         author: generateRandomString(),
         url: generateRandomString(),
       }).expect(201)
-    const blogsAfter = (await api.get('/api/blogs')).body
+    const blogsAfter = (await api.get('/api/blogs').expect(200)).body
     assert.strictEqual(blogsBefore.length + 1, blogsAfter.length)
   })
 
   test('the contents of the created blog are faithful to intention', async () => {
-    const blogsBefore = (await api.get('/api/blogs')).body
+    const blogsBefore = (await api.get('/api/blogs').expect(200)).body
 
     const title = generateRandomString()
     const author = generateRandomString()
@@ -85,12 +85,12 @@ describe('well-formed POST requests', async () => {
 
     await api.post('/api/blogs').send(newBlog)
 
-    const blogsAfter = (await api.get('/api/blogs')).body
+    const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
     const foundBefore = blogsBefore.find(blog => blog.title === title && blog.author === author && blog.url === url)
     const foundAfter = blogsAfter.find(blog => blog.title === title && blog.author === author && blog.url === url)
     assert.strictEqual(foundBefore, undefined, 'shouldnt find the created blog before its posted')
-    assert.ok('id' in foundAfter, `blogsAfter should have contained ${JSON.stringify(newBlog, null, 2)}. Blogs after was: ${JSON.stringify(blogsAfter, null, 2)}`)
+    assert.ok(foundAfter && 'id' in foundAfter, `blogsAfter should have contained ${JSON.stringify(newBlog, null, 2)}. Blogs after was: ${JSON.stringify(blogsAfter, null, 2)}`)
   })
 
   test('posting a blog missing likes defaults to zero', async () => {
@@ -103,7 +103,7 @@ describe('well-formed POST requests', async () => {
 
     await api.post('/api/blogs').send(newBlog)
 
-    const blogsAfter = (await api.get('/api/blogs')).body
+    const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
     const createdBlog = blogsAfter.find(blog => blog.title === title && blog.author === author && blog.url === url)
     assert.strictEqual(createdBlog.likes, 0)
@@ -132,12 +132,12 @@ describe('malformed POST requests', async () => {
 
 describe('DELETE requests', async () => {
   test('resource is removed after valid delete request', async () => {
-    const initialBlogs = (await api.get('/api/blogs')).body
+    const initialBlogs = (await api.get('/api/blogs').expect(200)).body
 
     const blogToDelete = initialBlogs[Math.floor(Math.random() * initialBlogs.length)]
     await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
-    const finalBlogs = (await api.get('/api/blogs')).body
+    const finalBlogs = (await api.get('/api/blogs').expect(200)).body
 
 
     assert.strictEqual(finalBlogs.length + 1, initialBlogs.length)
@@ -165,20 +165,20 @@ describe('DELETE requests', async () => {
 
 describe('PUT modification requests', async () => {
   test('incrementing likes works', async () => {
-    const blogsBefore = (await api.get('/api/blogs')).body
+    const blogsBefore = (await api.get('/api/blogs').expect(200)).body
 
     const blogToModify = blogsBefore[Math.floor(Math.random() * blogsBefore.length)]
 
     await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, likes: blogToModify.likes + 1 }).expect(200)
 
-    const blogsAfter = (await api.get('/api/blogs')).body
+    const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
     assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify.id).likes, blogToModify.likes + 1)
 
   })
 
   test('replacing title works', async () => {
-    const blogsBefore = (await api.get('/api/blogs')).body
+    const blogsBefore = (await api.get('/api/blogs').expect(200)).body
 
     const blogToModify = blogsBefore[Math.floor(Math.random() * blogsBefore.length)]
 
@@ -186,7 +186,7 @@ describe('PUT modification requests', async () => {
 
     await api.put(`/api/blogs/${blogToModify.id}`).send({ ...blogToModify, title: newTitle }).expect(200)
 
-    const blogsAfter = (await api.get('/api/blogs')).body
+    const blogsAfter = (await api.get('/api/blogs').expect(200)).body
 
     assert.strictEqual(blogsAfter.find(blog => blog.id === blogToModify.id).title, newTitle)
   })
