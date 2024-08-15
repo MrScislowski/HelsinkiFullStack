@@ -164,7 +164,7 @@ describe('DELETE requests', async () => {
   })
 
   test('attempting to remove an invalidly formatted id gives status 400', async () => {
-    await api.delete('/api/blogs/notvalidid').expect(400)
+    await api.delete('/api/blogs/notvalidid').set({ Authorization: user1Token }).expect(400)
   })
 })
 
