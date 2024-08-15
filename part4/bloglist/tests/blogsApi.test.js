@@ -207,9 +207,9 @@ describe('PUT modification requests', async () => {
     }
 
     const blogInDB = (await api.post('/api/blogs').set({ Authorization: user1Token }).send(newBlog).expect(201)).body
-    await api.delete(`/api/blogs/${blogInDB.id}`).expect(204)
+    await api.delete(`/api/blogs/${blogInDB.id}`).set({ Authorization: user1Token }).expect(204)
 
-    await api.put(`/api/blogs/${blogInDB.id}`).send({ ...blogInDB, likes: 42 }).expect(404)
+    await api.put(`/api/blogs/${blogInDB.id}`).set({ Authorization: user1Token }).send({ ...blogInDB, likes: 42 }).expect(404)
   })
 
   test('trying to modify bad id resource gives 400', async () => {
