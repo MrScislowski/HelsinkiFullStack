@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/Blog')
+const User = require('../models/User')
+const testData = require('./testData')
 
 const api = supertest(app)
 
@@ -11,19 +13,27 @@ const generateRandomString = () => {
   return Math.random().toString(36).slice(2)
 }
 
-// strip the old ids etc from the test data
-const initialBlogs = require('./testData').blogs.map(
-  ({ title, author, url, likes }) => {
-    return {
-      title, author, url, likes
-    }})
+let user1Token
+
 
 beforeEach(async () => {
+  await User.deleteMany({})
   await Blog.deleteMany({})
 
+  // will contain ids for each user in DB; e.g. {'user1': 'lkdjaf98e892fsa', 'user2': 98fjkdlf28fds'}
+  const userIds = {}
+  for (let userData of testData.usersContent) {
+    const createdUser = await (new User(userData)).save()
+    userIds[userData.username] = createdUser._id
+  }
+
   await Promise.all(
-    initialBlogs.map(blog => new Blog(blog).save())
+    testData.blogsContent.map(blog => {
+      return (new Blog({ ...blog, user: userIds[blog.user] })).save()
+    })
   )
+
+  user1Token = (await api.post('/api/login').send({ username: 'user1', password: testData.usersContent[0].password })).body.token
 })
 
 describe('GET api tests on backend', async () => {
@@ -36,7 +46,7 @@ describe('GET api tests on backend', async () => {
 
   test('correct number of blogs returned', async () => {
     const response = await api.get('/api/blogs')
-    assert.strictEqual(response.body.length, initialBlogs.length)
+    assert.strictEqual(response.body.length, testData.blogsContent.length)
   })
 
   test('blog posts have "id" field, not "_id" field', async () => {
@@ -49,13 +59,16 @@ describe('GET api tests on backend', async () => {
 })
 
 describe('well-formed POST requests', async () => {
-  test('posting a new blog increases the number in the DB by one', async () => {
-    const blogsBefore = (await api.get('/api/blogs')).body
-    await api.post('/api/blogs').send({
-      title: generateRandomString(),
-      author: generateRandomString(),
-      url: generateRandomString(),
-    })
+  test.only('posting a new blog increases the number in the DB by one', async () => {
+    const blogsBefore = (await api.get('/api/blogs').expect(200)).body
+
+    await api.post('/api/blogs')
+      .set({ Authorization: user1Token })
+      .send({
+        title: generateRandomString(),
+        author: generateRandomString(),
+        url: generateRandomString(),
+      }).expect(201)
     const blogsAfter = (await api.get('/api/blogs')).body
     assert.strictEqual(blogsBefore.length + 1, blogsAfter.length)
   })

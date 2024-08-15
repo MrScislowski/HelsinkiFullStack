@@ -14,6 +14,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmI2NmQyM
   "likes": "19"
 }
 
+### Post with no authorization
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+  "title": "random",
+  "author": "random",
+  "url": "random",
+  "likes": "19"
+}
+
 ### DELETE your blog
 DELETE http://localhost:3003/api/blogs/66bce6312b22c667b726b645
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2YmI2NmQyMTU2MjJkNDZlOWFhNjBiOSIsInVzZXJuYW1lIjoicm9vdCIsImlhdCI6MTcyMzY1NDYxMH0.ZvqrEUbrKz8_7NW9IGOr5YqsDvl52jy18n6Roub1Dgo

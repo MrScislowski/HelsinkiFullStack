@@ -23,6 +23,9 @@ blogsRouter.post('/', async (request, response) => {
   }
 
   const userFromToken = request.user
+  if (!userFromToken) {
+    return response.status(401).send({ 'error': 'authorization token required' })
+  }
 
   const blog = new Blog({
     likes: request.body.likes || 0,
