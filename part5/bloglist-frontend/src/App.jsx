@@ -29,6 +29,7 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [notification, setNotification] = useState(null)
   const handleLogin = async (event) => {
     event.preventDefault()
 
@@ -38,7 +39,16 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch (e) {
-      console.log(e)
+      // TODO: just discovered the 'response' property on the Axios error object isn't enumerable... wtf
+      // Adjust the following to take care of that.
+      if (e.response && e.response.data) {
+        console.log('heres a response with data...')
+        console.log(JSON.stringify(e.response.data, null, 2))
+      } else {
+        console.log('unexpected error', e)
+      }
+      setNotification({message: JSON.stringify(e, null, 2), type: 'error'})
+      // setTimeout(() => {setNotification(null)}, 3000)
     }
   }
 
@@ -51,11 +61,18 @@ const App = () => {
     event.preventDefault()
 
     try {
-      const response = await blogService.postNew({title, author, url})
+      const response = await blogService.postNew({ title, author, url })
 
       setTitle('')
       setAuthor('')
       setUrl('')
+
+      setNotification({
+        message: `added new blog`,
+        data: { title: response.title, author: response.author },
+        type: "info"
+      })
+      setTimeout(() => setNotification(null), 3000)
     } catch (e) {
       console.log(e)
     }
@@ -126,8 +143,48 @@ const App = () => {
     )
   }
 
+  const notificationPane = () => {
+    const notificationData = () => {
+      return <ul>
+        {Object.entries(notification.data).map(([k, v]) => {
+          return <li key={k}>{k}: {v}</li>
+        })}
+      </ul>
+    }
+
+    const infoStyle = {
+      padding: 10,
+      backgroundColor: "green",
+      color: "white",
+      borderStyle: "solid",
+    };
+
+    const errorStyle = {
+      padding: 10,
+      backgroundColor: "red",
+      color: "white",
+      borderStyle: "solid",
+    }
+
+    let chosenStyle = infoStyle
+
+    if (notification.type === "info") {
+      chosenStyle = infoStyle
+    } else if (notification.type === "error") {
+      chosenStyle = errorStyle
+    }
+
+    return (
+      <div style={chosenStyle}>
+        <p>{notification.message}</p>
+        {notification.data && notificationData()}
+      </div>
+    )
+  }
+
   return (
     <>
+      {notification && notificationPane()}
       {!user && loginForm()}
       {user && userInfo()}
       {user && createNewBlogForm()}
