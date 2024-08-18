@@ -15,7 +15,9 @@ const App = () => {
   useEffect(() => {
     const savedLogin = localStorage.getItem('loggedInBloglistUser')
     if (savedLogin) {
-      setUser(JSON.parse(savedLogin))
+      const savedUser = JSON.parse(savedLogin)
+      setUser(savedUser)
+      blogService.setToken(savedUser.token)
     }
   }, [])
 
@@ -24,12 +26,16 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
       const user = await loginService.attemptLogin(username, password)
       localStorage.setItem('loggedInBloglistUser', JSON.stringify(user))
+      blogService.setToken(user.token)
       setUser(user)
     } catch (e) {
       console.log(e)
@@ -39,6 +45,20 @@ const App = () => {
   const handleLogout = () => {
     localStorage.removeItem('loggedInBloglistUser')
     setUser(null)
+  }
+
+  const handleCreateNewBlog = async (event) => {
+    event.preventDefault()
+
+    try {
+      const response = await blogService.postNew({title, author, url})
+
+      setTitle('')
+      setAuthor('')
+      setUrl('')
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   const loginForm = () => {
@@ -57,6 +77,33 @@ const App = () => {
           </span>
           <br />
           <button type='submit'>log in</button>
+        </form>
+      </>
+    )
+  }
+
+  const createNewBlogForm = () => {
+    return (
+      <>
+        <h2>create new</h2>
+        <form onSubmit={handleCreateNewBlog}>
+          <span>
+            title:
+            <input type='text' onChange={(e) => setTitle(e.target.value)} />
+          </span>
+          <br />
+          <span>
+            author:
+            <input type='text' onChange={(e) => setAuthor(e.target.value)} />
+          </span>
+          <br />
+          <span>
+            url:
+            <input type='text' onChange={(e) => setUrl(e.target.value)} />
+          </span>
+          <br />
+          <button type='submit'>create</button>
+
         </form>
       </>
     )
@@ -83,6 +130,7 @@ const App = () => {
     <>
       {!user && loginForm()}
       {user && userInfo()}
+      {user && createNewBlogForm()}
       {user && blogList()}
     </>
   )
