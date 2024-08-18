@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs(blogs)
     )
   }, [])
 
@@ -15,22 +16,44 @@ const App = () => {
 
   // If user is not logged in, only login form is visible
   const [user, setUser] = useState(null)
-  const handleLogin = () => {
-    setUser(`User #${Math.floor(Math.random() * 10)}`)
-  }
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const handleLogin = async (event) => {
+    event.preventDefault()
+
+    try {
+      const user = await loginService.attemptLogin(username, password)
+      setUser(user)
+    } catch (e) {
+      console.log(e)
+    }
+
+    }
 
   const loginForm = () => {
     return (
-      <form onSubmit={handleLogin}>
-        Click on the button to be logged in
-        <button>Log in</button>
-      </form>
+      <>
+        <h2>log in to application</h2>
+        <form onSubmit={handleLogin}>
+          <span>
+            username:
+            <input type='text' onChange={(e) => setUsername(e.target.value)} />
+          </span>
+          <br />
+          <span>
+            password:
+            <input type='password' onChange={e => setPassword(e.target.value)} />
+          </span>
+          <br />
+          <button type='submit'>log in</button>
+        </form>
+      </>
     )
   }
 
   const userInfo = () => {
     return (
-    <p> Logged in as: {user} </p>
+      <p> Logged in as: {user.name} </p>
     )
   }
 
@@ -38,19 +61,19 @@ const App = () => {
     return (
       <div>
         <h2>blogs</h2>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
-          )}
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
       </div>
     )
   }
 
   return (
-  <>
-    {user && userInfo()}
-    {user && blogList()}
-    {!user && loginForm()}
-  </>
+    <>
+      {!user && loginForm()}
+      {user && userInfo()}
+      {user && blogList()}
+    </>
   )
 
 }

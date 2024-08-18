@@ -8,6 +8,8 @@ Using the array element as the key is a bad idea, because if you add something t
 
 If you define a piece of state as the value attribute of an input element, the component now _controls_ the behavior of the input element. To be able to edit it, you have to have an `onChange` event handler that updates the state accordingly.
 
+Often this looks like (e.g. for setting name) `onChange={e => setName(e.target.value)}`.
+
 ### `json-server`
 
 ```bash
