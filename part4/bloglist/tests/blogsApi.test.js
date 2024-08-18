@@ -194,8 +194,6 @@ describe('PUT modification requests', async () => {
   })
 
   test('replacing title works', async () => {
-    const blogsBefore = (await api.get('/api/blogs').expect(200)).body
-
     const blogToModify = (await Blog.findOne({ user: userIds['user1'] })).toObject()
 
     const newTitle = generateRandomString()
