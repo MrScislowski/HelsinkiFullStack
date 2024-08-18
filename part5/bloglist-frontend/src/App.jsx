@@ -12,6 +12,12 @@ const App = () => {
     )
   }, [])
 
+  useEffect(() => {
+    const savedLogin = localStorage.getItem('loggedInBloglistUser')
+    if (savedLogin) {
+      setUser(JSON.parse(savedLogin))
+    }
+  }, [])
 
 
   // If user is not logged in, only login form is visible
@@ -23,12 +29,17 @@ const App = () => {
 
     try {
       const user = await loginService.attemptLogin(username, password)
+      localStorage.setItem('loggedInBloglistUser', JSON.stringify(user))
       setUser(user)
     } catch (e) {
       console.log(e)
     }
+  }
 
-    }
+  const handleLogout = () => {
+    localStorage.removeItem('loggedInBloglistUser')
+    setUser(null)
+  }
 
   const loginForm = () => {
     return (
@@ -53,7 +64,7 @@ const App = () => {
 
   const userInfo = () => {
     return (
-      <p> Logged in as: {user.name} </p>
+      <p> Logged in as: {user.name} <button onClick={handleLogout}>Log out</button></p>
     )
   }
 
