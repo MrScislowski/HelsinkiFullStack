@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+
+import NewBlogForm from './components/NewBlogForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -26,9 +28,7 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
   const [notification, setNotification] = useState(null)
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -50,26 +50,7 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreateNewBlog = async (event) => {
-    event.preventDefault()
 
-    try {
-      const response = await blogService.postNew({ title, author, url })
-
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-
-      setNotification({
-        message: `added new blog`,
-        data: { title: response.title, author: response.author },
-        type: "info"
-      })
-      setTimeout(() => setNotification(null), 3000)
-    } catch (e) {
-      console.dir(e)
-    }
-  }
 
   const loginForm = () => {
     return (
@@ -92,32 +73,6 @@ const App = () => {
     )
   }
 
-  const createNewBlogForm = () => {
-    return (
-      <>
-        <h2>create new</h2>
-        <form onSubmit={handleCreateNewBlog}>
-          <span>
-            title:
-            <input type='text' onChange={(e) => setTitle(e.target.value)} />
-          </span>
-          <br />
-          <span>
-            author:
-            <input type='text' onChange={(e) => setAuthor(e.target.value)} />
-          </span>
-          <br />
-          <span>
-            url:
-            <input type='text' onChange={(e) => setUrl(e.target.value)} />
-          </span>
-          <br />
-          <button type='submit'>create</button>
-
-        </form>
-      </>
-    )
-  }
 
   const userInfo = () => {
     return (
@@ -180,7 +135,7 @@ const App = () => {
       {notification && notificationPane()}
       {!user && loginForm()}
       {user && userInfo()}
-      {user && createNewBlogForm()}
+      {user && <NewBlogForm setNotification={setNotification} />}
       {user && blogList()}
     </>
   )
