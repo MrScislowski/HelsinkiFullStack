@@ -225,3 +225,115 @@ const App = () => {
 ```
 
 This could have achieved this a bit more simply using "old React" class-based components, instead of hooks.
+
+### PropTypes
+
+Install package,
+
+```sh
+pnpm install prop-types
+```
+
+Using, on the `Togglable` component:
+```js
+import PropTypes from 'prop-types'
+
+const Togglable = React.forwardRef((props, ref) => {
+  // ...
+})
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired
+}
+```
+
+On the `LoginForm` component:
+```js
+LoginForm.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+  handleUsernameChange: PropTypes.func.isRequired,
+  handlePasswordChange: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired,
+  password: PropTypes.string.isRequired
+}
+```
+
+### Linting on frontend
+
+Vite installs ESLint by default, so you just need to create a `.eslintrc.cjs` file. Suggested contents:
+
+```js
+module.exports = {
+  root: true,
+  env: {
+    browser: true,
+    es2020: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'plugin:react-hooks/recommended',
+  ],
+  ignorePatterns: ['dist', '.eslintrc.cjs'],
+  parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
+  settings: { react: { version: '18.2' } },
+  plugins: ['react-refresh'],
+  rules: {
+    "indent": [
+        "error",
+        2
+    ],
+    "linebreak-style": [
+        "error",
+        "unix"
+    ],
+    "quotes": [
+        "error",
+        "single"
+    ],
+    "semi": [
+        "error",
+        "never"
+    ],
+    "eqeqeq": "error",
+    "no-trailing-spaces": "error",
+    "object-curly-spacing": [
+        "error", "always"
+    ],
+    "arrow-spacing": [
+        "error", { "before": true, "after": true }
+    ],
+    "no-console": 0,
+    "react/react-in-jsx-scope": "off",
+    "react/prop-types": 0,
+    "no-unused-vars": 0
+  },
+}
+```
+
+And create a `.eslintignore` file in the repo root containing:
+
+```
+node_modules
+dist
+.eslintrc.cjs
+vite.config.js
+```
+
+#### VSCode lint problems
+
+If "Failed to load plugin react: Cannot find module 'eslint-plugin-react'" is showing, add this to `settings.json`: `"eslint.workingDirectories": [{ "mode": "auto" }]`
+
+#### displayname problems
+
+When creating a component with the `forwardRef` function, it may complain about not having a display name. You can just add this `displayName` attribute:
+
+```js
+const Togglable = React.forwardRef((props, ref) => {
+  // ...
+})
+
+Togglable.displayName = 'Togglable'
+
+```
