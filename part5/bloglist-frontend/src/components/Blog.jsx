@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import blogService from '../services/blogs'
 
 const Blog = ({ blog }) => {
   const blogStyle = {
@@ -15,7 +16,12 @@ const Blog = ({ blog }) => {
     </button>
   }
 
-  const likeButton = () => <button onClick={() => alert('to be implemented')}>like</button>
+  const handleLike = async () => {
+    await blogService.putAmended({...blog, likes: blog.likes + 1})
+    // TODO: we should cause a data fetch to run again, or update the state of the blogs ourselves
+  }
+
+  const likeButton = () => <button onClick={handleLike}>like</button>
 
   const details = () => <ul>
     <li>{blog.url}</li>

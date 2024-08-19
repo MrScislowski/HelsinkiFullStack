@@ -96,7 +96,14 @@ blogsRouter.put('/:id', async (request, response) => {
     return response.status(403).send()
   }
 
-  const dbResponse = await Blog.findByIdAndUpdate(id, request.body,  { new: true, runValidators: true, context: 'query' })
+  // TODO: will this automatically raise an exception if something is missing?
+  const { title, author, url, likes, user } = request.body
+
+  const updatedBlogEntry = {
+    title, author, url, user, likes
+  }
+
+  const dbResponse = await Blog.findByIdAndUpdate(id, updatedBlogEntry,  { new: true, runValidators: true, context: 'query' })
 
   if (dbResponse) {
     response.status(200).send()

@@ -28,6 +28,8 @@ const NewBlogForm = (props) => {
         type: "info"
       })
       setTimeout(() => props.setNotification(null), 3000)
+
+      // TODO: we should cause a data fetch to run again, or update the state of the blogs ourselves
     } catch (e) {
       console.dir(e)
     }
