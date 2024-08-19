@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
+import PropTypes from 'prop-types'
+
 const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
   const blogStyle = {
     borderTopStyle: 'solid',
@@ -59,7 +61,7 @@ const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
     <li> likes: {blog.likes} {likeButton()}</li>
     <li> {blog.user.name} </li>
   </ul>
-    {blog.user.name === currentUserName && removeButton()}
+  {blog.user.name === currentUserName && removeButton()}
   </div>
 
   return (
@@ -68,6 +70,35 @@ const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
       {showDetails && details()}
     </div>
   )
+}
+
+Blog.propTypes = {
+  blog: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired,
+    user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+    }).isRequired }).isRequired,
+
+  blogs: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired,
+    user: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+    }).isRequired }).isRequired).isRequired,
+
+  setBlogs: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired,
 }
 
 export default Blog

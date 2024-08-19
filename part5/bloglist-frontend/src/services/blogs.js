@@ -23,7 +23,7 @@ const postNew = async (blog) => {
 
 const putAmended = async (blog) => {
   const config = {
-    headers: {Authorization: token },
+    headers: { Authorization: token },
   }
 
   const blogData = {
@@ -37,7 +37,7 @@ const putAmended = async (blog) => {
 
 const deleteBlog = async (blog) => {
   const config = {
-    headers: {Authorization: token },
+    headers: { Authorization: token },
   }
 
   const response = await axios.delete(`${baseUrl}/${blog.id}`, config)

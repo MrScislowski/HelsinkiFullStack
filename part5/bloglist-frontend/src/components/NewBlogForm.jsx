@@ -23,9 +23,9 @@ const NewBlogForm = ({ blogs, setBlogs, setNotification }) => {
       newBlogFormRef.current.toggleVisibility()
 
       setNotification({
-        message: `added new blog`,
+        message: 'added new blog',
         data: { title: response.title, author: response.author },
-        type: "info"
+        type: 'info'
       })
       setTimeout(() => setNotification(null), 3000)
 
@@ -43,27 +43,27 @@ const NewBlogForm = ({ blogs, setBlogs, setNotification }) => {
 
   return (
     <>
-    <Togglable buttonLabel='new blog' ref={newBlogFormRef}>
-      <h2>create new</h2>
-      <form onSubmit={handleCreateNewBlog}>
-        <span>
+      <Togglable buttonLabel='new blog' ref={newBlogFormRef}>
+        <h2>create new</h2>
+        <form onSubmit={handleCreateNewBlog}>
+          <span>
           title:
-          <input type='text' onChange={(e) => setTitle(e.target.value)} />
-        </span>
-        <br />
-        <span>
+            <input type='text' onChange={(e) => setTitle(e.target.value)} />
+          </span>
+          <br />
+          <span>
           author:
-          <input type='text' onChange={(e) => setAuthor(e.target.value)} />
-        </span>
-        <br />
-        <span>
+            <input type='text' onChange={(e) => setAuthor(e.target.value)} />
+          </span>
+          <br />
+          <span>
           url:
-          <input type='text' onChange={(e) => setUrl(e.target.value)} />
-        </span>
-        <br />
-        <button type='submit'>create</button>
+            <input type='text' onChange={(e) => setUrl(e.target.value)} />
+          </span>
+          <br />
+          <button type='submit'>create</button>
 
-      </form>
+        </form>
       </Togglable>
     </>
   )

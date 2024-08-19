@@ -40,7 +40,7 @@ const App = () => {
       setUser(user)
     } catch (e) {
       const details = e.response ? e.response.data : null
-      setNotification({message: e.message, type: 'error', data: details})
+      setNotification({ message: e.message, type: 'error', data: details })
       setTimeout(() => {setNotification(null)}, 3000)
     }
   }
@@ -102,23 +102,23 @@ const App = () => {
 
     const infoStyle = {
       padding: 10,
-      backgroundColor: "green",
-      color: "white",
-      borderStyle: "solid",
-    };
+      backgroundColor: 'green',
+      color: 'white',
+      borderStyle: 'solid',
+    }
 
     const errorStyle = {
       padding: 10,
-      backgroundColor: "red",
-      color: "white",
-      borderStyle: "solid",
+      backgroundColor: 'red',
+      color: 'white',
+      borderStyle: 'solid',
     }
 
     let chosenStyle = infoStyle
 
-    if (notification.type === "info") {
+    if (notification.type === 'info') {
       chosenStyle = infoStyle
-    } else if (notification.type === "error") {
+    } else if (notification.type === 'error') {
       chosenStyle = errorStyle
     }
 
