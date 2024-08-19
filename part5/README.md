@@ -103,3 +103,21 @@ These values are persisted when page is re-rendered (refreshed). Storage is orig
 In a `try...catch` block that uses axios, the caught error won't show all its properties if you use `JSON.stringify(...)`. Specifically, the response details. These properties aren't enumerable (=> won't show up in a `for...in` loop, or `Object.keys()` and `JSON.stringify()`).
 
 To get around that, use `console.log(e)`, or `console.dir(e, { depth: null })`
+
+
+### Cross-site scripting, XSS, and localstorage
+
+#### XSS Overview
+
+- a type of injection, where malicious scripts are injected into otherwise benign/trusted websites
+- attacker uses web application to send malicious code (usually as browser side script) to different end user
+- can occur anywhere a web app uses input from a user within the output it generates without validating or encoding it
+- usually access cookies, session tokens, other sensitive info retained by the browser
+- types of XSS
+  - reflected (non-persisted, type I) XSS. User input is immediately returned by a web application in an error message / search result, without that data being made safe to render in the browser
+  - stored (persistent, type II) XSS. User input is stored on the target server (e.g. in DB, log). User is able to retrieve the stored data from the web app without the data being made safe to render in the browser.
+  - DOM-based (type 0) XSS. Attack payload is executed as a result of modifying DOM environment in victim browser used by original client side script, so that the code runs in an unexpected manner.
+
+#### Preventing
+
+Frameworks like React have good security practices. Whenever you're directly manipulating the DOM you have to be careful (e.g. React's `dangerouslySetInnerHTML` without sanitizing the HTML). If you do need to manipulate the DOM, Output Encoding and HTML Sanitization should be considered. OWASP will be producing framework-specific cheatsheets for React, Vue, and Angular according to [this website](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
