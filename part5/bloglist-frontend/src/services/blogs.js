@@ -32,6 +32,7 @@ const putAmended = async (blog) => {
   }
 
   const response = await axios.put(`${baseUrl}/${blog.id}`, blogData, config)
+  return response.data
 }
 
 

@@ -29,7 +29,7 @@ const NewBlogForm = (props) => {
       })
       setTimeout(() => props.setNotification(null), 3000)
 
-      // TODO: we should cause a data fetch to run again, or update the state of the blogs ourselves
+      props.setBlogs(props.blogs.concat(response).sort((a, b) => a.likes - b.likes))
     } catch (e) {
       console.dir(e)
     }

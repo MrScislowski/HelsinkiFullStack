@@ -10,7 +10,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs(blogs.sort((a, b) => a.likes - b.likes))
     )
   }, [])
 
@@ -85,7 +85,7 @@ const App = () => {
       <div>
         <h2>blogs</h2>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} />
         )}
       </div>
     )
@@ -135,7 +135,7 @@ const App = () => {
       {notification && notificationPane()}
       {!user && loginForm()}
       {user && userInfo()}
-      {user && <NewBlogForm setNotification={setNotification} />}
+      {user && <NewBlogForm setNotification={setNotification} blogs={blogs} setBlogs={setBlogs} />}
       {user && blogList()}
     </>
   )

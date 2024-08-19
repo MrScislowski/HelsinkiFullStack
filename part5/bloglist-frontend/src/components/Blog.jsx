@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, blogs, setBlogs }) => {
   const blogStyle = {
     borderTopStyle: 'solid',
     borderTopWidth: 1,
@@ -17,8 +17,17 @@ const Blog = ({ blog }) => {
   }
 
   const handleLike = async () => {
-    await blogService.putAmended({...blog, likes: blog.likes + 1})
-    // TODO: we should cause a data fetch to run again, or update the state of the blogs ourselves
+    const amendedBlog = await blogService.putAmended({...blog, likes: blog.likes + 1})
+    setBlogs(blogs.map(b => {
+      if (b.id !== amendedBlog.id) {
+        return b
+      } else {
+        return {
+          ...amendedBlog,
+          user: b.user,
+        }
+      }
+    }).sort((a, b) => a.likes - b.likes))
   }
 
   const likeButton = () => <button onClick={handleLike}>like</button>
