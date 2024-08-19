@@ -174,4 +174,54 @@ If a component is defined with no children, like `<Example prop1={value1} />`, `
 
 ### References and useRef
 
-When a component wants to access the state of one of its parents, or an adjacent relative, the `ref` mechanism is an option. They're like state, in that they're data retained by React, but changing them doesn't trigger a re-render. Example use cases for `refs` are storing timeout IDs, storing and manipulating DOM elements, storing other objects that aren't necesary to calculate the JSX.
+When a component wants to access the state of one of its parents, or an adjacent relative, the `ref` mechanism is an option. `Refs` are like state, in that they're data retained by React, but changing them doesn't trigger a re-render. Example use cases for `refs` are storing timeout IDs, storing and manipulating DOM elements, storing other objects that aren't necesary to calculate the JSX.
+
+`App.jsx`:
+
+```js
+import {useRef} from 'react'
+
+const App = () => {
+  // ...
+  const noteFormRef = useRef()
+
+  const noteForm = () => {
+    <Togglable buttonLabel='new note' ref={noteFormRef}>
+    // ...
+  }
+  // ...
+}
+```
+
+`Togglable.jsx`:
+```js
+import { forwardRef, useImperativeHandle } from 'react'
+
+const Togglable = forwardRef((props, refs) => {
+  // ...
+
+  useImperativeHandle(refs, () => {
+    return {
+      toggleVisibility
+    }
+  })
+  // ...
+})
+```
+
+- the function that creates the component is wrapped inside a `forwardRef` function call, so that the component can access the ref that is assigned to it
+- the `useImperativeHandle` hook makes its `toggleVisiblity` function available outside the component
+
+Now to use it,
+
+```js
+const App = () => {
+  //
+  const addNote = (noteObject) => {
+    noteFormRef.current.toggleVisibility()
+    // ...
+  }
+}
+```
+
+This could have achieved this a bit more simply using "old React" class-based components, instead of hooks.
