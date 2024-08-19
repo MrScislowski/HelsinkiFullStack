@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 import Togglable from './Togglable'
 
 
-const NewBlogForm = (props) => {
+const NewBlogForm = ({ blogs, setBlogs, setNotification }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -22,14 +22,20 @@ const NewBlogForm = (props) => {
 
       newBlogFormRef.current.toggleVisibility()
 
-      props.setNotification({
+      setNotification({
         message: `added new blog`,
         data: { title: response.title, author: response.author },
         type: "info"
       })
-      setTimeout(() => props.setNotification(null), 3000)
+      setTimeout(() => setNotification(null), 3000)
 
-      props.setBlogs(props.blogs.concat(response).sort((a, b) => a.likes - b.likes))
+      console.log('about to add the following response to the blog list...')
+      console.log(response)
+      console.log('the blogs already in the list are:')
+      console.log(blogs)
+
+
+      setBlogs(blogs.concat(response).sort((a, b) => a.likes - b.likes))
     } catch (e) {
       console.dir(e)
     }

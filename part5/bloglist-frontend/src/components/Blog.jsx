@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
   const blogStyle = {
     borderTopStyle: 'solid',
     borderTopWidth: 1,
@@ -17,7 +17,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
   }
 
   const handleLike = async () => {
-    const amendedBlog = await blogService.putAmended({...blog, likes: blog.likes + 1})
+    const amendedBlog = await blogService.putAmended({ ...blog, likes: blog.likes + 1 })
     setBlogs(blogs.map(b => {
       if (b.id !== amendedBlog.id) {
         return b
@@ -28,15 +28,39 @@ const Blog = ({ blog, blogs, setBlogs }) => {
         }
       }
     }).sort((a, b) => a.likes - b.likes))
+    setNotification({ message: `"${blog.title}" liked`, type: 'info' })
+    setTimeout(() => setNotification(null), 3000)
   }
 
   const likeButton = () => <button onClick={handleLike}>like</button>
 
-  const details = () => <ul>
+  const handleRemove = async () => {
+    if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
+      try {
+        const response = await blogService.deleteBlog(blog)
+        setNotification({ message: `"${blog.title}" removed`, type: 'info' })
+        setTimeout(() => setNotification(null), 3000)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+      } catch (e) {
+        const message = e?.response?.data?.error
+        setNotification({ message: message || 'could not remove blog', type: 'error' })
+        setTimeout(() => setNotification(null), 3000)
+      }
+    }
+
+  }
+
+  const removeButton = () => <button onClick={handleRemove}>remove</button>
+
+  const currentUserName = JSON.parse(localStorage.getItem('loggedInBloglistUser')).name
+
+  const details = () => <div><ul>
     <li>{blog.url}</li>
     <li> likes: {blog.likes} {likeButton()}</li>
     <li> {blog.user.name} </li>
   </ul>
+    {blog.user.name === currentUserName && removeButton()}
+  </div>
 
   return (
     <div style={blogStyle}>

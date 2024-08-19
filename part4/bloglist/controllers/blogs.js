@@ -42,7 +42,10 @@ blogsRouter.post('/', async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
-  response.status(201).json(savedBlog)
+
+  const savedPopulatedBlog = await savedBlog.populate('user',
+    { username: 1, name: 1, _id: 1 })
+  response.status(201).json(savedPopulatedBlog)
 })
 
 // DELETE a blog
@@ -57,11 +60,11 @@ blogsRouter.delete('/:id', async (request, response) => {
   // check if it's authorized (user id of blog is the same as id from token)
   const blogEntry = await Blog.findById(blogId)
   if (!blogEntry) {
-    return response.status(404).send()
+    return response.status(404).send({ error: 'cannot find that blog' })
   }
 
   if (blogEntry.user._id.toString() !== request.user.id) {
-    return response.status(403).send()
+    return response.status(403).send({ error: 'you dont have permission to remove this blog' })
   }
 
   // TODO: could I have done blogEntry.deleteOne() or something like that? Since I've already found it
