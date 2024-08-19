@@ -39,16 +39,9 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
     } catch (e) {
-      // TODO: just discovered the 'response' property on the Axios error object isn't enumerable... wtf
-      // Adjust the following to take care of that.
-      if (e.response && e.response.data) {
-        console.log('heres a response with data...')
-        console.log(JSON.stringify(e.response.data, null, 2))
-      } else {
-        console.log('unexpected error', e)
-      }
-      setNotification({message: JSON.stringify(e, null, 2), type: 'error'})
-      // setTimeout(() => {setNotification(null)}, 3000)
+      const details = e.response ? e.response.data : null
+      setNotification({message: e.message, type: 'error', data: details})
+      setTimeout(() => {setNotification(null)}, 3000)
     }
   }
 
@@ -74,7 +67,7 @@ const App = () => {
       })
       setTimeout(() => setNotification(null), 3000)
     } catch (e) {
-      console.log(e)
+      console.dir(e)
     }
   }
 

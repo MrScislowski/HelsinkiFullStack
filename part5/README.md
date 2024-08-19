@@ -97,3 +97,9 @@ These values are persisted when page is re-rendered (refreshed). Storage is orig
   ```js
   window.localStorage.clear()
   ```
+
+### Error handling with Axios - non-enumerable properties
+
+In a `try...catch` block that uses axios, the caught error won't show all its properties if you use `JSON.stringify(...)`. Specifically, the response details. These properties aren't enumerable (=> won't show up in a `for...in` loop, or `Object.keys()` and `JSON.stringify()`).
+
+To get around that, use `console.log(e)`, or `console.dir(e, { depth: null })`
