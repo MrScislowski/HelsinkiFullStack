@@ -121,3 +121,57 @@ To get around that, use `console.log(e)`, or `console.dir(e, { depth: null })`
 #### Preventing
 
 Frameworks like React have good security practices. Whenever you're directly manipulating the DOM you have to be careful (e.g. React's `dangerouslySetInnerHTML` without sanitizing the HTML). If you do need to manipulate the DOM, Output Encoding and HTML Sanitization should be considered. OWASP will be producing framework-specific cheatsheets for React, Vue, and Angular according to [this website](https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html)
+
+### Conditional Rendering Using Styles
+
+#### general idea:
+
+```js
+const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+const showWhenVisible = { display: loginVisible ? '' : 'none' }
+
+<div style={hideWhenVisible}>
+  // button
+</div>
+
+<div style={showWhenVisible}>
+  // button
+</div>
+```
+
+#### creating a `Togglable` component that can be used as a parent:
+
+```js
+const Togglable = (props) => {
+  const [visible, setVisible] = useState(false)
+
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const toggleVisibility = () => {
+    setVisible(!visible)
+  }
+
+  return (
+    <div>
+      <div style={hideWhenVisible}>
+        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+      </div>
+      <div style={showWhenVisible}>
+        {props.children}
+        <button onClick={toggleVisibility}>cancel</button>
+      </div>
+    </div>
+  )
+}
+
+export default Togglable
+```
+
+`props.children` refer to all child components of the `Togglable` component.
+If a component is defined with no children, like `<Example prop1={value1} />`, `props.children` is an empty array.
+
+
+### References and useRef
+
+When a component wants to access the state of one of its parents, or an adjacent relative, the `ref` mechanism is an option. They're like state, in that they're data retained by React, but changing them doesn't trigger a re-render. Example use cases for `refs` are storing timeout IDs, storing and manipulating DOM elements, storing other objects that aren't necesary to calculate the JSX.
