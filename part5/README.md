@@ -337,3 +337,93 @@ const Togglable = React.forwardRef((props, ref) => {
 Togglable.displayName = 'Togglable'
 
 ```
+
+### React Testing Environment
+
+#### Installing
+
+Packages to install:
+
+- Vitest: replacement for jest
+- jsdom: simulates a web browser
+- react-testing-library: renders components for testing purposes
+- jest-dom: extends expressive power of tests
+
+```sh
+pnpm install --save-dev vitest jsdom @testing-library/react @testing-library/jest-dom
+```
+
+#### Configuring
+
+Configure `package.json`:
+```json
+{
+  "scripts": {
+    // ...
+    "test": "vitest run"
+  }
+  // ...
+}
+```
+
+Configure `vite.config.js`:
+```js
+export default defineConfig({
+  // ...
+  test: {
+    environment: 'jsdom',
+    globals: true, // no need to import keywords like describe, test, expect
+    setupFiles: './testSetup.js',
+  }
+})
+```
+
+and write `testSetup.js` (in project root) to reset the jsdom browser simulator
+
+```js
+import { afterEach } from 'vitest'
+import { cleanup } from '@testing-library/react'
+import '@testing-library/jest-dom/vitest'
+
+afterEach(() => {
+  cleanup()
+})
+```
+
+To silence linting complaints,
+
+```sh
+pnpm install --save-dev eslint-plugin-vitest-globals
+```
+
+and edit `.eslintrc.cjs`:
+```js
+module.exports = {
+  // ...
+  env: {
+    // ...
+    "vitest-globals/env": true,
+  },
+  extends: [
+    // ...
+    'plugin:vitest-globals/recommended',
+  ],
+  // ...
+}
+```
+
+#### Test Location
+
+Two common conventions for test file location:
+
+- in the same directory as the component being tested (used in the course as it's configured by default in vite/create-react-app)
+- in a separate `test` directory
+
+#### Selecting elements to test
+
+It is not recommended that you use CSS attributes in the `container.querySelector(...)` method: CSS is meant to be for styling.
+
+Instead the `screen.getBy*` methods. The order of preference is:
+
+- `getByRole`
+- `getByLabelText`
