@@ -425,5 +425,98 @@ It is not recommended that you use CSS attributes in the `container.querySelecto
 
 Instead the `screen.getBy*` methods. The order of preference is:
 
-- `getByRole`
-- `getByLabelText`
+- `getByRole` e.g. `screen.getByRole('textbox', { name: /username/i })`, `screen.getByRole('button', { name: /sign in/i })`
+- `getByLabelText` e.g. `screen.getByLabelText('password')`
+- `getByPlaceholder`
+- `getByTextContents`
+- `getByDisplayValue`
+- `getByAltText`
+- `getByTitle`
+- `getByTestId` e.g. `screen.getByTestId('username')`, assuming the html has that attribute added; e.g. `<p data-testid="username"> {user.username} </p>
+
+Aria role list [here](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles)
+
+
+#### get vs find; whole vs part
+
+`screen.getByText('example text')` looks for an exact match for content 'example text'... no more, no less. If we want to include content of which part of matches, we can do:
+
+`screen.getByText('example text', { exact: false} )` or `await screen.findByText('example text')`.
+
+#### render and testing example
+
+```js
+import { render, screen } from '@testing-library/react'
+import Note from './Note'
+
+test('renders content', () => {
+  const note = {
+    content: 'Component testing is done with react-testing-library',
+    important: true
+  }
+
+  render(<Note note={note} />)
+
+  const element = screen.getByText('Component testing is done with react-testing-library')
+
+
+  expect(element).toBeDefined()
+})
+```
+
+#### debugging
+
+If you ever want to see the HTML contained, you can do:
+
+```js
+screen.debug() // whole screen
+screen.debug(element) // just for the element
+```
+
+#### clicking buttons
+
+To make simulating user input a bit easier,
+
+```sh
+pnpm install --save-dev @testing-library/user-event
+```
+
+```js
+import userEvent from '@testing-library/user-event'
+// ...
+
+test('clicking the button calls event handler once', async () => {
+  const note = {
+    content: 'Component testing is done with react-testing-library',
+    important: true
+  }
+
+
+  const mockHandler = vi.fn() // vitest mock function https://vitest.dev/api/mock
+
+  render(
+
+    <Note note={note} toggleImportance={mockHandler} />
+  )
+
+
+  const user = userEvent.setup() // starts a session (an instance of userEvent)
+  const button = screen.getByText('make not important')
+  await user.click(button) // do the click
+
+  expect(mockHandler.mock.calls).toHaveLength(1) // we expect the mock function to have been called once
+})
+```
+
+Can also do typing, e.g.
+```js
+const input = screen.getByRole('textbox')
+await user.type(input, 'some text...')
+```
+
+#### coverage
+
+```sh
+pnpm test -- --coverage
+```
+generates an HTML report in the `coverage` directory that will show which parts of your code are covered by tests.
