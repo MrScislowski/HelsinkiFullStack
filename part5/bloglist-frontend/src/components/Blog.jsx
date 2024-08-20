@@ -54,7 +54,7 @@ const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
 
   const removeButton = () => <button onClick={handleRemove}>remove</button>
 
-  const currentUserName = JSON.parse(localStorage.getItem('loggedInBloglistUser')).name
+  const currentUserName = JSON.parse(localStorage.getItem('loggedInBloglistUser'))?.name
 
   const details = () => <div><ul>
     <li>{blog.url}</li>

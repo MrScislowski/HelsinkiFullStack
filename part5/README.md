@@ -428,13 +428,15 @@ Instead the `screen.getBy*` methods. The order of preference is:
 - `getByRole` e.g. `screen.getByRole('textbox', { name: /username/i })`, `screen.getByRole('button', { name: /sign in/i })`
 - `getByLabelText` e.g. `screen.getByLabelText('password')`
 - `getByPlaceholder`
-- `getByTextContents`
+- `getByText`
 - `getByDisplayValue`
 - `getByAltText`
 - `getByTitle`
 - `getByTestId` e.g. `screen.getByTestId('username')`, assuming the html has that attribute added; e.g. `<p data-testid="username"> {user.username} </p>
 
 Aria role list [here](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Techniques#roles)
+
+Nice table about whether elements are return / errors thrown / run asynchronously: [here](https://testing-library.com/docs/queries/about)
 
 
 #### get vs find; whole vs part
@@ -463,6 +465,11 @@ test('renders content', () => {
   expect(element).toBeDefined()
 })
 ```
+#### vitest expect .*
+
+- [here](https://vitest.dev/api/expect.html) are the options of what expect can do
+- `import { expect } from 'vitest'` will enable completion
+
 
 #### debugging
 
