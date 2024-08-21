@@ -527,3 +527,276 @@ await user.type(input, 'some text...')
 pnpm test -- --coverage
 ```
 generates an HTML report in the `coverage` directory that will show which parts of your code are covered by tests.
+
+### End-to-end testing
+
+Possible tools for e2e testing:
+
+- selenium
+- headless browsers
+- cypress
+- playwright
+
+#### cypress vs playwright
+
+Cypress tests are run entirely within the browser (unlike most other libraries). Playwright tests are in a node process, connected to a browser via APIs. Playwright is backed by Microsoft, and has been gaining popularity quickly.
+
+
+#### installing playwright
+
+- create a new directory (not within the app project directory) to house end-to-end tests
+- `npm init playwright@latest`
+- edit `package.json` to contain:
+  ```json
+  {
+    // ...
+    "scripts": {
+      "test": "playwright test",
+      "test:report": "playwright show-report"
+    },
+    // ...
+  }
+  ```
+- to run tests in gui, use `pnpm run test -- --ui`
+
+#### setting up system prior to tests
+
+- playwright assumes the system is up and running (it doesn't start the system itself)
+- => you might want to have scripts for the frontend/backend to start in test mode, in their `package.json`:
+  ```json
+  "start:test": "NODE_ENV=test node index.js"
+  ```
+
+
+#### simple test
+
+```js
+const { test, expect } = require('@playwright/test')
+
+describe('notes app' () => {
+  test('front page can be opened', async ({ page }) => {
+    await page.goto('http://localhost:5173')
+
+    const locator = await page.getByText('Notes')
+    await expect(locator).toBeVisible()
+    await expect(page.getByText('Note app, Department of Computer Science, University of Helsinki 2023')).toBeVisible()
+  })
+})
+```
+
+#### which browsers to test
+
+For speed reasons, you can restrict to just one browser engine:
+
+```sh
+pnpm test -- --project chromium
+```
+
+#### configuring quicker timeout, preventing parallel dataabbse accesses
+
+Edit `playwright.config.js`:
+
+```js
+module.exports = defineConfig({
+  timeout: 3000,
+  fullyParallel: false,
+  workers: 1,
+  // ...
+})
+```
+
+#### filling in forms using playwright
+
+```js
+test('login form can be opened', async ({ page }) => {
+  await page.goto('http://localhost:5173')
+  await page.getByRole('button', { name: 'log in' }).click()
+  await page.getByRole('textbox' { name: /username/i }).fill('mluukkai')
+  await page.getByRole('textbox' { name: /password/i }).fill('salainen')
+  await page.getByRole('button', { name: 'login' }).click()
+  await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+  })
+```
+
+#### set up and tear down code in common to all tests
+
+```js
+beforeEach(async ({ page }) => {
+  await page.goto('http://localhost:5173')
+})
+```
+
+#### common code within subtests (e.g. being logged in) - use describe blocks
+
+```js
+describe('when logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByRole('button', { name: 'log in' }).click()
+      await page.getByTestId('username').fill('mluukkai')
+      await page.getByTestId('password').fill('salainen')
+      await page.getByRole('button', { name: 'login' }).click()
+    })
+
+    test('a new note can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new note' }).click()
+      await page.getByRole('textbox').fill('a note created by playwright')
+      await page.getByRole('button', { name: 'save' }).click()
+      await expect(page.getByText('a note created by playwright')).toBeVisible()
+    })
+  })
+```
+
+#### creating backend routes to assist testing, only when in test environment
+
+- In the backend, create a `controllers/testing.js` file:
+  ```js
+  const router = require('express').Router()
+  const Note = require('../models/note')
+  const User = require('../models/user')
+
+  router.post('/reset', async (request, response) => {
+    await Note.deleteMany({})
+    await User.deleteMany({})
+
+    response.status(204).end()
+  })
+
+  module.exports = router
+  ```
+- Use it only when in testing mode. In `app.js`:
+  ```js
+
+  app.use('/api/login', loginRouter)
+  app.use('/api/users', usersRouter)
+  app.use('/api/notes', notesRouter)
+
+  if (process.env.NODE_ENV === 'test') {
+    const testingRouter = require('./controllers/testing')
+    app.use('/api/testing', testingRouter)
+  }
+
+  app.use(middleware.unknownEndpoint)
+  app.use(middleware.errorHandler)
+
+  module.exports = app
+  ```
+
+#### making requests to clear db before doing tests
+
+
+```js
+describe('Note app', () => {
+  beforeEach(async ({ page, request }) => {
+    await request.post('http://localhost:3001/api/testing/reset')
+    await request.post('http://localhost:3001/api/users', {
+      data: {
+        name: 'Matti Luukkainen',
+        username: 'mluukkai',
+        password: 'salainen'
+      }
+    })
+
+    await page.goto('http://localhost:5173')
+  })
+
+  test('front page can be opened',  () => {
+    // ...
+  })
+```
+
+#### test for failing login, containing styling requirements etc
+
+```js
+test('login fails with wrong password', async ({ page }) =>{
+  await page.getByRole('button', { name: 'log in' }).click()
+  await page.getByTestId('username').fill('mluukkai')
+  await page.getByTestId('password').fill('wrong')
+  await page.getByRole('button', { name: 'login' }).click()
+
+  const errorDiv = await page.locator('.error')
+  await expect(errorDiv).toContainText('wrong credentials')
+  await expect(errorDiv).toHaveCSS('border-style', 'solid')
+  await expect(errorDiv).toHaveCSS('color', 'rgb(255, 0, 0)')
+
+  await expect(page.getByText('Matti Luukkainen logged in')).not.toBeVisible()
+})
+```
+
+#### running single tests
+
+- Use `test.only` in Javascript test code, OR
+- specify which test on command line:
+  `pnpm test -- -g "login fails with wrong password"`
+
+#### helper functions in tests
+
+Since we'd have to login often, we could make a file `tests/helper.js` with:
+
+```js
+const loginWith = async (page, username, password)  => {
+  await page.getByRole('button', { name: 'log in' }).click()
+  await page.getByTestId('username').fill(username)
+  await page.getByTestId('password').fill(password)
+  await page.getByRole('button', { name: 'login' }).click()
+}
+
+export { loginWith }
+```
+
+Then we can use the function in the test file like:
+
+```js
+const { loginWith } = require('./helper')
+
+describe('Note app', () => {
+  test('user can log in', async ({ page }) => {
+    await loginWith(page, 'mluukkai', 'salainen')
+    await expect(page.getByText('Matti Luukkainen logged in')).toBeVisible()
+  })
+
+  describe('when logged in', () => {
+    beforeEach(async ({ page }) => {
+      await loginWith(page, 'mluukkai', 'salainen')
+    })
+
+  test('a new note can be created', () => {
+    // ...
+  })
+
+  // ...
+})
+```
+
+#### Playwright authenticate once and stay logged in
+
+Not covered in the course, but is described [here](https://playwright.dev/docs/auth)
+
+#### Ports and proxies in the tests
+
+Currently we have two URLs hardcoded: frontend address (`http://localhost:5173`), and backend address (`http://localhost:3001`). But because Vite has a proxy that routes all requests to the api route: `http://localhost:5173/api` , over to `http://localhost:3001`, we can use port 5173 for everything, and then make `http://locahost:5173` the baseUrl in `playwright.config.js`, like so:
+
+```js
+module.exports = defineConfig({
+  // ...
+  use: {
+    baseURL: 'http://localhost:5173',
+  },
+  // ...
+}
+```
+
+Now this longer version:
+
+```js
+await page.goto('http://localhost:5173')
+await page.post('http://localhost:5173/api/tests/reset')
+```
+
+can be replaced with short version:
+
+```js
+await page.goto('/')
+await page.post('/api/tests/reset')
+```
+
+#### Navigating DOM structure in testing and locating
