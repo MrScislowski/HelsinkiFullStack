@@ -545,7 +545,7 @@ Cypress tests are run entirely within the browser (unlike most other libraries).
 #### installing playwright
 
 - create a new directory (not within the app project directory) to house end-to-end tests
-- `npm init playwright@latest`
+- `pnpm create playwright@latest`
 - edit `package.json` to contain:
   ```json
   {

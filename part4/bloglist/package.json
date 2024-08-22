@@ -9,7 +9,8 @@
     "test:all": "cross-env NODE_ENV=test node --test --test-concurrency=1",
     "test:only": "cross-env NODE_ENV=test node --test --test-only --test-concurrency=1",
     "test:some": "cross-env NODE_ENV=test node --test --test-concurrency=1 --test-name-pattern",
-    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"posting a new blog increases the number in the DB by one\" --test-concurrency=1"
+    "test:current": "cross-env NODE_ENV=test node --test --test-name-pattern \"posting a new blog increases the number in the DB by one\" --test-concurrency=1",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "keywords": [],
   "author": "",
