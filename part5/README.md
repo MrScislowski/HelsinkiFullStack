@@ -851,11 +851,11 @@ The `locator` method accepts CSS or XPath selectors. (playwright recommends agai
   ```
 - running tests in UI mode:
   ```sh
-  pnpm run test -- --ui
+  pnpm run test --ui
   ```
 - running tests using the trace viewer (a visual trace is saved)
   ```sh
-  pnpm run test -- --trace on
+  pnpm run test --trace on
   npx playwright show-report # or using pnpm run test:report
   ```
 - playwright ui and trace viewer can display element locators for you
