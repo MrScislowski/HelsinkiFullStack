@@ -43,4 +43,27 @@ describe('Blog app', () => {
       await expect(page.getByText(failedLoginRegex)).toBeVisible()
     })
   })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) =>{
+      await loginWith(page, username, password)
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      const blogTitle = 'aids98v'
+      const blogAuthor = '298cvmqp'
+      const blogUrl = 'fmkldax'
+
+      await page.getByRole('button', { name: /new blog/i }).click()
+
+      await page.getByRole('textbox', { name: /title/i }).fill(blogTitle)
+      await page.getByRole('textbox', { name: /author/i }).fill(blogAuthor)
+      await page.getByRole('textbox', { name: /url/i }).fill(blogUrl)
+
+      await page.getByRole('button', { name: /create/i }).click()
+
+      await expect(page.getByText(`${blogTitle} ${blogAuthor} show`, { exact: false })).toBeVisible()
+
+    })
+  })
 })
