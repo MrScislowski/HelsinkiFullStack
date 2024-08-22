@@ -82,7 +82,7 @@ const App = () => {
 
   const blogList = () => {
     return (
-      <div>
+      <div id='blog-list'>
         <h2>blogs</h2>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} blogs={blogs} setBlogs={setBlogs} setNotification={setNotification} />
@@ -123,7 +123,7 @@ const App = () => {
     }
 
     return (
-      <div style={chosenStyle}>
+      <div id='notification' style={chosenStyle}>
         <p>{notification.message}</p>
         {notification.data && notificationData()}
       </div>

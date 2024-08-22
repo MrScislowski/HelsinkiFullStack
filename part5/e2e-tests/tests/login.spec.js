@@ -7,10 +7,10 @@ const name = 'def'
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
-    await page.goto('http://localhost:5173')
-
     // empty the database
     await request.post('http://localhost:3003/api/testing/reset')
+
+    await page.goto('http://localhost:5173')
 
     // create a user
     const response = await request.post('http://localhost:3003/api/users', {
@@ -62,8 +62,7 @@ describe('Blog app', () => {
 
       await page.getByRole('button', { name: /create/i }).click()
 
-      await expect(page.getByText(`${blogTitle} ${blogAuthor} show`, { exact: false })).toBeVisible()
-
+      await expect(page.locator("#blog-list").getByText(blogTitle, { exact: false })).toBeVisible()
     })
   })
 })
