@@ -1,4 +1,5 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
+const { loginWith } = require('./helper')
 
 const username = 'abc'
 const password = 'example'
@@ -26,9 +27,7 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await page.getByRole('textbox', { name: /username/i }).fill(username)
-      await page.getByRole('textbox', { name: /password/i }).fill(password)
-      await page.getByRole('button', { name: /log in/i }).click()
+      await loginWith(page, username, password)
 
       const loggedInRegex = new RegExp(`logged in as[: "]*${name}[" ]*`, 'i')
 
@@ -37,9 +36,7 @@ describe('Blog app', () => {
     })
 
     test('fails with incorrect credentials', async ({ page }) => {
-      await page.getByRole('textbox', { name: /username/i }).fill(username)
-      await page.getByRole('textbox', { name: /password/i }).fill('wrongpassword')
-      await page.getByRole('button', { name: /log in/i }).click()
+      await loginWith(page, username, 'wrongpassword')
 
       const failedLoginRegex = new RegExp(`invalid username/password`, 'i')
 
