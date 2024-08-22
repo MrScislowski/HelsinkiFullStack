@@ -767,6 +767,20 @@ describe('Note app', () => {
 })
 ```
 
+#### Waiting for render
+
+Using the `waitFor` method can be used to wait until a particular part has rendered
+
+```js
+const createNote = async (page, content) => {
+  await page.getByRole('button', { name: 'new note' }).click()
+  await page.getByRole('textbox').fill(content)
+  await page.getByRole('button', { name: 'save' }).click()
+
+  await page.getByText(content).waitFor()
+}
+```
+
 #### Playwright authenticate once and stay logged in
 
 Not covered in the course, but is described [here](https://playwright.dev/docs/auth)
@@ -800,3 +814,63 @@ await page.post('/api/tests/reset')
 ```
 
 #### Navigating DOM structure in testing and locating
+
+Suppose we have this DOM structure:
+
+```js
+<li className='note'>
+  <span>{note.content}</span>
+  <button onClick={toggleImportance}>{label}</button>
+</li>
+```
+
+And we try to change the importance of that note by doing something like:
+
+```js
+await page.getByText('first note').getByRole('button', { name: 'make not important' }).click()
+```
+
+That will break, because the `getByText` will get the `span` element, and the button isn't inside that. To get the parent element, you can do something like:
+
+```js
+const parentElement = await page.getByText('first note').locator('..')
+```
+
+The `locator` method accepts CSS or XPath selectors. (playwright recommends against the locator; it says using testIds is preferable if you can't use getRole etc)
+
+#### Debugging tests in playwright
+
+- Running the specified test in debug mode:
+
+  ```sh
+  pnpm test -- -g 'importance can be changed' --debug
+  ```
+- creating a breakpoint
+  ```js
+  await page.pause()
+  ```
+- running tests in UI mode:
+  ```sh
+  pnpm run test -- --ui
+  ```
+- running tests using the trace viewer (a visual trace is saved)
+  ```sh
+  pnpm run test -- --trace on
+  npx playwright show-report # or using pnpm run test:report
+  ```
+- playwright ui and trace viewer can display element locators for you
+- use playwright test generator which records the users interaction, then generates test code for you
+  ```sh
+  npx playwright codegen http://localhost:5173/
+  ```
+- playwright has a [vs code plugin](https://marketplace.visualstudio.com/items?itemName=ms-playwright.playwright)
+
+#### References
+
+- [all documentation](https://playwright.dev/docs/intro)
+  - [locators](https://playwright.dev/docs/locators)
+  - [actions](https://playwright.dev/docs/input)
+  - [assertions](https://playwright.dev/docs/test-assertions)
+  - [API description](https://playwright.dev/docs/api/class-playwright)
+    - [Page](https://playwright.dev/docs/api/class-page)
+    - [Locator] (https://playwright.dev/docs/api/class-locator)
