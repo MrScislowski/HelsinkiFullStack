@@ -57,15 +57,15 @@ const App = () => {
       <>
         <h2>log in to application</h2>
         <form onSubmit={handleLogin}>
-          <span>
+          <label htmlFor='username'>
             username:
-            <input type='text' onChange={(e) => setUsername(e.target.value)} />
-          </span>
+          </label>
+          <input type='text' id='username' onChange={(e) => setUsername(e.target.value)} />
           <br />
-          <span>
+          <label htmlFor='password'>
             password:
-            <input type='password' onChange={e => setPassword(e.target.value)} />
-          </span>
+          </label>
+          <input type='password' id='password' onChange={e => setPassword(e.target.value)} />
           <br />
           <button type='submit'>log in</button>
         </form>
