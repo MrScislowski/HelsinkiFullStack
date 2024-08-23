@@ -1,11 +1,19 @@
 {
-  // TODO: fill this out so formatter is the same on all machines
-  // "[javascript]": {
-  //   "editor.defaultFormatter": "esbenp.prettier-vscode"
-  // },
   "editor.tabSize": 2,
   "files.eol": "\n",
   "files.trimTrailingWhitespace": true,
-  "editor.formatOnSave": false,
-  "eslint.workingDirectories": [{ "mode": "auto" }]
+  "editor.formatOnSave": true,
+
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

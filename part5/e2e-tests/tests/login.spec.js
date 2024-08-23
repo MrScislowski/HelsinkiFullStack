@@ -13,7 +13,7 @@ describe('Blog app', () => {
     await page.goto('http://localhost:5173')
 
     // create a user
-    const response = await request.post('http://localhost:3003/api/users', {
+    await request.post('http://localhost:3003/api/users', {
       data: {
         username, password, name,
       }
@@ -38,14 +38,14 @@ describe('Blog app', () => {
     test('fails with incorrect credentials', async ({ page }) => {
       await loginWith(page, username, 'wrongpassword')
 
-      const failedLoginRegex = new RegExp(`invalid username/password`, 'i')
+      const failedLoginRegex = new RegExp('invalid username/password', 'i')
 
       await expect(page.getByText(failedLoginRegex)).toBeVisible()
     })
   })
 
   describe('When logged in', () => {
-    beforeEach(async ({ page }) =>{
+    beforeEach(async ({ page }) => {
       await loginWith(page, username, password)
     })
 
@@ -62,7 +62,7 @@ describe('Blog app', () => {
 
       await page.getByRole('button', { name: /create/i }).click()
 
-      await expect(page.locator("#blog-list").getByText(blogTitle, { exact: false })).toBeVisible()
+      await expect(page.locator('#blog-list').getByText(blogTitle, { exact: false })).toBeVisible()
     })
   })
 })

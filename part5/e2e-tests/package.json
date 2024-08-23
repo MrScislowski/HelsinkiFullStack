@@ -5,13 +5,18 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test --project chromium",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@eslint/js": "^9.9.0",
     "@playwright/test": "^1.46.1",
-    "@types/node": "^22.5.0"
+    "@stylistic/eslint-plugin-js": "^2.6.4",
+    "@types/node": "^22.5.0",
+    "eslint": "^9.9.0",
+    "globals": "^15.9.0"
   }
 }

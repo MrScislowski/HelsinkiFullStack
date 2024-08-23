@@ -58,7 +58,7 @@ const NewBlogForm = ({ blogs, setBlogs, setNotification }) => {
           <label htmlFor="url">
             url:
           </label>
-            <input
+          <input
             type="text"
             name="url"
             id="url"
