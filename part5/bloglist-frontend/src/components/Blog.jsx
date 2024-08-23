@@ -29,7 +29,7 @@ const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
           user: b.user,
         }
       }
-    }).sort((a, b) => a.likes - b.likes))
+    }).sort((b1, b2) => b2.likes - b1.likes))
     setNotification({ message: `"${blog.title}" liked`, type: 'info' })
     setTimeout(() => setNotification(null), 3000)
   }

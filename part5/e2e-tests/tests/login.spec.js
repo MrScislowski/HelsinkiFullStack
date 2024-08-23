@@ -129,7 +129,7 @@ describe('Blog app', () => {
 
     test('the remove button is only present on your blogs...', async ({ page }) => {
       const blogs = users.map(
-        _ => {
+        () => {
           return {
             title: generateRandomAlphanumeric(5),
             author: generateRandomAlphanumeric(5),
@@ -157,6 +157,63 @@ describe('Blog app', () => {
       const theirBlogItem = await page.getByTestId('blog-item').filter({ hasText: blogs[0].title })
       await theirBlogItem.getByRole('button', { name: /show/i }).click()
       await expect(theirBlogItem.getByRole('button', { name: /remove/i })).not.toBeVisible()
+    })
+
+    test('blogs are ordered from most to least', async ({ page }) => {
+      // get unique numbers of likes
+      const ordered_likes = [1, 2, 3, 4, 5]
+      const likes = []
+
+      // shuffle them
+      while (ordered_likes.length > 0) {
+        const [curNum] = ordered_likes.splice(Math.floor(Math.random() * ordered_likes.length), 1)
+        likes.push(curNum)
+      }
+
+      // define a bunch of blogs
+      const blogs = likes.map(
+        (numLikes) => {
+          return {
+            title: generateRandomAlphanumeric(5),
+            author: generateRandomAlphanumeric(5),
+            url: generateRandomAlphanumeric(5),
+            likes: numLikes,
+          }
+        }
+      )
+
+      // post all of the blogs:
+      //  doing this using .map doesn't work, because they're all trying to edit the form elements at once...
+      for (let blog of blogs) {
+        await postNewBlog(page, blog.title, blog.author, blog.url)
+      }
+
+      // 'like' each blog the correct number of times - define function
+      const likeBlog = async (blog) => {
+        let blogLocator = await page.getByTestId('blog-item').filter({ hasText: blog.title })
+        if (! await blogLocator.getByRole('button', { name: /like/i }).isVisible()) {
+          await blogLocator.getByRole('button', { name: /show/i }).click()
+          blogLocator = await page.getByTestId('blog-item').filter({ hasText: blog.title })
+        }
+
+        await blogLocator.getByRole('button', { name: /like/i }).click()
+      }
+
+      // use function
+      for (let blog of blogs) {
+        for (let i = 0; i < blog.likes; i++) {
+          await likeBlog(blog)
+        }
+      }
+
+      // inspect the order of the blogs
+      // check there are the correct number...
+      await expect(page.getByTestId('blog-item')).toHaveCount(blogs.length)
+
+      // check the order is correct
+      const expectedText = blogs.sort((blog1, blog2) => blog2.likes - blog1.likes).map(blog => new RegExp(blog.title, 'i'))
+      await expect(page.getByTestId('blog-item')).toHaveText(expectedText)
+
     })
   })
 })

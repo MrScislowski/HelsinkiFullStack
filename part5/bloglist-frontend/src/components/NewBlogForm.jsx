@@ -28,7 +28,7 @@ const NewBlogForm = ({ blogs, setBlogs, setNotification }) => {
       })
       setTimeout(() => setNotification(null), 3000)
 
-      setBlogs(blogs.concat(response).sort((a, b) => a.likes - b.likes))
+      setBlogs(blogs.concat(response).sort((b1, b2) => b2.likes - b1.likes))
     } catch (e) {
       console.dir(e)
     }
