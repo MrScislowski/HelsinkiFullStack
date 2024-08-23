@@ -103,5 +103,21 @@ describe('Blog app', () => {
 
       await expect(finalLikes).toBe(initialLikes + 1)
     })
+
+    test('a blog you post can be deleted', async ({ page }) => {
+      const blogTitle = generateRandomAlphanumeric(5)
+      const blogAuthor = generateRandomAlphanumeric(5)
+      const blogUrl = generateRandomAlphanumeric(5)
+
+      await postNewBlog(page, blogTitle, blogAuthor, blogUrl)
+
+      const blogItem = await page.getByTestId('blog-item').filter({ hasText: blogTitle })
+      await blogItem.getByRole('button', { name: /show/i }).click()
+
+      page.on('dialog', dialog => dialog.accept())
+      await blogItem.getByRole('button', { name: /remove/i }).click()
+
+      await expect(page.getByTestId('blog-list')).not.toHaveText(blogTitle)
+    })
   })
 })
