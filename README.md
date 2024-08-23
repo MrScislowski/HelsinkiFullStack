@@ -43,7 +43,17 @@ To see how many exercises I did in exercise 5:
   (git log --oneline --grep "^5\.[0-9]\+" --after "2024/01/01").Count
   ```
 
+## Course Grading Criteria
 
+exercises completed |	credits |	grade
+--- | --- | ---
+138 |	7 |	5
+127 |	6 |	5
+116 |	5 |	5
+105 |	5 |	4
+94 |	5 |	3
+83 |	5 |	2
+72 |	5 |	1
 
 
 ## Learning Promises well, [from You Don't Know JS](https://github.com/getify/You-Dont-Know-JS/blob/1st-ed/async%20%26%20performance/ch3.md), keeps getting recommended
