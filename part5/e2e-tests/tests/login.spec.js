@@ -1,9 +1,18 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
 const { loginWith, postNewBlog } = require('./helper')
 
-const username = 'abc'
-const password = 'example'
-const name = 'def'
+const users = [
+  {
+    username: 'user1',
+    password: 'user1',
+    name: 'First User',
+  },
+  {
+    username: 'user2',
+    password: 'user2',
+    name: 'Second User',
+  }
+]
 
 function generateRandomAlphanumeric(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
@@ -23,12 +32,10 @@ describe('Blog app', () => {
 
     await page.goto('http://localhost:5173')
 
-    // create a user
-    await request.post('http://localhost:3003/api/users', {
-      data: {
-        username, password, name,
-      }
-    })
+    // create users
+    await Promise.all(
+      users.map(user => request.post('http://localhost:3003/api/users', { data: { ...user } }))
+    )
   })
 
   test('Login form is shown', async ({ page }) => {
@@ -38,16 +45,16 @@ describe('Blog app', () => {
 
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
-      await loginWith(page, username, password)
+      await loginWith(page, users[0].username, users[0].password)
 
-      const loggedInRegex = new RegExp(`logged in as[: "]*${name}[" ]*`, 'i')
+      const loggedInRegex = new RegExp(`logged in as[: "]*${users[0].name}[" ]*`, 'i')
 
       await expect(page.getByText(loggedInRegex)).toBeVisible()
 
     })
 
     test('fails with incorrect credentials', async ({ page }) => {
-      await loginWith(page, username, 'wrongpassword')
+      await loginWith(page, users[0].username, 'wrongpassword')
 
       const failedLoginRegex = new RegExp('invalid username/password', 'i')
 
@@ -57,7 +64,7 @@ describe('Blog app', () => {
 
   describe('When logged in', () => {
     beforeEach(async ({ page }) => {
-      await loginWith(page, username, password)
+      await loginWith(page, users[0].username, users[0].password)
     })
 
     test('a new blog can be created', async ({ page }) => {
@@ -118,6 +125,38 @@ describe('Blog app', () => {
       await blogItem.getByRole('button', { name: /remove/i }).click()
 
       await expect(page.getByTestId('blog-list')).not.toHaveText(blogTitle)
+    })
+
+    test('the remove button is only present on your blogs...', async ({ page }) => {
+      const blogs = users.map(
+        _ => {
+          return {
+            title: generateRandomAlphanumeric(5),
+            author: generateRandomAlphanumeric(5),
+            url: generateRandomAlphanumeric(5),
+          }
+        }
+      )
+
+      // post blog1 as user1
+      await postNewBlog(page, blogs[0].title, blogs[0].author, blogs[0].url)
+
+      // log out, and sign in as user2
+      await page.getByRole('button', { name: /log out/i }).click()
+      await loginWith(page, users[1].username, users[1].password)
+
+      // post blog2 as user2
+      await postNewBlog(page, blogs[1].title, blogs[1].author, blogs[1].url)
+
+      // delete button should exist on the blog I (user2) just posted
+      const myBlogItem = await page.getByTestId('blog-item').filter({ hasText: blogs[1].title })
+      await myBlogItem.getByRole('button', { name: /show/i }).click()
+      await expect(myBlogItem.getByRole('button', { name: /remove/i })).toBeVisible()
+
+      // delete button should not exist on the blog user1 posted
+      const theirBlogItem = await page.getByTestId('blog-item').filter({ hasText: blogs[0].title })
+      await theirBlogItem.getByRole('button', { name: /show/i }).click()
+      await expect(theirBlogItem.getByRole('button', { name: /remove/i })).not.toBeVisible()
     })
   })
 })
