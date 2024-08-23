@@ -56,19 +56,19 @@ const Blog = ({ blog, blogs, setBlogs, setNotification }) => {
 
   const currentUserName = JSON.parse(localStorage.getItem('loggedInBloglistUser'))?.name
 
-  const details = () => <div><ul>
-    <li>{blog.url}</li>
-    <li> likes: {blog.likes} {likeButton()}</li>
-    <li> {blog.user.name} </li>
+  const details = () => <div data-testid='blog-details'><ul>
+    <li data-testid='blog-url'>{blog.url}</li>
+    <li data-testid='blog-likes'> likes: {blog.likes} {likeButton()}</li>
+    <li data-testid='blog-user'> {blog.user.name} </li>
   </ul>
   {blog.user.name === currentUserName && removeButton()}
   </div>
 
   return (
-    <div style={blogStyle}>
-      <span>{blog.title} {blog.author} {toggleButton()} </span>
+    <article data-testid='blog-item' style={blogStyle}>
+      <p data-testid='blog-summary'>{blog.title} {blog.author} {toggleButton()} </p>
       {showDetails && details()}
-    </div>
+    </article>
   )
 }
 
@@ -83,7 +83,8 @@ Blog.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
-    }).isRequired }).isRequired,
+    }).isRequired
+  }).isRequired,
 
   blogs: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
@@ -95,7 +96,8 @@ Blog.propTypes = {
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       username: PropTypes.string.isRequired,
-    }).isRequired }).isRequired).isRequired,
+    }).isRequired
+  }).isRequired).isRequired,
 
   setBlogs: PropTypes.func.isRequired,
   setNotification: PropTypes.func.isRequired,

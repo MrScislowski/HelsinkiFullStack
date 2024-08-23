@@ -123,7 +123,7 @@ const App = () => {
     }
 
     return (
-      <div id='notification' style={chosenStyle}>
+      <div id='notification' data-testid='notification' style={chosenStyle}>
         <p>{notification.message}</p>
         {notification.data && notificationData()}
       </div>

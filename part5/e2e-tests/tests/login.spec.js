@@ -1,9 +1,20 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test')
-const { loginWith } = require('./helper')
+const { loginWith, postNewBlog } = require('./helper')
 
 const username = 'abc'
 const password = 'example'
 const name = 'def'
+
+function generateRandomAlphanumeric(length) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    result += characters[randomIndex]
+  }
+  return result
+}
+
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -54,15 +65,43 @@ describe('Blog app', () => {
       const blogAuthor = '298cvmqp'
       const blogUrl = 'fmkldax'
 
-      await page.getByRole('button', { name: /new blog/i }).click()
-
-      await page.getByRole('textbox', { name: /title/i }).fill(blogTitle)
-      await page.getByRole('textbox', { name: /author/i }).fill(blogAuthor)
-      await page.getByRole('textbox', { name: /url/i }).fill(blogUrl)
-
-      await page.getByRole('button', { name: /create/i }).click()
+      await postNewBlog(page, blogTitle, blogAuthor, blogUrl)
 
       await expect(page.locator('#blog-list').getByText(blogTitle, { exact: false })).toBeVisible()
+    })
+
+    const getLikes = (likesText) => {
+      const numbersRegex = new RegExp('([0-9]+)')
+      const matchResults = numbersRegex.exec(likesText)
+
+      if (matchResults === null) {
+        throw new Error(`Could not find how many likes in this text: "${likesText}"`)
+      }
+
+      return Number(matchResults[1])
+    }
+
+    test('a blog can be liked', async ({ page }) => {
+      const blogTitle = generateRandomAlphanumeric(5)
+      const blogAuthor = generateRandomAlphanumeric(5)
+      const blogUrl = generateRandomAlphanumeric(5)
+
+      await postNewBlog(page, blogTitle, blogAuthor, blogUrl)
+
+      const initialBlogItem = await page.getByTestId('blog-item').filter({ hasText: blogTitle })
+      await initialBlogItem.getByRole('button', { name: /show/i }).click()
+
+      const initialLikes = getLikes(await initialBlogItem.getByTestId('blog-likes').innerText())
+
+      await initialBlogItem.getByRole('button', { name: /like/i }).click()
+
+      // wait for the notification to pop up before checking for how many likes again
+      await page.getByTestId('notification').waitFor()
+
+      const finalBlogItem = await page.getByTestId('blog-item').filter({ hasText: blogTitle })
+      const finalLikes = getLikes(await finalBlogItem.getByTestId('blog-likes').innerText())
+
+      await expect(finalLikes).toBe(initialLikes + 1)
     })
   })
 })
