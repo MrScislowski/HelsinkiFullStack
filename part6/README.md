@@ -271,3 +271,49 @@ const notes = useSelector(state => {
 ```
 
 NB: every action gets handled in every part of the combined reducer (every reducer "listens" to all of the dispatched actions)
+
+## Redux Toolkit
+
+```sh
+pnpm install @reduxjs/toolkit
+```
+
+- `createSlice` replaces writing separate reducers and action creators
+  ```js
+  const initialState = {
+    // ...
+  }
+
+  const noteSlice = createSlice({
+    name: 'notes',
+    initialState,
+    reducers: {
+      createNote(state, action) {
+        // ...
+      },
+      toggleImportanceOf(state, action) {
+        // ...
+      }
+    },
+  })
+  ```
+  - `name` parameter provides prefix for action type values. (e.g. 'notes/createNote' is an action type)
+  - initial state is baked in
+  - reducers are allowed to violate immutability b/c redux toolkit uses the Immer library with reducers
+- `createSlice` returns on object containing the reducers as well as the action creators defined in the `reducers` parameter
+  ```js
+  export const { createNote, toggleImportanceOf } = noteSlice.actions
+  export default noteSlice.reducer
+  ```
+- `configureStore` replaces `createStore` plus `combineReducers`:
+  ```js
+  import { configureStore } from '@reduxjs/toolkit'
+  //...
+  const store = configureStore({
+    reducer: {
+      notes: noteReducer,
+      filter: filterReducer
+    }
+  })
+  // ...
+  ```
