@@ -122,3 +122,56 @@ const renderApp = () => {
 renderApp()
 store.subscribe(renderApp)
 ```
+
+### redux action creators
+
+It's not ideal to require the react components to know the type names. You can define them as their own functions:
+
+```js
+const createNote = (content) => {
+  return {
+    type: 'NEW_NOTE',
+    payload: {
+      content,
+      important: false,
+      id: generateId()
+    }
+  }
+}
+
+const toggleImportanceOf = (id) => {
+  return {
+    type: 'TOGGLE_IMPORTANCE',
+    payload: { id }
+  }
+}
+```
+
+### sharing redux store with components
+
+- There are multiple ways to share the Redux store with components
+- What follows is the newest way: using the hooks API of the react-redux library
+
+Install:
+
+```sh
+pnpm install react-redux
+```
+
+Restructure:
+
+- `main.jsx`:
+
+  ```js
+  // ...
+  import { Provider } from 'react-redux'
+  // ...
+  const store = createStore(noteReducer)
+
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <Provider store={store}>
+      <App />
+    </Provider>
+  )
+  ```
+
