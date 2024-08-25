@@ -11,7 +11,7 @@ const AnecdoteList = () => {
       filteredAnecdotes = anecdotes.filter(anecdote => anecdote.content.includes(filter))
     }
     // sort anecdotes by votes, descending
-    return filteredAnecdotes.sort((a1, a2) => a2.votes - a1.votes)
+    return [...filteredAnecdotes].sort((a1, a2) => a2.votes - a1.votes)
   })
   const dispatch = useDispatch()
 
