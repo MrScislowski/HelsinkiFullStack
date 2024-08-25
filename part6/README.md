@@ -226,3 +226,48 @@ Restructure:
 
   export default App
   ```
+
+### radio button group modifying state
+
+Since all these have the same `name` attribute, they form a button group where only one option can be selected
+
+```js
+all <input type="radio" name="filter"
+  onChange={() => filterSelected('ALL')} />
+important    <input type="radio" name="filter"
+  onChange={() => filterSelected('IMPORTANT')} />
+nonimportant <input type="radio" name="filter"
+  onChange={() => filterSelected('NONIMPORTANT')} />
+```
+
+### complex state => make multiple reducers and combine them
+
+```js
+import { createStore, combineReducers } from 'redux'
+
+const reducer = combineReducers({
+  notes: noteReducer,
+  filter: filterReducer
+})
+
+const store = createStore(reducer)
+
+// ...
+
+const notes = useSelector(state => {
+  switch (state.filter) {
+    case 'IMPORTANT':
+      return state.notes.filter(note => note.important)
+    case 'NONIMPORTANT':
+      return state.notes.filter(note => !note.important)
+    case 'ALL':
+      return state.notes
+    default:
+      return state.notes
+  } })
+
+// NB: simplification possible if you do
+// useSelector({ filter, notes } => ...)
+```
+
+NB: every action gets handled in every part of the combined reducer (every reducer "listens" to all of the dispatched actions)
