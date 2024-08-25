@@ -174,4 +174,55 @@ Restructure:
     </Provider>
   )
   ```
+  NB: All child components of `App` have access to the store implicitly through `useDispatch` and `useSelector` hooks.
 
+- reducer and action creators in `reducers/noteReducer.js`:
+  ```js
+  const noteReducer = (state = [], action) => {
+    // ...
+  }
+
+  export const createNote = (content) => {
+    // ...
+  }
+
+  export const toggleImportanceOf = (id) => {
+    // ...
+  }
+
+  export default noteReduce
+  ```
+  To import the default exports:
+  `import noteReducer from './noteReducer.js'`
+
+  To import the others,
+  `import { createNote, toggleImportanceOf } from './noteReducer.js'`
+
+- `App.jsx`:
+
+  ```js
+  import { createNote, toggleImportanceOf } from './reducers/noteReducer'
+  import { useSelector, useDispatch } from 'react-redux'
+
+  const App = () => {
+    const dispatch = useDispatch()
+    const notes = useSelector(state => state)
+    // more interesting selector:
+    // const importantNotes = useSelector(state => state.filter(note => note.important))
+
+    const addNote = (event) => {
+      // ...
+      dispatch(createNote(content))
+    }
+
+    const toggleImportance = (id) => {
+      dispatch(toggleImportanceOf(id))
+    }
+
+    return (
+      // ...
+    )
+  }
+
+  export default App
+  ```
