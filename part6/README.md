@@ -317,3 +317,17 @@ pnpm install @reduxjs/toolkit
   })
   // ...
   ```
+
+### console.log in redux toolkit
+
+Because `Immer` is used in reducers in `createSlice`, to print `state`,
+
+```js
+import { createSlice, current } from '@reduxjs/toolkit'
+// ...
+console.log(current(state))
+```
+
+### redux devtools for chrome
+
+Recommended to inspect store / dispatch from browser
