@@ -267,7 +267,7 @@ const notes = useSelector(state => {
   } })
 
 // NB: simplification possible if you do
-// useSelector({ filter, notes } => ...)
+// useSelector(({ filter, notes }) => ...)
 ```
 
 NB: every action gets handled in every part of the combined reducer (every reducer "listens" to all of the dispatched actions)
