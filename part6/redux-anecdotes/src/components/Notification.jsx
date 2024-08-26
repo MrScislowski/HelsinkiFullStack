@@ -9,6 +9,10 @@ const Notification = () => {
 
   const notification = useSelector(state => state.notification)
 
+  if (notification.length === 0) {
+    return []
+  }
+
   return (
     <div style={style}>
       {notification}
