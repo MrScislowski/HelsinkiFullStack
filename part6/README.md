@@ -331,3 +331,35 @@ console.log(current(state))
 ### redux devtools for chrome
 
 Recommended to inspect store / dispatch from browser
+
+### Redux Thunk
+
+- is middleware enabled by default when using redux toolkit's `configureStore` function
+- it means that if you send dispatch a function (instead of an object w/ type & action), it will give it `dispatch` and `getState` as arguments
+- => we can implement asynchronous action creators (which wait for completion of an async operation, then dispatch some action which changes the store's state)
+- they do have to be defined outside the `createSlice` call
+- e.g.
+  ```js
+  const noteSlice = createSlice(/* ... */)
+  export const { createNote, toggleImportanceOf /* ... */ } = noteSlice.actions
+  export const initializeNotes = () => {
+    return async dispatch => {
+      const notes = await noteService.getAll()
+      dispatch(setNotes(notes))
+    }
+  }
+  ```
+  can then be used like this in the `App` component:
+  ```js
+  import { initializeNotes } from './reducers/noteReducer'
+
+  const App = () => {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+      dispatch(initializeNotes())
+    }, [])
+
+    // ...
+  }
+  ```
