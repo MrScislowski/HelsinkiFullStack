@@ -1,0 +1,8 @@
+###
+POST http://localhost:3001/anecdotes
+Content-Type: application/json
+
+{
+  "content": "life fast, die young",
+  "votes": "0"
+}
