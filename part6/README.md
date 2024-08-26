@@ -363,3 +363,84 @@ Recommended to inspect store / dispatch from browser
     // ...
   }
   ```
+
+  ## React Query
+
+  - Installing:
+    ```sh
+    pnpm install @tanstack/react-query
+    ```
+
+  - Setting up the provider in the `main.jsx` file:
+    ```js
+    import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+    // ...
+
+    const queryClient = new QueryClient()
+
+    ReactDOM.createRoot(document.getElementById('root')).render(
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    )
+    ```
+
+  - using the query in `App`:
+    ```js
+    // ...
+    import { useQuery } from '@tanstack/react-query'
+
+    const App = () => {
+      // ...
+
+      const result = useQuery({
+        queryKey: ['notes'],
+        queryFn: () => axios.get('http://localhost:3001/notes').then(res => res.data)
+      })
+
+      if ( result.isLoading ) {
+        return <div>loading data...</div>
+      }
+
+      const notes = result.data
+
+      return (
+        //...
+      )
+    }
+    ```
+
+  - using mutations (refetching entire query)
+    ```js
+    // ...
+    import { useMutation, useQueryClient } from '@tanstack/react-query'
+
+    const App = () => {
+      const queryClient = useQueryClient()
+
+      const newNoteMutation = useMutation({
+        mutationFn: newNote => axios.post(baseUrl, newNote).then(res => res.data),
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ['notes' ]})
+        },
+      })
+
+      const addNote = async (event) => {
+        event.preventDefault()
+        const content = event.target.note.value
+        event.target.note.value = ''
+        newNoteMutation.mutate({ content, important: true })
+      }
+    }
+    ```
+
+  - optimizing performance to manually update query state maintained by React Query
+    ```js
+    const newNoteMutation = useMutation({
+      mutationFn: /* ... */,
+      onSuccess: (newNote) => {
+        const notes = queryClient.getQueryData(['notes'])
+        queryClient.setQueryData(['notes'], notes.concat(newNote))
+      },
+    })
+    ```
