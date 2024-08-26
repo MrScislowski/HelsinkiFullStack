@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import anecdoteService from '../services/anecdoteService'
-import { setNotification, removeNotification } from './notificationReducer'
+import { setNotification } from './notificationReducer'
 
 const initialState = []
 
@@ -16,7 +16,7 @@ const anecdoteSlice = createSlice({
           : action.payload
         )
       })
-      console.log(`new state is: ${JSON.stringify(newState, null, 2)}`)
+      return newState
     },
 
     newAnecdote(state, action) {
@@ -42,8 +42,7 @@ export const createNewAnecdote = (content) => {
   return async (dispatch) => {
     const anecdote = await anecdoteService.postNew(content)
     dispatch(newAnecdote(anecdote))
-    dispatch(setNotification(`Created anecdote: "${anecdote.content}"`))
-    setTimeout(() => dispatch(removeNotification()), 5000)
+    dispatch(setNotification(`Created anecdote: "${anecdote.content}"`, 5))
   }
 }
 
@@ -56,8 +55,7 @@ export const voteForAnecdote = (id) => {
     }
     const updatedAnecdote = await anecdoteService.update(proposedAnecdote)
     dispatch (replaceAnecdote(updatedAnecdote))
-    dispatch(setNotification(`Voted for "${updatedAnecdote.content}"`))
-    setTimeout(() => dispatch(removeNotification()), 5000)
+    dispatch(setNotification(`Voted for "${updatedAnecdote.content}"`, 5))
   }
 }
 
