@@ -16,6 +16,15 @@ Often this looks like (e.g. for setting name) `onChange={e => setName(e.target.v
 npx json-server --port 3001 --watch db.json
 ```
 
+(or put it in your `package.json`):
+
+```json
+"scripts": {
+  "server": "json-server -p3001 --watch db.json",
+  // ...
+}
+```
+
 ### fetching from server
 
 XHR is an old event-based method of searching. It is no longer recommended.
