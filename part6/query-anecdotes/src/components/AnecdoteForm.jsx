@@ -1,9 +1,11 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
+import { showNotification, useNotificationDispatch } from '../NotificationContext'
 
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient()
+  const notificationDispatch = useNotificationDispatch()
 
   const newAnecdoteMutation = useMutation({
     mutationFn: (content) => {
@@ -12,6 +14,7 @@ const AnecdoteForm = () => {
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
+      notificationDispatch(showNotification(`Posted new anecdote: ${newAnecdote.content}`))
     }
   })
 
@@ -20,6 +23,7 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     newAnecdoteMutation.mutate(content)
     event.target.anecdote.value = ''
+
 }
 
   return (
