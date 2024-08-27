@@ -364,83 +364,198 @@ Recommended to inspect store / dispatch from browser
   }
   ```
 
-  ## React Query
+## React Query
 
-  - Installing:
-    ```sh
-    pnpm install @tanstack/react-query
-    ```
+- Installing:
+  ```sh
+  pnpm install @tanstack/react-query
+  ```
 
-  - Setting up the provider in the `main.jsx` file:
-    ```js
-    import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+- Setting up the provider in the `main.jsx` file:
+  ```js
+  import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+  // ...
+
+  const queryClient = new QueryClient()
+
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  )
+  ```
+
+- using the query in `App`:
+  ```js
+  // ...
+  import { useQuery } from '@tanstack/react-query'
+
+  const App = () => {
     // ...
 
-    const queryClient = new QueryClient()
+    const result = useQuery({
+      queryKey: ['notes'],
+      queryFn: () => axios.get('http://localhost:3001/notes').then(res => res.data)
+    })
 
-    ReactDOM.createRoot(document.getElementById('root')).render(
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+    if ( result.isLoading ) {
+      return <div>loading data...</div>
+    }
+
+    const notes = result.data
+
+    return (
+      //...
     )
-    ```
+  }
+  ```
 
-  - using the query in `App`:
-    ```js
-    // ...
-    import { useQuery } from '@tanstack/react-query'
+- using mutations (refetching entire query)
+  ```js
+  // ...
+  import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-    const App = () => {
-      // ...
+  const App = () => {
+    const queryClient = useQueryClient()
 
-      const result = useQuery({
-        queryKey: ['notes'],
-        queryFn: () => axios.get('http://localhost:3001/notes').then(res => res.data)
-      })
-
-      if ( result.isLoading ) {
-        return <div>loading data...</div>
-      }
-
-      const notes = result.data
-
-      return (
-        //...
-      )
-    }
-    ```
-
-  - using mutations (refetching entire query)
-    ```js
-    // ...
-    import { useMutation, useQueryClient } from '@tanstack/react-query'
-
-    const App = () => {
-      const queryClient = useQueryClient()
-
-      const newNoteMutation = useMutation({
-        mutationFn: newNote => axios.post(baseUrl, newNote).then(res => res.data),
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['notes' ]})
-        },
-      })
-
-      const addNote = async (event) => {
-        event.preventDefault()
-        const content = event.target.note.value
-        event.target.note.value = ''
-        newNoteMutation.mutate({ content, important: true })
-      }
-    }
-    ```
-
-  - optimizing performance to manually update query state maintained by React Query
-    ```js
     const newNoteMutation = useMutation({
-      mutationFn: /* ... */,
-      onSuccess: (newNote) => {
-        const notes = queryClient.getQueryData(['notes'])
-        queryClient.setQueryData(['notes'], notes.concat(newNote))
+      mutationFn: newNote => axios.post(baseUrl, newNote).then(res => res.data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['notes' ]})
       },
     })
-    ```
+
+    const addNote = async (event) => {
+      event.preventDefault()
+      const content = event.target.note.value
+      event.target.note.value = ''
+      newNoteMutation.mutate({ content, important: true })
+    }
+  }
+  ```
+
+- optimizing performance to manually update query state maintained by React Query
+  ```js
+  const newNoteMutation = useMutation({
+    mutationFn: /* ... */,
+    onSuccess: (newNote) => {
+      const notes = queryClient.getQueryData(['notes'])
+      queryClient.setQueryData(['notes'], notes.concat(newNote))
+    },
+  })
+  ```
+
+## useReducer
+
+```js
+import { useReducer } from 'react'
+
+const counterReducer = (state, action) => {
+  switch (action.type) {
+    case 'INC':
+      return state + 1
+    case 'DEC':
+      return state - 1
+    case 'ZERO':
+      return 0
+    default:
+      return state
+  }
+}
+
+const App = () => {
+  const [counter, counterDispatch] = useReducer(counterReducer, 0)
+
+  return (
+    <div>{counter}</div>
+    <div>
+      <button onClick={() => counterDispatch({ type: 'INC'})}>+</button>
+      ...
+  )
+}
+```
+
+## createContext and useContext
+
+`CounterContext.jsx`:
+```js
+import { createContext, useReducer } from 'react'
+
+const counterReducer = (state, action) => {
+  // ...
+}
+
+const CounterContext = createContext()
+
+export const CounterContextProvider = (props) => {
+  const [counter, counterDispatch] = useReducer(counterReducer, 0)
+
+  return (
+    <CounterContext.Provider value={ [counter, counterDispatch] }>
+      {props.children}
+    </CounterContext.Provider>
+  )
+}
+
+export default CounterContext
+```
+
+`main.jsx`
+```js
+// ...
+import { CounterContextProvider } from './CounterContext'
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <CounterContextProvider>
+    <App />
+  </CounterContextProvider>
+)
+```
+
+`App.jsx`
+```js
+const App = () => {
+  return (
+    // ...
+    <Button type='INC' label='+' />
+    // ...
+  )
+}
+```
+
+`Button.jsx`
+```js
+import { useContext } from 'react'
+import CounterContext from '../CounterContext'
+
+const Button = ( { type, label }) => {
+  const [counter, dispatch] = useContext(CounterContext)
+  return (
+    <button onClick={() => dispatch({ type })}> {label} </button>
+  )
+}
+```
+
+### additional custom hooks to make clearer
+
+In `CounterContext.jsx`:
+
+```js
+import { useContext } from 'react'
+
+const CounterContext = createContext()
+
+// ...
+
+export const useCounterValue = () => {
+  const counterAndDispatch = useContext(CounterContext)
+  return counterAndDispatch[0]
+}
+
+export const useCounterDispatch = () => {
+  const counterAndDispatch = useContext(CounterContext)
+  return counterAndDispatch[1]
+}
+
+// ...
+```
