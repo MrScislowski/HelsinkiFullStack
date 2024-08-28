@@ -1,6 +1,6 @@
 import { useQueryClient, useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-import { showNotification, useNotificationDispatch } from '../NotificationContext'
+import { hideNotification, showNotification, useNotificationDispatch } from '../NotificationContext'
 
 
 const AnecdoteForm = () => {
@@ -15,6 +15,7 @@ const AnecdoteForm = () => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
       notificationDispatch(showNotification(`Posted new anecdote: ${newAnecdote.content}`))
+      setTimeout(() => notificationDispatch(hideNotification()), 3000)
     }
   })
 

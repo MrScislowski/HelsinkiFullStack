@@ -1,7 +1,6 @@
 import { createContext, useReducer, useContext } from 'react'
 
 const notificationReducer = (state, action) => {
-  console.log('notificaton reducer called...')
   switch (action.type) {
     case 'SHOW':
       return action.payload
@@ -12,19 +11,13 @@ const notificationReducer = (state, action) => {
   }
 }
 
-// export const showNotification = (message) => {
-//   return { type: 'SHOW', payload: message }
-// }
-
 export const showNotification = (message) => {
-  console.log('returning the async function for shownotification')
-  return async (dispatch) => {
-    console.log('async function for notification has been called...')
-    dispatch({ type: 'SHOW', payload: message })
-    setTimeout(() => dispatch({type: 'HIDE'}), 3000)
-  }
+  return { type: 'SHOW', payload: message }
 }
 
+export const hideNotification = (message) => {
+  return { type: 'HIDE' }
+}
 
 const NotificationContext = createContext()
 
