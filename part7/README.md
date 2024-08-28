@@ -184,3 +184,103 @@ const Login = (props) => {
   }
 
   ```
+
+  ## Hooks
+
+  ### About
+
+  Hooks:
+  - function names always start with `use`
+  - cannot be called inside loops/conditions/nested functions
+  - should ony be called:
+    - at the top level in the body of a function component
+    - at the top level in the body of a custom hook
+
+### Writing custom hooks
+
+#### counter hook
+
+Defining the hook:
+```js
+const useCounter = () => {
+  const [value, setValue] = useState(0)
+
+  const increase = () => {
+    setValue(value + 1)
+  }
+
+  const decrease = () => {
+    setValue(value - 1)
+  }
+
+  const zero = () => {
+    setValue(0)
+  }
+
+  return {
+    value,
+    increase,
+    decrease,
+    zero
+  }
+}
+```
+
+Using the hook
+```js
+const App = () => {
+  const left = useCounter()
+  const right = useCounter()
+
+  return (
+    <div>
+    {left.value} <button onClick={left.increase}> left </button>
+    {right.value} <button onClick={right.increase}> right </button>
+    </div>
+  )
+}
+```
+
+#### field (for forms) hook
+
+Defining:
+
+```js
+const useField = (type) => {
+  const [value, setValue] = useState('')
+
+  const onChange = (event) => {
+    setValue(event.target.value)
+  }
+
+  return { type, value, onChange }
+}
+```
+
+Using:
+
+```js
+const App = () => {
+  const name = useField('text')
+  const born = useField('date')
+  const height = useField('number')
+
+  return (
+    <div>
+      <form>
+        name:
+        <input  {...name} />
+        <br/>
+        birthdate:
+        <input {...born} />
+        <br />
+        height:
+        <input {...height} />
+      </form>
+      <div>
+        {name.value} {born.value} {height.value}
+      </div>
+    </div>
+  )
+}
+```
