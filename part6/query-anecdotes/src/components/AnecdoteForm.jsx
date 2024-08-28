@@ -16,6 +16,10 @@ const AnecdoteForm = () => {
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
       notificationDispatch(showNotification(`Posted new anecdote: ${newAnecdote.content}`))
       setTimeout(() => notificationDispatch(hideNotification()), 3000)
+    },
+    onError: (error) => {
+      notificationDispatch(showNotification(`Error: ${error.response.data.error}`))
+      setTimeout(() => notificationDispatch(hideNotification()), 3000)
     }
   })
 
