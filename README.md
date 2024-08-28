@@ -35,8 +35,9 @@ To see how many exercises I did in exercise 5:
 
 - on unix:
   ```sh
-  git log --oneline --grep "^5\.[0-9]\+" --after "2024/01/01" | wc -l
+  git log --oneline --extended-regexp --grep "^(Exercise )?6\.[0-9]+" --after "2024/01/01" | wc -l
   ```
+
 
 - on Windows:
   ```powershell
