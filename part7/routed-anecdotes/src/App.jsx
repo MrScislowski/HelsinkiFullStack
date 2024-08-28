@@ -66,6 +66,8 @@ const CreateNew = (props) => {
   const author = useField('text')
   const info = useField('text')
 
+  const fields = [content, author, info]
+
   const handleSubmit = (e) => {
     e.preventDefault()
     props.addNew({
@@ -92,7 +94,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...info} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button type='button' onClick={() => fields.forEach(f => f.reset())}>reset</button>
       </form>
     </div>
   )
