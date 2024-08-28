@@ -99,6 +99,18 @@ const CreateNew = (props) => {
 
 }
 
+const Notification = ({ notification }) => {
+  if (notification.length === 0)
+    return []
+
+  const style = {
+    border: 'solid',
+    color: 'green'
+  }
+
+  return <div style={style}>{notification} </div>
+}
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -119,9 +131,14 @@ const App = () => {
 
   const [notification, setNotification] = useState('')
 
+  const navigate = useNavigate()
+
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    navigate('/')
+    setNotification(`anecdote "${anecdote.content}" created`)
+    setTimeout(() => setNotification(''), 5000)
   }
 
   const match = useMatch('/anecdotes/:id')
@@ -146,6 +163,7 @@ const App = () => {
 
   return (
     <div>
+      <Notification notification={notification} />
       <h1>Software anecdotes</h1>
       <Menu anecdotes={anecdotes} addNew={addNew} />
       <Routes>
