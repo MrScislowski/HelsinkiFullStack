@@ -348,3 +348,57 @@ pnpm install @mui/material @emotion/react @emotion/styled
 ### polyfill
 
 - IE doesn't do promises. At all. So transpilation isn't enough. For that, you can use `polyfill`s
+
+## Class Components
+
+- prior to version 16.8 of react, it wasn't possible to define react components as Javascript functions if they used state
+- state is stored in a single variable in class components (in contrast to multiple useState statements in hooks)
+- `useEffect` is the right place to fetch data (executed when a component renders, or less frequently). In class components, the "lifecycle methods" offer corresponding functionality; `componentDidMount` is the appropriate place to fetch data.
+- here's an example using classes instead of functions:
+  ```js
+  class App extends React.Component {
+    constructor(props) {
+      super(props)
+
+      this.state = {
+        anecdotes: [],
+        current: 0
+      }
+    }
+
+    componentDidMount = () => {
+      axios.get('http://localhost:3001/anecdotes').then(response => {
+        this.setState({ anecdotes: response.data })
+      })
+    }
+
+
+    handleClick = () => {
+      const current = Math.floor(
+        Math.random() * this.state.anecdotes.length
+      )
+      this.setState({ current })
+    }
+
+    render() {
+      if (this.state.anecdotes.length === 0 ) {
+        return <div>no anecdotes...</div>
+      }
+
+      return (
+        <div>
+          <h1>anecdote of the day</h1>
+          <div>{this.state.anecdotes[this.state.current].content}</div>
+
+          <button onClick={this.handleClick}>next</button>
+        </div>
+      )
+    }
+  }
+  ```
+
+## MVC
+
+- react is primarily a library for managing the creation of views in an application (i.e. `V` of `MVC`)
+- angular is an all-encompassing frontend MVC framework. => React is called a library, not a framework
+- when using redux, flux architecture is moreso being applied
