@@ -1,24 +1,24 @@
+import { useDispatch } from "react-redux";
+import { showErrorNotification } from "../reducers/notification";
 import loginService from "../services/login";
 import { useState } from "react";
 
-const handleLogin = async (event) => {
-  event.preventDefault();
-
-  try {
-    const user = await loginService.attemptLogin(username, password);
-    localStorage.setItem("loggedInBloglistUser", JSON.stringify(user));
-    blogService.setToken(user.token);
-    setUser(user);
-  } catch (e) {
-    const details = e.response ? e.response.data : null;
-    setNotification({ message: e.message, type: "error", data: details });
-    setTimeout(() => {
-      setNotification(null);
-    }, 3000);
-  }
-};
-
 const LoginForm = () => {
+  const dispatch = useDispatch();
+  const handleLogin = async (event) => {
+    event.preventDefault();
+
+    try {
+      const user = await loginService.attemptLogin(username, password);
+      localStorage.setItem("loggedInBloglistUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      setUser(user);
+    } catch (e) {
+      const details = e.response ? e.response.data : null;
+      dispatch(showErrorNotification(e.message, details));
+    }
+  };
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   return (

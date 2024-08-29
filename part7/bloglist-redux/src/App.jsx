@@ -26,19 +26,13 @@ const App = () => {
     }
   }, []);
 
-  const [notification, setNotification] = useState(null);
-
   return (
     <>
       {user && (
         <>
           <Notification />
           <UserInfo user={user} setUser={setUser} />
-          <NewBlogForm
-            setNotification={setNotification}
-            blogs={blogs}
-            setBlogs={setBlogs}
-          />
+          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
           <BlogList blogs={blogs} setBlogs={setBlogs} />
         </>
       )}

@@ -3,9 +3,6 @@ import { useSelector } from "react-redux";
 const Notification = () => {
   const notification = useSelector((state) => state.notification);
 
-  console.log("notification component sees this notification state: ");
-  console.log(notification);
-
   if (notification === null) {
     return [];
   }

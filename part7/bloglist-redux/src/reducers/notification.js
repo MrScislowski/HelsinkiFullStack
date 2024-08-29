@@ -19,16 +19,16 @@ const notificationSlice = createSlice({
 
 const { setNotification, hideNotification } = notificationSlice.actions;
 
-export const showInfoNotification = (message) => {
+export const showInfoNotification = (message, data) => {
   return async (dispatch) => {
-    dispatch(setNotification({ type: "info", message }));
+    dispatch(setNotification({ type: "info", message, data }));
     setTimeout(() => dispatch(hideNotification()), NOTIFICATION_DURATION);
   };
 };
 
-export const showErrorNotification = (message) => {
+export const showErrorNotification = (message, data) => {
   return async (dispatch) => {
-    dispatch(setNotification({ type: "error", message }));
+    dispatch(setNotification({ type: "error", message, data }));
     setTimeout(() => dispatch(hideNotification()));
   };
 };
