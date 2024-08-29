@@ -12,12 +12,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((b1, b2) => b2.likes - b1.likes)));
-  }, []);
-
-  useEffect(() => {
     const savedLogin = localStorage.getItem("loggedInBloglistUser");
     if (savedLogin) {
       const savedUser = JSON.parse(savedLogin);

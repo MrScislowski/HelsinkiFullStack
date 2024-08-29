@@ -1,10 +1,9 @@
 import { useState, useRef } from "react";
 import blogService from "../services/blogs";
 import Togglable from "./Togglable";
-import {
-  showErrorNotification,
-  showInfoNotification,
-} from "../reducers/notification";
+import { showInfoNotification } from "../reducers/notification";
+import { addBlog } from "../reducers/blogs";
+
 import { useDispatch } from "react-redux";
 
 const NewBlogForm = ({ blogs, setBlogs }) => {
@@ -35,7 +34,7 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
         })
       );
 
-      setBlogs(blogs.concat(response).sort((b1, b2) => b2.likes - b1.likes));
+      dispatch(addBlog(response));
     } catch (e) {
       console.dir(e);
     }

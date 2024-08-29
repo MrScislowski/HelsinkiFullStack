@@ -14,7 +14,7 @@ const blogStyle = {
   padding: 5,
 };
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog }) => {
   const [showDetails, setShowDetails] = useState(false);
   const dispatch = useDispatch();
 
@@ -31,20 +31,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       ...blog,
       likes: blog.likes + 1,
     });
-    setBlogs(
-      blogs
-        .map((b) => {
-          if (b.id !== amendedBlog.id) {
-            return b;
-          } else {
-            return {
-              ...amendedBlog,
-              user: b.user,
-            };
-          }
-        })
-        .sort((b1, b2) => b2.likes - b1.likes)
-    );
+    console.log("to be implemented in redux");
     dispatch(showInfoNotification(`"${blog.title}" liked`));
   };
 
@@ -55,7 +42,7 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       try {
         const response = await blogService.deleteBlog(blog);
         dispatch(showInfoNotification(`"${blog.title}" removed`));
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
+        console.log("to be implemented in redux");
       } catch (e) {
         const message = e?.response?.data?.error;
         dispatch(showErrorNotification(message || "could not remove blog"));
@@ -106,23 +93,6 @@ Blog.propTypes = {
       username: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
-
-  blogs: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
-      likes: PropTypes.number.isRequired,
-      user: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        username: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired
-  ).isRequired,
-
-  setBlogs: PropTypes.func.isRequired,
 };
 
 export default Blog;
