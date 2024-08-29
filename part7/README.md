@@ -185,9 +185,9 @@ const Login = (props) => {
 
   ```
 
-  ## Hooks
+## Hooks
 
-  ### About
+### About
 
   Hooks:
   - function names always start with `use`
@@ -284,3 +284,29 @@ const App = () => {
   )
 }
 ```
+
+## Styling
+
+### Covered in the text:
+
+Bootstrap:
+
+```sh
+pnpm install react-bootstrap
+```
+
+MaterialUI:
+
+```sh
+pnpm install @mui/material @emotion/react @emotion/styled
+```
+
+### Reddit recommendations
+
+#### Component libraries
+
+- chakra-ui
+
+#### Styling library
+
+- tailwindcss
