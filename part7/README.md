@@ -310,3 +310,41 @@ pnpm install @mui/material @emotion/react @emotion/styled
 #### Styling library
 
 - tailwindcss
+
+## Webpack
+
+- is a bundler used by `create-react-app`
+- others are now available (e.g. `esbuild`, which is used by vite)
+
+### bundling
+
+- older browsers don't know how to handle code that is divided into modules
+- => source code is transformed into a single file that contains all application code (e.g. usinng `npm run build`)
+- directory structure ends up looking like:
+  ```
+  ├── assets
+  │   ├── index-d526a0c5.css
+  │   ├── index-e92ae01e.js
+  │   └── react-35ef61ed.svg
+  ├── index.html
+  └── vite.svg
+  ```
+- the bundled javascript file also contains the contents of all the imported packages (e.g. `redux` and `axios`)
+- the index.html file simply loads that one `.js` file (this is preferred over loading multiple js files from html these days)
+
+### transpiling
+
+- jsx isn't recognized by browsers, so we have to transpile it into regular javascript
+- `babel` is currently the most popular tool for this
+- transpilation process executed by Babel is defined with plugins. The `@babel/preset-react` preset is a group of pre-configured plugins.
+- `@babel/preset-env` transforms things into ES5 jsvascript (replaces all `const` with `var`, and uses `function`s, not arrow function)
+- use a "loader" to recognize the js/jsx files and apply these transformations to them
+- a css and style loader can be used to generate and inject a style element that contains all the styles of the application into the `main.js` file
+
+### minifying
+
+- UglifyJS is one of the leading tools for minification
+
+### polyfill
+
+- IE doesn't do promises. At all. So transpilation isn't enough. For that, you can use `polyfill`s
