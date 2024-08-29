@@ -402,3 +402,62 @@ pnpm install @mui/material @emotion/react @emotion/styled
 - react is primarily a library for managing the creation of views in an application (i.e. `V` of `MVC`)
 - angular is an all-encompassing frontend MVC framework. => React is called a library, not a framework
 - when using redux, flux architecture is moreso being applied
+
+## Security Practices
+
+### keeping dependencies up-to-date
+
+- Checking:
+  ```sh
+  pnpm outdated --depth 0
+  ```
+- updating:
+  ```sh
+  npm install -g npm-check-updates
+  npm-check-updates
+  ncu -u
+  pnpm install
+  ```
+
+### checking for security issues in dependencies
+
+```sh
+pnpm audit
+pnpm audit --fix
+```
+
+(If major version number has increased, audit won't update these by default [doing so could cause the application to stop working])
+
+### misc security practices the course casually mentioned
+
+- [article about express security](https://expressjs.com/en/advanced/best-practice-security.html)
+- use `Helmet` library in backend
+- use eslint `security-plugin`
+
+## Misc Topics
+
+### Progressive web apps (PWA)
+
+- apps that work on every platform, and in offline mode
+
+### microservice architecture
+
+- backend is split into separate services that communicate over network
+- often an "API gateway" is used so the frontend views the backend like a monolith, even if it's not
+
+### serverless
+
+- AWS lambda, Google cloud functions, Azure functions allow you to run code without knowing anything about the server / routing etc
+- the smallest executable unit is a function, instead of a node process
+
+### recommended libraries
+
+use case | library
+---|---
+complicated data | lodash
+desire for functional programming | ramda
+handling dates and times | date-fns
+complex forms | React Hook Form
+displaying graphs | recharts and highcharts
+gathering analytics data | React Google Analytics 4
+community of react developers on discord | reactiflux
