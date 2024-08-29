@@ -28,15 +28,19 @@ const App = () => {
 
   return (
     <>
+      <Notification />
       {user && (
         <>
-          <Notification />
           <UserInfo user={user} setUser={setUser} />
           <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
           <BlogList blogs={blogs} setBlogs={setBlogs} />
         </>
       )}
-      {!user && <LoginForm />}
+      {!user && (
+        <>
+          <LoginForm setUser={setUser} />
+        </>
+      )}
     </>
   );
 };

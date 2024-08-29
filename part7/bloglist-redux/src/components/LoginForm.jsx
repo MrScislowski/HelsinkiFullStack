@@ -1,10 +1,15 @@
 import { useDispatch } from "react-redux";
 import { showErrorNotification } from "../reducers/notification";
 import loginService from "../services/login";
+import blogService from "../services/blogs";
 import { useState } from "react";
 
-const LoginForm = () => {
+const LoginForm = ({ setUser }) => {
   const dispatch = useDispatch();
+
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -15,12 +20,9 @@ const LoginForm = () => {
       setUser(user);
     } catch (e) {
       const details = e.response ? e.response.data : null;
-      dispatch(showErrorNotification(e.message, details));
+      dispatch(showErrorNotification(e.message || "login failed...", details));
     }
   };
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   return (
     <>
       <h2>log in to application</h2>

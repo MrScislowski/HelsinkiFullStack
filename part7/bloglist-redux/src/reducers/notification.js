@@ -29,7 +29,7 @@ export const showInfoNotification = (message, data) => {
 export const showErrorNotification = (message, data) => {
   return async (dispatch) => {
     dispatch(setNotification({ type: "error", message, data }));
-    setTimeout(() => dispatch(hideNotification()));
+    setTimeout(() => dispatch(hideNotification()), NOTIFICATION_DURATION);
   };
 };
 
