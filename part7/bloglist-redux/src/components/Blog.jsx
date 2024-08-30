@@ -7,7 +7,7 @@ import {
 } from "../reducers/notification";
 
 import PropTypes from "prop-types";
-import { likeBlog } from "../reducers/blogs";
+import { deleteBlog, likeBlog } from "../reducers/blogs";
 
 const blogStyle = {
   borderTopStyle: "solid",
@@ -29,21 +29,13 @@ const Blog = ({ blog }) => {
 
   const handleLike = async () => {
     dispatch(likeBlog(blog));
-    dispatch(showInfoNotification(`"${blog.title}" liked`));
   };
 
   const likeButton = () => <button onClick={handleLike}>like</button>;
 
   const handleRemove = async () => {
     if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
-      try {
-        const response = await blogService.deleteBlog(blog);
-        dispatch(showInfoNotification(`"${blog.title}" removed`));
-        console.log("to be implemented in redux");
-      } catch (e) {
-        const message = e?.response?.data?.error;
-        dispatch(showErrorNotification(message || "could not remove blog"));
-      }
+      dispatch(deleteBlog(blog));
     }
   };
 

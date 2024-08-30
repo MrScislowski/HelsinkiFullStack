@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 import { showInfoNotification } from "../reducers/notification";
-import { addBlog } from "../reducers/blogs";
+import { addBlog, postBlog } from "../reducers/blogs";
 
 import { useDispatch } from "react-redux";
 
@@ -18,26 +18,13 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
   const handleCreateNewBlog = async (event) => {
     event.preventDefault();
 
-    try {
-      const response = await blogService.postNew({ title, author, url });
+    dispatch(postBlog({ title, author, url }));
 
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+    setTitle("");
+    setAuthor("");
+    setUrl("");
 
-      newBlogFormRef.current.toggleVisibility();
-
-      dispatch(
-        showInfoNotification("added new blog", {
-          title: response.title,
-          author: response.author,
-        })
-      );
-
-      dispatch(addBlog(response));
-    } catch (e) {
-      console.dir(e);
-    }
+    newBlogFormRef.current.toggleVisibility();
   };
 
   return (
