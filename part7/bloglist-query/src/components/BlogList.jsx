@@ -9,6 +9,7 @@ const BlogList = () => {
       const result = await blogService.getAll();
       return result;
     },
+    refetchOnWindowFocus: false,
   });
 
   const blogs = blogsQuery.isSuccess ? blogsQuery.data : [];

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
+import { useMutation, useQueryClient } from "react-query";
 
 import {
   clearNotification,
@@ -8,8 +9,45 @@ import {
   useNotificationDispatch,
 } from "../NotificationContext";
 
-const Blog = ({ blog, blogs, setBlogs }) => {
+const Blog = ({ blog }) => {
   const notificationDispatch = useNotificationDispatch();
+  const queryClient = useQueryClient();
+
+  const likeMutation = useMutation({
+    mutationKey: ["likeBlog"],
+    mutationFn: async (blog) => {
+      const result = await blogService.putAmended({
+        ...blog,
+        likes: blog.likes + 1,
+      });
+      return result;
+    },
+    onSuccess: (result) => {
+      queryClient.setQueryData(["blogs"], (blogs) =>
+        blogs
+          .map((b) => (b.id === result.id ? { ...result, user: b.user } : b))
+          .sort((b1, b2) => b2.likes - b1.likes)
+      );
+      notificationDispatch(setInfoNotification(`"${result.title}" liked`));
+      setTimeout(() => notificationDispatch(clearNotification()), 3000);
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationKey: ["deleteBlog"],
+    mutationFn: async (blog) => {
+      const result = await blogService.deleteBlog(blog);
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.setQueryData(["blogs"], (blogs) =>
+        blogs.filter((b) => b.id !== blog.id)
+      );
+      notificationDispatch(setInfoNotification(`"${blog.title}" deleted`));
+      setTimeout(() => notificationDispatch(clearNotification()), 3000);
+    },
+  });
+
   const blogStyle = {
     borderTopStyle: "solid",
     borderTopWidth: 1,
@@ -27,45 +65,14 @@ const Blog = ({ blog, blogs, setBlogs }) => {
   };
 
   const handleLike = async () => {
-    const amendedBlog = await blogService.putAmended({
-      ...blog,
-      likes: blog.likes + 1,
-    });
-    setBlogs(
-      blogs
-        .map((b) => {
-          if (b.id !== amendedBlog.id) {
-            return b;
-          } else {
-            return {
-              ...amendedBlog,
-              user: b.user,
-            };
-          }
-        })
-        .sort((b1, b2) => b2.likes - b1.likes)
-    );
-
-    notificationDispatch(setInfoNotification(`"${blog.title}" liked`));
-    setTimeout(() => notificationDispatch(clearNotification()), 3000);
+    await likeMutation.mutate(blog);
   };
 
   const likeButton = () => <button onClick={handleLike}>like</button>;
 
   const handleRemove = async () => {
     if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
-      try {
-        const response = await blogService.deleteBlog(blog);
-        notificationDispatch(setInfoNotification(`"${blog.title}" removed`));
-        setTimeout(() => notificationDispatch(clearNotification()), 3000);
-        setBlogs(blogs.filter((b) => b.id !== blog.id));
-      } catch (e) {
-        const message = e?.response?.data?.error;
-        notificationDispatch(
-          setErrorNotification(message || "could not remove blog")
-        );
-        setTimeout(() => notificationDispatch(clearNotification()), 3000);
-      }
+      deleteMutation.mutate(blog);
     }
   };
 
