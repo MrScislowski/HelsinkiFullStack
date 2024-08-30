@@ -3,30 +3,27 @@ import blogService from "../services/blogs";
 import Togglable from "./Togglable";
 import {
   clearNotification,
+  setErrorNotification,
   setInfoNotification,
   useNotificationDispatch,
 } from "../NotificationContext";
+import { useMutation, useQueryClient } from "react-query";
 
 const NewBlogForm = ({ blogs, setBlogs }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
   const notificationDispatch = useNotificationDispatch();
+  const queryClient = useQueryClient();
 
-  const newBlogFormRef = useRef();
-
-  const handleCreateNewBlog = async (event) => {
-    event.preventDefault();
-
-    try {
+  const newBlogMutation = useMutation({
+    mutationKey: ["newBlog"],
+    mutationFn: async (blog) => {
+      const { title, author, url } = blog;
       const response = await blogService.postNew({ title, author, url });
-
-      setTitle("");
-      setAuthor("");
-      setUrl("");
-
-      newBlogFormRef.current.toggleVisibility();
-
+      return response;
+    },
+    onSuccess: (response) => {
       notificationDispatch(
         setInfoNotification("added new blog", {
           title: response.title,
@@ -35,11 +32,26 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
       );
 
       setTimeout(() => notificationDispatch(clearNotification()), 3000);
+      queryClient.setQueryData(["blogs"], (blogs) => blogs.concat(response));
+    },
+    onError: (response) => {
+      console.log(response);
+      notificationDispatch(setErrorNotification("Unable to add new blog..."));
+      setTimeout(() => notificationDispatch(clearNotification()), 3000);
+    },
+  });
 
-      setBlogs(blogs.concat(response).sort((b1, b2) => b2.likes - b1.likes));
-    } catch (e) {
-      console.dir(e);
-    }
+  const newBlogFormRef = useRef();
+
+  const handleCreateNewBlog = async (event) => {
+    event.preventDefault();
+
+    newBlogMutation.mutate({ title, author, url });
+    setTitle("");
+    setAuthor("");
+    setUrl("");
+
+    newBlogFormRef.current.toggleVisibility();
   };
 
   return (

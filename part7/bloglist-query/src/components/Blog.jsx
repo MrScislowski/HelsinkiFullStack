@@ -1,7 +1,6 @@
 import { useState } from "react";
 import blogService from "../services/blogs";
 
-import PropTypes from "prop-types";
 import {
   clearNotification,
   setErrorNotification,
@@ -98,38 +97,6 @@ const Blog = ({ blog, blogs, setBlogs }) => {
       {showDetails && details()}
     </article>
   );
-};
-
-Blog.propTypes = {
-  blog: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    author: PropTypes.string.isRequired,
-    url: PropTypes.string.isRequired,
-    likes: PropTypes.number.isRequired,
-    user: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      username: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-
-  blogs: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      author: PropTypes.string.isRequired,
-      url: PropTypes.string.isRequired,
-      likes: PropTypes.number.isRequired,
-      user: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        username: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired
-  ).isRequired,
-
-  setBlogs: PropTypes.func.isRequired,
 };
 
 export default Blog;

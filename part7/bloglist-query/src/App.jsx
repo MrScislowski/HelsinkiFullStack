@@ -31,8 +31,8 @@ const App = () => {
       {user ? (
         <>
           <UserInfo user={user} setUser={setUser} />
-          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
-          <BlogList blogs={blogs} setBlogs={setBlogs} />
+          <NewBlogForm />
+          <BlogList />
         </>
       ) : (
         <LoginForm setUser={setUser} />
