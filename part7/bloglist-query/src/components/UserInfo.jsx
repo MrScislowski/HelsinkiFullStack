@@ -1,7 +1,12 @@
-const UserInfo = ({ user, setUser }) => {
+import { useUser, useUserDispatch, clearUser } from "../UserContext";
+
+const UserInfo = () => {
+  const user = useUser();
+  const userDispatch = useUserDispatch();
+
   const handleLogout = () => {
     localStorage.removeItem("loggedInBloglistUser");
-    setUser(null);
+    userDispatch(clearUser());
   };
 
   return (

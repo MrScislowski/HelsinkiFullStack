@@ -6,8 +6,10 @@ import {
   setErrorNotification,
   useNotificationDispatch,
 } from "../NotificationContext";
+import { useUserDispatch, setUser } from "../UserContext";
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = () => {
+  const userDispatch = useUserDispatch();
   const notificationDispatch = useNotificationDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ const LoginForm = ({ setUser }) => {
       const user = await loginService.attemptLogin(username, password);
       localStorage.setItem("loggedInBloglistUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      userDispatch(setUser(user));
     } catch (e) {
       const details = e.response ? e.response.data : null;
       notificationDispatch(setErrorNotification(e.message, details));
