@@ -3,8 +3,9 @@ import { showErrorNotification } from "../reducers/notification";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
 import { useState } from "react";
+import { setUser } from "../reducers/user";
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = () => {
   const dispatch = useDispatch();
 
   const [username, setUsername] = useState("");
@@ -17,7 +18,7 @@ const LoginForm = ({ setUser }) => {
       const user = await loginService.attemptLogin(username, password);
       localStorage.setItem("loggedInBloglistUser", JSON.stringify(user));
       blogService.setToken(user.token);
-      setUser(user);
+      dispatch(setUser(user));
     } catch (e) {
       const details = e.response ? e.response.data : null;
       dispatch(showErrorNotification(e.message || "login failed...", details));

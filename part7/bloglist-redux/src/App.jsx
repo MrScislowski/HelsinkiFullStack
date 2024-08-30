@@ -6,16 +6,19 @@ import UserInfo from "./components/UserInfo";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import BlogList from "./components/BlogList";
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "./reducers/user";
 
 const App = () => {
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
     const savedLogin = localStorage.getItem("loggedInBloglistUser");
     if (savedLogin) {
       const savedUser = JSON.parse(savedLogin);
-      setUser(savedUser);
+      dispatch(setUser(savedUser));
       blogService.setToken(savedUser.token);
     }
   }, []);
@@ -25,9 +28,9 @@ const App = () => {
       <Notification />
       {user && (
         <>
-          <UserInfo user={user} setUser={setUser} />
-          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
-          <BlogList blogs={blogs} setBlogs={setBlogs} />
+          <UserInfo />
+          <NewBlogForm />
+          <BlogList />
         </>
       )}
       {!user && (

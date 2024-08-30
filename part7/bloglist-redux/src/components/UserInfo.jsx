@@ -1,7 +1,13 @@
-const UserInfo = ({ user, setUser }) => {
+import { useSelector, useDispatch } from "react-redux";
+import { setUser, clearUser } from "../reducers/user";
+
+const UserInfo = () => {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
     localStorage.removeItem("loggedInBloglistUser");
-    setUser(null);
+    dispatch(clearUser());
   };
 
   return (
