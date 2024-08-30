@@ -7,6 +7,7 @@ import {
 } from "../reducers/notification";
 
 import PropTypes from "prop-types";
+import { likeBlog } from "../reducers/blogs";
 
 const blogStyle = {
   borderTopStyle: "solid",
@@ -27,11 +28,7 @@ const Blog = ({ blog }) => {
   };
 
   const handleLike = async () => {
-    const amendedBlog = await blogService.putAmended({
-      ...blog,
-      likes: blog.likes + 1,
-    });
-    console.log("to be implemented in redux");
+    dispatch(likeBlog(blog));
     dispatch(showInfoNotification(`"${blog.title}" liked`));
   };
 
