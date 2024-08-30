@@ -1,7 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { setBlogs } from "../reducers/blogs";
-import blogService from "../services/blogs";
+import { fetchBlogs } from "../reducers/blogs";
 import Blog from "./Blog";
 
 const BlogList = () => {
@@ -11,7 +10,7 @@ const BlogList = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    blogService.getAll().then((data) => dispatch(setBlogs(data)));
+    dispatch(fetchBlogs())
   }, []);
 
   return (

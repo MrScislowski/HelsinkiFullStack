@@ -34,4 +34,11 @@ export const likeBlog = (blog) => {
   };
 };
 
+export const fetchBlogs = () => {
+  return async (dispatch) => {
+    const data = await blogService.getAll()
+    dispatch(setBlogs(data))
+  }
+}
+
 export default blogSlice.reducer;
