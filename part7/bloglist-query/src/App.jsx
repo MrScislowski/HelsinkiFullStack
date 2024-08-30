@@ -9,7 +9,6 @@ import NewBlogForm from "./components/NewBlogForm";
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     blogService
@@ -28,23 +27,15 @@ const App = () => {
 
   return (
     <>
-      <Notification notification={notification} />
+      <Notification />
       {user ? (
         <>
           <UserInfo user={user} setUser={setUser} />
-          <NewBlogForm
-            blogs={blogs}
-            setBlogs={setBlogs}
-            setNotification={setNotification}
-          />
-          <BlogList
-            blogs={blogs}
-            setBlogs={setBlogs}
-            setNotification={setNotification}
-          />
+          <NewBlogForm blogs={blogs} setBlogs={setBlogs} />
+          <BlogList blogs={blogs} setBlogs={setBlogs} />
         </>
       ) : (
-        <LoginForm setNotification={setNotification} setUser={setUser} />
+        <LoginForm setUser={setUser} />
       )}
     </>
   );

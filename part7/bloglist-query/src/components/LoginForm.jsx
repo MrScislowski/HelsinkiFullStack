@@ -1,8 +1,14 @@
 import { useState } from "react";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
+import {
+  clearNotification,
+  setErrorNotification,
+  useNotificationDispatch,
+} from "../NotificationContext";
 
-const LoginForm = ({ setNotification, setUser }) => {
+const LoginForm = ({ setUser }) => {
+  const notificationDispatch = useNotificationDispatch();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -16,9 +22,9 @@ const LoginForm = ({ setNotification, setUser }) => {
       setUser(user);
     } catch (e) {
       const details = e.response ? e.response.data : null;
-      setNotification({ message: e.message, type: "error", data: details });
+      notificationDispatch(setErrorNotification(e.message, details));
       setTimeout(() => {
-        setNotification(null);
+        notificationDispatch(clearNotification());
       }, 3000);
     }
   };
