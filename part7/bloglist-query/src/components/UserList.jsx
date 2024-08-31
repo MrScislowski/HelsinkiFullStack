@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import usersService from "../services/users";
+import { useQuery } from "react-query";
 
 const UserList = () => {
-  const [users, setUsers] = useState([]);
+  const usersQuery = useQuery({
+    queryKey: ["users"],
+    queryFn: async () => {
+      return await usersService.getAll();
+    },
+  });
 
-  useEffect(() => {
-    usersService.getAll().then((data) => setUsers(data));
-  }, []);
+  const users = usersQuery.data || [];
 
   return (
     <>
