@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import blogService from "./services/blogs";
 import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
-import UserInfo from "./components/UserInfo";
-import BlogList from "./components/BlogList";
-import NewBlogForm from "./components/NewBlogForm";
+import LoggedInView from "./components/LoggedInView";
 import { useUser, useUserDispatch, setUser } from "./UserContext";
 
 const App = () => {
@@ -23,15 +21,7 @@ const App = () => {
   return (
     <>
       <Notification />
-      {user ? (
-        <>
-          <UserInfo />
-          <NewBlogForm />
-          <BlogList />
-        </>
-      ) : (
-        <LoginForm />
-      )}
+      {user ? <LoggedInView /> : <LoginForm />}
     </>
   );
 };
