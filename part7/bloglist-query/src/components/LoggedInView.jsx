@@ -16,7 +16,7 @@ const LoggedInView = () => {
       </div>
 
       <Routes>
-        <Route path="/users/:id" element={<User />} />
+        <Route path="/users/*" element={<UserList />} />
         <Route
           path="/"
           element={
@@ -25,7 +25,6 @@ const LoggedInView = () => {
             </>
           }
         />
-        <Route path="/users" element={<UserList />} />
       </Routes>
     </>
   );
