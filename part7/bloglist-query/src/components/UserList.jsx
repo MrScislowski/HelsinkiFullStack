@@ -1,15 +1,8 @@
-import { useEffect, useState } from "react";
-import usersService from "../services/users";
 import { Link } from "react-router-dom";
-import { useQuery } from "react-query";
+import useUsersQuery from "./useUsersQuery";
 
 const UserList = () => {
-  const usersQuery = useQuery({
-    queryKey: ["users"],
-    queryFn: async () => {
-      return await usersService.getAll();
-    },
-  });
+  const usersQuery = useUsersQuery();
 
   const users = usersQuery.data || [];
 

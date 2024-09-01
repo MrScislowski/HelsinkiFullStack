@@ -3,6 +3,7 @@ import NewBlogForm from "./NewBlogForm";
 import BlogList from "./BlogList";
 import UserList from "./UserList";
 import { Route, Routes, Link } from "react-router-dom";
+import User from "./User";
 
 const LoggedInView = () => {
   return (
@@ -15,6 +16,7 @@ const LoggedInView = () => {
       </div>
 
       <Routes>
+        <Route path="/users/:id" element={<User />} />
         <Route
           path="/"
           element={
