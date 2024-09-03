@@ -25,6 +25,21 @@ const BlogDetails = () => {
           <button onClick={() => likeMutation.mutate(blog)}>like</button>
         </li>
         <li>added by {blog.user.name}</li>
+
+        {blog.comments.length > 0 ? (
+          <>
+            <li>
+              <h3>comments:</h3>
+            </li>
+            <li>
+              <ul>
+                {blog.comments.map((c) => (
+                  <li key={c}>{c}</li>
+                ))}
+              </ul>
+            </li>
+          </>
+        ) : null}
       </ul>
     </>
   );
