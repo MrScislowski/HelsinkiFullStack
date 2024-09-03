@@ -10,9 +10,9 @@ const UserInfo = () => {
   };
 
   return (
-    <p>
+    <>
       Logged in as: {user.name} <button onClick={handleLogout}>Log out</button>
-    </p>
+    </>
   );
 };
 
