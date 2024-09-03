@@ -8,30 +8,13 @@ import {
   setInfoNotification,
   useNotificationDispatch,
 } from "../NotificationContext";
+import { Link } from "react-router-dom";
+import useLikeMutation from "./useLikeMutation";
 
 const Blog = ({ blog }) => {
   const notificationDispatch = useNotificationDispatch();
   const queryClient = useQueryClient();
-
-  const likeMutation = useMutation({
-    mutationKey: ["likeBlog"],
-    mutationFn: async (blog) => {
-      const result = await blogService.putAmended({
-        ...blog,
-        likes: blog.likes + 1,
-      });
-      return result;
-    },
-    onSuccess: (result) => {
-      queryClient.setQueryData(["blogs"], (blogs) =>
-        blogs
-          .map((b) => (b.id === result.id ? { ...result, user: b.user } : b))
-          .sort((b1, b2) => b2.likes - b1.likes)
-      );
-      notificationDispatch(setInfoNotification(`"${result.title}" liked`));
-      setTimeout(() => notificationDispatch(clearNotification()), 3000);
-    },
-  });
+  const likeMutation = useLikeMutation();
 
   const deleteMutation = useMutation({
     mutationKey: ["deleteBlog"],
@@ -64,11 +47,9 @@ const Blog = ({ blog }) => {
     );
   };
 
-  const handleLike = async () => {
-    await likeMutation.mutate(blog);
-  };
-
-  const likeButton = () => <button onClick={handleLike}>like</button>;
+  const likeButton = () => (
+    <button onClick={() => likeMutation.mutate(blog)}>like</button>
+  );
 
   const handleRemove = async () => {
     if (window.confirm(`Delete "${blog.title}" by ${blog.author}?`)) {
@@ -87,7 +68,6 @@ const Blog = ({ blog }) => {
       <ul>
         <li data-testid="blog-url">{blog.url}</li>
         <li data-testid="blog-likes">
-          {" "}
           likes: {blog.likes} {likeButton()}
         </li>
         <li data-testid="blog-user"> {blog.user.name} </li>
@@ -99,7 +79,11 @@ const Blog = ({ blog }) => {
   return (
     <article data-testid="blog-item" style={blogStyle}>
       <p data-testid="blog-summary">
-        {blog.title} {blog.author} {toggleButton()}{" "}
+        <Link to={`/blogs/${blog.id}`}>
+          {" "}
+          {blog.title} {blog.author}{" "}
+        </Link>
+        {toggleButton()}
       </p>
       {showDetails && details()}
     </article>
