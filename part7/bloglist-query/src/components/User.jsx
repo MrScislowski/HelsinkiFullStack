@@ -1,5 +1,15 @@
-const User = ({ user }) => {
-  if (user === null) return [];
+import useUsersQuery from "./useUsersQuery";
+import { useParams } from "react-router-dom";
+
+const User = () => {
+  const { data: users } = useUsersQuery();
+  const id = useParams().id;
+
+  if (!users) return null;
+
+  const user = users.find((user) => user.id === id);
+
+  if (!user) return null;
 
   return (
     <>
