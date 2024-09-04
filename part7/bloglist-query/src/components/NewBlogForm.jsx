@@ -59,7 +59,7 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
       <h2>create new</h2>
       <form className="text-sm text-gray-600" onSubmit={handleCreateNewBlog}>
         <div className="mx-4 flex w-full max-w-md flex-col items-stretch py-4">
-          <div className="flex flex-1 flex-row">
+          <div className="mr-4 flex flex-1 flex-row">
             <label htmlFor="title">title:</label>
             <input
               className="my-1 w-full flex-1 shadow-md"
@@ -69,7 +69,7 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <div className="flex flex-1 flex-row">
+          <div className="mr-4 flex flex-1 flex-row">
             <label htmlFor="author">author:</label>
             <input
               className="my-1 flex-1 shadow-md"
@@ -79,7 +79,7 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
               onChange={(e) => setAuthor(e.target.value)}
             />
           </div>
-          <div className="flex flex-1 flex-row">
+          <div className="mr-4 flex flex-1 flex-row">
             <label htmlFor="url">url:</label>
             <input
               className="my-1 flex-1 shadow-md"
