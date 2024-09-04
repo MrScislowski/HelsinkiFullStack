@@ -28,7 +28,7 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
         setInfoNotification("added new blog", {
           title: response.title,
           author: response.author,
-        })
+        }),
       );
 
       setTimeout(() => notificationDispatch(clearNotification()), 3000);
@@ -55,38 +55,46 @@ const NewBlogForm = ({ blogs, setBlogs }) => {
   };
 
   return (
-    <>
-      <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
-        <h2>create new</h2>
-        <form onSubmit={handleCreateNewBlog}>
-          <label htmlFor="title">title:</label>
-          <input
-            type="text"
-            name="title"
-            id="title"
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <br />
-          <label htmlFor="author">author:</label>
-          <input
-            type="text"
-            name="author"
-            id="author"
-            onChange={(e) => setAuthor(e.target.value)}
-          />
-          <br />
-          <label htmlFor="url">url:</label>
-          <input
-            type="text"
-            name="url"
-            id="url"
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <br />
-          <button type="submit">create</button>
-        </form>
-      </Togglable>
-    </>
+    <Togglable buttonLabel="new blog" ref={newBlogFormRef}>
+      <h2>create new</h2>
+      <form className="text-sm text-gray-600" onSubmit={handleCreateNewBlog}>
+        <div className="mx-4 flex w-full max-w-md flex-col items-stretch py-4">
+          <div className="flex flex-1 flex-row">
+            <label htmlFor="title">title:</label>
+            <input
+              className="my-1 w-full flex-1 shadow-md"
+              type="text"
+              name="title"
+              id="title"
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-row">
+            <label htmlFor="author">author:</label>
+            <input
+              className="my-1 flex-1 shadow-md"
+              type="text"
+              name="author"
+              id="author"
+              onChange={(e) => setAuthor(e.target.value)}
+            />
+          </div>
+          <div className="flex flex-1 flex-row">
+            <label htmlFor="url">url:</label>
+            <input
+              className="my-1 flex-1 shadow-md"
+              type="text"
+              name="url"
+              id="url"
+              onChange={(e) => setUrl(e.target.value)}
+            />
+          </div>
+        </div>
+        <button className="text-green-400 hover:text-green-200" type="submit">
+          create
+        </button>
+      </form>
+    </Togglable>
   );
 };
 

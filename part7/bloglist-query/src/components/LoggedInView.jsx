@@ -11,20 +11,21 @@ const LoggedInView = () => {
   return (
     <>
       <NavigationMenu />
-
-      <Routes>
-        <Route path="/users" element={<UserList />} />
-        <Route path="/users/:id" element={<User />} />
-        <Route path="/blogs/:id" element={<BlogDetails />} />
-        <Route
-          path="/"
-          element={
-            <>
-              <NewBlogForm /> <BlogList />
-            </>
-          }
-        />
-      </Routes>
+      <div className="container mx-4 py-4">
+        <Routes>
+          <Route path="/users" element={<UserList />} />
+          <Route path="/users/:id" element={<User />} />
+          <Route path="/blogs/:id" element={<BlogDetails />} />
+          <Route
+            path="/"
+            element={
+              <>
+                <NewBlogForm /> <BlogList />
+              </>
+            }
+          />
+        </Routes>
+      </div>
     </>
   );
 };
