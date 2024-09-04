@@ -3,22 +3,15 @@ import UserInfo from "./UserInfo";
 
 const NavigationMenu = () => {
   return (
-    <nav style={{ backgroundColor: "lightgrey" }}>
-      <ul
-        style={{
-          display: "flex",
-          listStyle: "none",
-          alignItems: "center",
-          justifyContent: "space-around",
-        }}
-      >
-        <li>
+    <nav class="border-b-4 py-2">
+      <ul class="list-none">
+        <li class="inline-block rounded-lg px-4 text-sky-800 hover:bg-slate-100 hover:text-sky-400 hover:underline">
           <Link to="/">blogs</Link>
         </li>
-        <li>
+        <li class="inline-block rounded-lg px-4 text-sky-800 hover:bg-slate-100 hover:text-sky-400 hover:underline">
           <Link to="/users">users</Link>
         </li>
-        <li>
+        <li class="inline-block px-4">
           <UserInfo />
         </li>
       </ul>

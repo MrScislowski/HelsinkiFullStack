@@ -461,3 +461,46 @@ complex forms | React Hook Form
 displaying graphs | recharts and highcharts
 gathering analytics data | React Google Analytics 4
 community of react developers on discord | reactiflux
+
+## My Experience Styling
+
+### Tailwind
+
+#### set up (project)
+
+- I'm following [this guide](https://tailwindcss.com/docs/guides/vite)
+- Install, and initialize `tailwind.config.js` and `postcss.config.js` files
+  ```sh
+  pnpm install --save-dev tailwindcss postcss autoprefixer
+  pnpm dlx tailwindcss init -p # I'm substituting 'pnpm dlx' for 'npx' as recommended by ChatGPT
+  ```
+- Edit `tailwind.config.js` to include
+  ```js
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  ```
+- Create or restore the CSS file in `src/index.css`, and then add `import './index.css'` to the `main.jsx` file
+- Add these lines to the `index.css` file:
+  ```css
+  @tailwind base;
+  @tailwind components;
+  @tailwind utilities;
+  ```
+
+#### set up (editor)
+
+- Install [VSCode extension](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)
+- Set up prettier to use the tailwind class sorter
+  - install
+    ```sh
+    pnpm install --save-dev prettier prettier-plugin-tailwindcss
+    ```
+  - configure to use
+    ```json
+    // .prettierrc
+    {
+      "plugins": ["prettier-plugin-tailwindcss"]
+    }
+    ```

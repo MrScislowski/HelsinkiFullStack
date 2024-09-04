@@ -53,12 +53,12 @@ const NewCommentForm = ({ blog }) => {
     mutationFn: async (commentData) => {
       const response = await blogsService.commentOnBlog(
         blog,
-        commentData.comment
+        commentData.comment,
       );
       queryClient.setQueriesData(["blogs"], (initial) =>
         initial.map((b) =>
-          b.id === blog.id ? { user: b.user, ...response } : b
-        )
+          b.id === blog.id ? { user: b.user, ...response } : b,
+        ),
       );
     },
   });
