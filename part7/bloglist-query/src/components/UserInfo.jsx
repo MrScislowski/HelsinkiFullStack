@@ -11,12 +11,10 @@ const UserInfo = () => {
 
   return (
     <>
-      <span>
-        👤
-        {user.name}
-      </span>
+      <span>👤</span>
+      <span className="text-xs">{user.name}</span>
       <button
-        class="rounded-lg px-2 py-2 text-red-400 hover:bg-red-200"
+        className="rounded-lg px-2 py-2 text-red-400 hover:bg-red-200"
         onClick={handleLogout}
       >
         Log out
