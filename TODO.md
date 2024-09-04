@@ -1,2 +1,7 @@
-- fix the clearing of the user problem when liking a post (because the data is populated in the get request, but not in the post...?)
-  - ask AI whether I should be '.populate'-ing all of the things that return this from the backend, or manually updating that shit in redux
+styling using tailwind:
+
+- Improve padding on right side of border around text inputs
+- the blogs view should:
+  - not have lines going too far to the right
+  - have a "v" down expander, instead of the show button
+- individual blogdetails view... make it good

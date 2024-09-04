@@ -14,7 +14,7 @@ const Togglable = forwardRef((props, refs) => {
   });
 
   return (
-    <div>
+    <div className="m-4 max-w-fit rounded-lg border-2 border-violet-400 p-4">
       {visible && props.children}
       <button
         className={`${visible ? "text-yellow-300 hover:text-yellow-200" : "text-green-500 hover:text-green-200"}`}
