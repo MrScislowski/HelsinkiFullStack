@@ -379,3 +379,142 @@ type Query { // this lists the queries that can be made to the API
     }
   }
   ```
+
+## GraphQL With React
+
+### Using POST requests (bad idea)
+
+In theory we could do:
+
+```http
+POST http://localhost:4000/graphql
+
+Content-Type: application/json
+
+{
+  "query": "query{ allPersons{ name } }"
+}
+
+```
+
+### Popular clients
+
+- Relay by facebook
+- Apollo client <- most popular, so course uses it
+
+
+### Using apollo client
+
+#### Setup
+
+- Install
+
+  ```sh
+  pnpm install @apollo/client graphql
+  ```
+
+- Provide to `App` in `main.jsx` or whatever:
+
+  ```js
+  import {
+    ApolloClient,
+    ApolloProvider,
+    InMemoryCache,
+  } from '@apollo/client'
+
+  const client = new ApolloClient({
+    uri: 'http://localhost:4000',
+    cache: new InMemoryCache(),
+  })
+
+  ReactDOM.createRoot(document.getElementById('root')).render(
+    <ApolloProvider client={client}>
+      <App />
+    </ApolloProvider>
+  )
+  ```
+
+#### Queries
+
+#### w/o parameters
+
+```js
+import { gql, useQuery } from '@apollo/client'
+
+const ALL_PERSONS = gql`
+query {
+  allPersons {
+    name
+    id
+  }
+}
+`
+const App = () => {
+  const result = useQuery(ALL_PERSONS)
+
+  if (result.loading) {
+    return <div>loading...</div>
+  }
+
+  return (
+    <div>
+      {result.data.allPersons.map(p => p.name).join(', ')}
+    </div>
+  )
+}
+```
+
+#### w/ parameters
+
+- GraphQL allows parameters like this:
+  ```js
+  query findPersonByName($nameToSearch: String!) {
+    findPerson(name: $nameToSearch) {
+      name
+      address {
+        city
+      }
+    }
+  }
+
+  {
+    "nameToSearch": "Bob"
+  }
+  ```
+- These "search" type requests are usually not done immediately on component render, so we can either use `useLazyQuery`, or pass something to the `skip` option of the `useQuery` hook.
+  ```js
+    const FIND_PERSON = gql`
+      query findPersonByName($nameToSearch: String!) {
+        findPerson(name: $nameToSearch) {
+          name
+          phone
+          id
+          address {
+            street
+            city
+          }
+        }
+      }
+    `
+
+    const Persons = ({ persons }) => {
+      const [nameToSearch, setNameToSearch] = useState(null)
+      const result = useQuery(FIND_PERSON, {
+        variables: { nameToSearch },
+        skip: !nameToSearch,
+      })
+
+      if (nameToSearch && result.data) {
+        return (
+          <Person
+            person={result.data.findPerson}
+            onClose={() => setNameToSearch(null)}
+          />
+        )
+      }
+
+      // ... return all people names...
+    }
+  ```
+
+
