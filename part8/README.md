@@ -146,4 +146,67 @@ type Query { // this lists the queries that can be made to the API
   })
   ```
 
+
 - When run in development mode, `http://localhost:4000` has "query your server" option which takes you to Apollo Studio Explorer
+
+#### Resolvers
+
+- Each resolver is given 4 positional arguments:
+  - `obj`, or `root` in our example
+  - `args`
+  - `context`
+  - `info`
+- Apollo defines default resolvers for your schema, for example
+  ```js
+  Person: {
+    name: (root) => root.name,
+    phone: (root) => root.phone,
+    // ...
+  }
+  ```
+- You can overwrite these; for example, you could define the address of all persons to be Manhattan, NY by using:
+  ```js
+  Person: {
+    // ...
+    street: (root) => "Manhattan",
+    city: (root) => "New York"
+  }
+  ```
+
+#### Nested Stuff In Schema
+
+- Change Schema (add Address type):
+  ```js
+  type Address {
+    street: String!
+    city: String!
+  }
+
+  type Person {
+    // ...
+    address: Address!
+  }
+  // ...
+  ```
+- Change queries accordingly:
+  ```js
+  query {
+    findPerson(name: "Joe Bloggs") {
+      address {
+        city
+        street
+      }
+    }
+  }
+  ```
+
+- We don't need to change the way we store the objects in the backend/server. But now because the graphQL schema and the server schema aren't the same, we won't be able to use as many default resolvers
+
+- Change resolvers accordingly:
+  ```js
+  const resolvers = {
+    // ...
+    Person: {
+      address: (root) => return { street: root.street, city: root.city }
+    }
+  }
