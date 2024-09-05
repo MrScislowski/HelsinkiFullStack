@@ -135,7 +135,15 @@ const resolvers = {
     authorCount: () => authors.length,
     allBooks: (root, args) => {
       let filteredBooks = books;
-      // TODO: finish this!
+      if (args.author)
+        filteredBooks = filteredBooks.filter((b) => b.author === args.author);
+
+      if (args.genre)
+        filteredBooks = filteredBooks.filter((b) =>
+          b.genres.includes(args.genre)
+        );
+
+      return filteredBooks;
     },
     allAuthors: () => authors,
   },
