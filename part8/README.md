@@ -149,7 +149,7 @@ type Query { // this lists the queries that can be made to the API
 
 - When run in development mode, `http://localhost:4000` has "query your server" option which takes you to Apollo Studio Explorer
 
-#### Resolvers
+### Resolvers
 
 - Each resolver is given 4 positional arguments:
   - `obj`, or `root` in our example
@@ -173,7 +173,7 @@ type Query { // this lists the queries that can be made to the API
   }
   ```
 
-#### Nested Stuff In Schema
+### Nested Stuff In Schema
 
 - Change Schema (add Address type):
   ```js
@@ -210,3 +210,53 @@ type Query { // this lists the queries that can be made to the API
       address: (root) => return { street: root.street, city: root.city }
     }
   }
+
+### Mutations
+
+- all operations which cause a change are done with mutations
+- Example add person mutation...:
+  - Schema:
+  ```js
+  type Mutation {
+    addPerson(
+      name: String!
+      phone: String
+      street: String!
+      city: String!
+    ): Person
+  }
+  ```
+  - Resolver:
+  ```js
+  const { v1: uuid } = require('uuid')
+  // ...
+  const resolvers = {
+    // ...
+    Mutation {
+      addPerson: (root, args) => {
+        const person = { ...args, id: uuid() }
+        persons = persons.concat(person)
+        return person
+      }
+    }
+  }
+  ```
+  - Calling the mutation:
+  ```js
+  mutation {
+    addPerson(
+      name: "Pekka Mikkola"
+      phone: "045-2374321"
+      street: "Vilppulantie 25"
+      city: "Helsinki"
+    ) {
+      name
+      phone
+      address{
+        city
+        street
+      }
+      id
+    }
+  }
+  ```
