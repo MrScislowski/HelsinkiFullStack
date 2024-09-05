@@ -282,3 +282,6 @@ type Query { // this lists the queries that can be made to the API
       // ...
     }
   }
+
+### Enums
+
