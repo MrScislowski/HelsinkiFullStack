@@ -13,13 +13,17 @@ const User = () => {
 
   return (
     <>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
-        {user.blogs.map((blog) => {
-          return <li key={blog.id}>{blog.title}</li>;
-        })}
-      </ul>
+      <h2 className="text-lg font-semibold">{user.name}</h2>
+      {user.blogs.length === 0 ? null : (
+        <>
+          <h3 className="pl-2 text-base font-medium">added blogs: </h3>
+          <ul className="list-inside list-disc pl-4 text-slate-500">
+            {user.blogs.map((blog) => {
+              return <li key={blog.id}>{blog.title}</li>;
+            })}
+          </ul>
+        </>
+      )}
     </>
   );
 };
