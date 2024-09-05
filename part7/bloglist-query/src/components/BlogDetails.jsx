@@ -6,10 +6,10 @@ import blogsService from "../services/blogs";
 
 const BlogDetails = () => {
   const id = useParams().id;
-  const { data: blogs } = useBlogsQuery();
+  const { data: blogs, isFetched } = useBlogsQuery();
   const likeMutation = useLikeMutation();
 
-  if (!blogs) return null;
+  if (!isFetched) return null;
 
   const blog = blogs.find((b) => b.id === id);
 
@@ -24,20 +24,25 @@ const BlogDetails = () => {
         </li>
         <li>
           {blog.likes} likes
-          <button onClick={() => likeMutation.mutate(blog)}>like</button>
+          <button
+            className="rounded-lg bg-green-200 p-1 hover:bg-green-300"
+            onClick={() => likeMutation.mutate(blog)}
+          >
+            +
+          </button>
         </li>
         <li>added by {blog.user.name}</li>
 
         <li>
-          <h3>comments:</h3>
+          <h3 className="text-lg font-semibold text-slate-600">comments:</h3>
         </li>
-        <li>
+        <li className="ml-4">
           <NewCommentForm blog={blog} />
         </li>
-        <li>
-          <ul>
-            {blog.comments.map((c) => (
-              <li key={c}>{c}</li>
+        <li className="ml-4">
+          <ul className="text-slate-400">
+            {blog.comments.map((c, index) => (
+              <li key={index}>{c}</li>
             ))}
           </ul>
         </li>
@@ -57,7 +62,7 @@ const NewCommentForm = ({ blog }) => {
       );
       queryClient.setQueriesData(["blogs"], (initial) =>
         initial.map((b) =>
-          b.id === blog.id ? { user: b.user, ...response } : b,
+          b.id === blog.id ? { ...response, user: b.user } : b,
         ),
       );
     },
@@ -71,8 +76,17 @@ const NewCommentForm = ({ blog }) => {
 
   return (
     <form onSubmit={handleAddComment}>
-      <input name="comment" type="text" />
-      <button type="submit">add comment</button>
+      <input
+        className="border-2 border-double border-slate-300"
+        name="comment"
+        type="text"
+      />
+      <button
+        className="rounded-md bg-slate-200 p-1 hover:bg-slate-300"
+        type="submit"
+      >
+        add
+      </button>
     </form>
   );
 };

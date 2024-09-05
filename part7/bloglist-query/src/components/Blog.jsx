@@ -4,7 +4,6 @@ import { useMutation, useQueryClient } from "react-query";
 
 import {
   clearNotification,
-  setErrorNotification,
   setInfoNotification,
   useNotificationDispatch,
 } from "../NotificationContext";
