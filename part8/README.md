@@ -260,3 +260,25 @@ type Query { // this lists the queries that can be made to the API
     }
   }
   ```
+
+### Error handling
+
+- GraphQL handles basic validation itself (e.g. not providing the appropriate parameters)
+- For more complex situations, you can throw a `GraphQLError`, and look up the appropriate error code. e.g., to prevent the same name bing added twice:
+  ```js
+  const { GraphQLError } = require('graphql')
+  //...
+  const resolvers = {
+    // ...
+    addPerson: (root, args) => {
+      if (persons.find(p => p.name === args.name)) {
+        throw new GraphQLError('name must be unique', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name
+          }
+        })
+      }
+      // ...
+    }
+  }
