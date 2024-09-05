@@ -283,5 +283,63 @@ type Query { // this lists the queries that can be made to the API
     }
   }
 
-### Enums
+### GraphQL Enums
 
+- Add to schema:
+  ```js
+  enum YesNo {
+    YES
+    NO
+  }
+
+  type Query {
+    // ...
+    allPersons(phone: YesNo): [Person!]!
+    // ...
+  }
+  ```
+- Implement in resolver:
+  ```js
+  Query: {
+    // ...
+    allPersons: (root, args) => {
+      if (!args.phone) {
+        return persons
+      }
+
+      const filterByPhone = (person) =>
+        args.phone === 'YES' : person.phone : !person.phone
+
+      return persons.filter(filterByPhone)
+      },
+      // ...
+  }
+  ```
+
+### Change phone number
+
+- Query aka mutation
+
+  ```js
+  type Mutation {
+    editNumber(
+      name: string!
+      phone: String!
+    ): Person
+  }
+  ```
+
+- Resolver:
+  ```js
+  const resolvers = {
+    // ...
+    Mutation {
+      editNumber: (root, args) => {
+        const oldInfo = persons.find(p => p.name === args.name)
+        if (!oldInfo) return null
+        const newInfo = { ...oldInfo, phone: args.phone }
+        persons = persons.map(p => p.id !== newInfo.id ? p : newInfo )
+        return newInfo
+      }
+    }
+  ```
