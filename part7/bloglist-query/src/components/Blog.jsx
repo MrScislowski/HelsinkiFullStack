@@ -24,7 +24,7 @@ const Blog = ({ blog }) => {
     },
     onSuccess: () => {
       queryClient.setQueryData(["blogs"], (blogs) =>
-        blogs.filter((b) => b.id !== blog.id)
+        blogs.filter((b) => b.id !== blog.id),
       );
       notificationDispatch(setInfoNotification(`"${blog.title}" deleted`));
       setTimeout(() => notificationDispatch(clearNotification()), 3000);
@@ -41,14 +41,22 @@ const Blog = ({ blog }) => {
 
   const toggleButton = () => {
     return (
-      <button onClick={() => setShowDetails(!showDetails)}>
+      <button
+        className={`rounded-md bg-slate-300 p-1 hover:bg-slate-400`}
+        onClick={() => setShowDetails(!showDetails)}
+      >
         {showDetails ? "hide" : "show"}
       </button>
     );
   };
 
   const likeButton = () => (
-    <button onClick={() => likeMutation.mutate(blog)}>like</button>
+    <button
+      className="rounded-lg bg-green-200 p-1 hover:bg-green-300"
+      onClick={() => likeMutation.mutate(blog)}
+    >
+      +
+    </button>
   );
 
   const handleRemove = async () => {
@@ -57,10 +65,17 @@ const Blog = ({ blog }) => {
     }
   };
 
-  const removeButton = () => <button onClick={handleRemove}>remove</button>;
+  const removeButton = () => (
+    <button
+      className="rounded-md bg-red-300 p-1 hover:bg-red-400"
+      onClick={handleRemove}
+    >
+      remove
+    </button>
+  );
 
   const currentUserName = JSON.parse(
-    localStorage.getItem("loggedInBloglistUser")
+    localStorage.getItem("loggedInBloglistUser"),
   )?.name;
 
   const details = () => (
@@ -77,11 +92,10 @@ const Blog = ({ blog }) => {
   );
 
   return (
-    <article data-testid="blog-item" style={blogStyle}>
+    <article className="ml-2 max-w-lg border-2 pl-2" data-testid="blog-item">
       <p data-testid="blog-summary">
-        <Link to={`/blogs/${blog.id}`}>
-          {" "}
-          {blog.title} {blog.author}{" "}
+        <Link className="text-blue-400 underline" to={`/blogs/${blog.id}`}>
+          {blog.title} {blog.author}
         </Link>
         {toggleButton()}
       </p>
