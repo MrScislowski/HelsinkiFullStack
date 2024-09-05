@@ -342,4 +342,40 @@ type Query { // this lists the queries that can be made to the API
         return newInfo
       }
     }
+    // ...
+  }
+  ```
+
+### Nested Queries (queries inside queries etc)
+
+- Names can't clobber, so:
+  ```js
+  query {
+    havePhone: allPersons(phone: YES) {
+      name
+    }
+    phoneless: allPersons(phone: NO) {
+      name
+    }
+  }
+  ```
+- return something like:
+  ```js
+  {
+    "data": {
+      "havePhone": [
+        {
+          "name": "Arto Hellas"
+        },
+        {
+          "name": "Matti Luukkainen"
+        }
+      ],
+      "phoneless": [
+        {
+          "name": "Venla Ruuska"
+        }
+      ]
+    }
+  }
   ```
