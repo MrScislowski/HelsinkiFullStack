@@ -583,3 +583,47 @@ useEffect(() => {
 #### Application State
 
 Apollo client manages a lot of the application state, like react-query. So this may replace, e.g., redux.
+
+#### Using `context` to store user information
+
+"Context is the right place to do things which are shard by multiple resolvers, like user identification"
+
+In server:
+
+```js
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
+
+startStandaloneServer(server, {
+  listen: { port: 4000 },
+  // THIS IS THE NEW STUFF...
+  // ******************************
+  context: async ({ req, res }) => {
+      const auth = req ? req.headers.authorization : null
+      if (auth && auth.startsWith('Bearer ')) {
+        const decodedToken = jwt.verify(
+          auth.substring(7), process.env.JWT_SECRET
+        )
+        const currentUser = await User
+          .findById(decodedToken.id).populate('friends')
+        return { currentUser }
+      }
+    },
+  // ******************************
+}).then(({ url }) => {
+  console.log(`Server ready at ${url}`);
+});
+```
+
+In client/resolver:
+
+```js
+Query: {
+  // ...
+  me: (root, args, context) => {
+    return context.currentUser
+  }
+},
+```
