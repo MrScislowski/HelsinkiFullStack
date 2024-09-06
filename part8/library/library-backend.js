@@ -58,11 +58,20 @@ const typeDefs = `
 
 const resolvers = {
   Author: {
-    bookCount: (root) =>
+    bookCount: async (root) => {
+      // TODO:
+      await Book.find({author: root.name})
+
+      // or something with Book.countDocuments or something like that? There's no autocomplete!
+
+
       books.reduce(
         (count, book) => (book.author === root.name ? count + 1 : count),
         0
       ),
+
+    }
+
   },
 
   Query: {
