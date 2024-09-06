@@ -1,5 +1,7 @@
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import queries from "./queries";
+import { useState } from "react";
+import mutations from "./mutations";
 
 const Authors = (props) => {
   const authorsQuery = useQuery(queries.GET_ALL_AUTHORS);
@@ -33,7 +35,54 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+
+      <BirthyearForm />
     </div>
+  );
+};
+
+const BirthyearForm = () => {
+  const [editBirthyearMutation] = useMutation(mutations.EDIT_AUTHOR_BIRTHYEAR, {
+    refetchQueries: [{ query: queries.GET_ALL_AUTHORS }],
+  });
+  const [name, setName] = useState("");
+  const [year, setYear] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    editBirthyearMutation({
+      variables: {
+        name,
+        year: Number(year),
+      },
+    });
+    setName("");
+    setYear("");
+  };
+
+  return (
+    <>
+      <h3>Set birthyear</h3>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="name">name</label>
+        <input
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          type="text"
+        />
+        <br />
+        <label htmlFor="year">born</label>
+        <input
+          id="year"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          type="text"
+        />
+        <br />
+        <button type="submit">update author</button>
+      </form>
+    </>
   );
 };
 
