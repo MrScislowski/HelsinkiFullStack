@@ -517,4 +517,69 @@ const App = () => {
     }
   ```
 
+#### example of 'addPerson' mutation w/ client
 
+```js
+const ADD_PERSON = gql`
+query addPersonWithDetails($personName: String!, $personCity: String!) {
+  addPerson(name: $personName, city: $personCity) {
+    id
+    name
+    city
+    }
+  }
+`
+const App = () => {
+  const [ createPerson, {data, loading, error} ] = useMutation(ADD_PERSON)
+
+  // ...
+  useMutation(ADD_PERSON, { variables: {personName: 'JOE', personCity: 'BALTIMORE'}})
+}
+```
+
+So... unlike react query, you call the `createPerson` object that was returned directly, and don't call a `.mutate` method on it
+
+#### Updating Cache
+
+- "poll" the server (execute query periodically at specified interval). NB: there's excessive network traffic for this solution.
+  ```js
+  const result = useQuery(ALL_PERSONS, {
+    pollInterval: 2000
+  })
+  ```
+- trigger refetching queries inside mutation. NB: cuts down on network traffic, but won't update when another user changes the state of the database.
+  ```js
+  const [ createPerson, {data, loading, error} ] = useMutation(ADD_PERSON, {
+    refetchQueries: [ {query: ALL_PERSONS} ]
+  })
+  ```
+
+#### Error handling in apollo
+
+```js
+const [ createPerson ] = useMutation(ADD_PERSON), {
+  // ...
+  onError: (error) => {
+    console.log(error.grapQLErrors)
+    // and whatever else you want to do here
+  }
+}
+```
+
+#### Response handling (e.g. if a problem has occurred but doesn't rise to graphQL error):
+```js
+const [ changeNumber, result ] = useMutation(EDIT_NUMBER)
+
+// ...
+
+useEffect(() => {
+  if (result.data && result.data.editNumber === null) {
+    setError('person not found')
+  }
+}, [result.data])
+```
+
+
+#### Application State
+
+Apollo client manages a lot of the application state, like react-query. So this may replace, e.g., redux.
