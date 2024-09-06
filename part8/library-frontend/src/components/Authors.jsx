@@ -42,11 +42,12 @@ const Authors = (props) => {
 };
 
 const BirthyearForm = () => {
+  const [name, setName] = useState("");
+  const [year, setYear] = useState("");
   const [editBirthyearMutation] = useMutation(mutations.EDIT_AUTHOR_BIRTHYEAR, {
     refetchQueries: [{ query: queries.GET_ALL_AUTHORS }],
   });
-  const [name, setName] = useState("");
-  const [year, setYear] = useState("");
+  const authorsQuery = useQuery(queries.GET_ALL_AUTHORS);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -60,17 +61,25 @@ const BirthyearForm = () => {
     setYear("");
   };
 
+  const authors = authorsQuery.data ? authorsQuery.data.allAuthors : [];
+
   return (
     <>
       <h3>Set birthyear</h3>
       <form onSubmit={handleSubmit}>
         <label htmlFor="name">name</label>
-        <input
+        <select
           id="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          type="text"
-        />
+        >
+          {authors.map((a) => (
+            <option value={a.name} key={a.id}>
+              {a.name}
+            </option>
+          ))}
+          <option value=""></option>
+        </select>
         <br />
         <label htmlFor="year">born</label>
         <input
