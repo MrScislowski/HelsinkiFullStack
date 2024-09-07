@@ -4,6 +4,7 @@ const { v1: uuid } = require("uuid");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/Book");
+const Author = require("./models/Author");
 
 require("dotenv").config();
 
@@ -59,37 +60,19 @@ const typeDefs = `
 const resolvers = {
   Author: {
     bookCount: async (root) => {
-      // TODO:
-      await Book.find({author: root.name})
-
-      // or something with Book.countDocuments or something like that? There's no autocomplete!
-
-
-      books.reduce(
-        (count, book) => (book.author === root.name ? count + 1 : count),
-        0
-      ),
-
-    }
-
+      // TODO later
+      return 42;
+    },
   },
 
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
+    bookCount: () => Book.countDocuments().then((res) => res),
+    authorCount: () => Author.countDocuments().then((res) => res),
     allBooks: (root, args) => {
-      let filteredBooks = books;
-      if (args.author)
-        filteredBooks = filteredBooks.filter((b) => b.author === args.author);
-
-      if (args.genre)
-        filteredBooks = filteredBooks.filter((b) =>
-          b.genres.includes(args.genre)
-        );
-
-      return filteredBooks;
+      // TODO: deal with args.author and args.genre filters later
+      return Book.find({}).then((res) => res);
     },
-    allAuthors: () => authors,
+    allAuthors: () => Author.find({}).then((res) => res),
   },
 
   Mutation: {
