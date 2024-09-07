@@ -23,7 +23,7 @@ const typeDefs = `
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: ID!
     genres: [String!]!
   }
@@ -70,24 +70,24 @@ const resolvers = {
     authorCount: () => Author.countDocuments().then((res) => res),
     allBooks: (root, args) => {
       // TODO: deal with args.author and args.genre filters later
-      return Book.find({}).then((res) => res);
+      return Book.find({})
+        .populate("author")
+        .then((res) => res);
     },
     allAuthors: () => Author.find({}).then((res) => res),
   },
 
   Mutation: {
     addBook: (root, args) => {
-      const newBook = { ...args, id: uuid() };
-      books = books.concat(newBook);
-
-      // If this is a new author, add them to the DB
-      if (!authors.find((a) => a.name === newBook.author)) {
-        authors = authors.concat({
-          name: newBook.author,
-          id: uuid(),
-        });
-      }
-      return newBook;
+      return Author.findOne({ name: args.author })
+        .then((possiblyAuthor) => {
+          return possiblyAuthor || new Author({ name: args.author }).save();
+        })
+        .then((author) => {
+          const newBook = new Book({ ...args, author: author._id });
+          return newBook.save().then((book) => book.populate("author"));
+        })
+        .then((book) => book);
     },
 
     editAuthor: (root, args) => {
