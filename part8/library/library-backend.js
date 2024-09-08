@@ -1,6 +1,5 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { v1: uuid } = require("uuid");
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/Book");
@@ -59,9 +58,8 @@ const typeDefs = `
 
 const resolvers = {
   Author: {
-    bookCount: async (root) => {
-      // TODO later
-      return 42;
+    bookCount: (root) => {
+      return Book.countDocuments({ author: root._id }).then((count) => count);
     },
   },
 
