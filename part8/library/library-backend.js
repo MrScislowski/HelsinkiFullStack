@@ -66,11 +66,15 @@ const resolvers = {
   Query: {
     bookCount: () => Book.countDocuments().then((res) => res),
     authorCount: () => Author.countDocuments().then((res) => res),
-    allBooks: (root, args) => {
-      // TODO: deal with args.author and args.genre filters later
-      return Book.find({})
-        .populate("author")
-        .then((res) => res);
+    allBooks: async (root, args) => {
+      let searchOptions = {};
+      if (args.author) {
+        const authorId = (await Author.findOne({ name: args.author }))?._id;
+        if (!authorId) return [];
+        searchOptions.author = authorId;
+      }
+
+      return Book.find(searchOptions).populate("author");
     },
     allAuthors: () => Author.find({}).then((res) => res),
   },
