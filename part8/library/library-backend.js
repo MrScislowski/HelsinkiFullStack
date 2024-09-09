@@ -4,7 +4,9 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/Book");
 const Author = require("./models/Author");
+const User = require("./models/User");
 const { GraphQLError } = require("graphql");
+const jwt = require("jsonwebtoken");
 
 require("dotenv").config();
 
@@ -35,11 +37,22 @@ const typeDefs = `
     bookCount: Int!
   }
 
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
+  type Token {
+    value: String!
+  }
+
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
 
   type Mutation {
@@ -54,6 +67,16 @@ const typeDefs = `
         name: String!
         setBornTo: Int!
     ): Author
+
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `;
 
@@ -82,6 +105,7 @@ const resolvers = {
       return Book.find(searchOptions).populate("author");
     },
     allAuthors: () => Author.find({}).then((res) => res),
+    me: (root, args, context) => context.user,
   },
 
   Mutation: {
@@ -121,6 +145,31 @@ const resolvers = {
       );
       return response;
     },
+
+    createUser: async (root, args) => {
+      if (!args.username || !args.favoriteGenre)
+        throw new GraphQLError("invalid user creation request", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error: "Need username and favorite genre properties",
+          },
+        });
+      const createdUser = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre,
+      });
+      try {
+        await createdUser.save();
+      } catch (error) {
+        throw new GraphQLError("unable to save new user", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error,
+          },
+        });
+      }
+      return createdUser;
+    },
   },
 };
 
@@ -131,6 +180,18 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
+
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null;
+    if (auth && auth.startsWith("Bearer ")) {
+      const decodedToken = jwt.verify(
+        auth.substring(7),
+        process.env.JWT_SECRET
+      );
+      const user = await User.findById(decodedToken.id);
+      return { user };
+    }
+  },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
