@@ -627,3 +627,73 @@ Query: {
   }
 },
 ```
+
+#### resetting the Apollo the cache
+
+Once logging out happens, we want to get rid of any data in the cache (it may have info rhtat only logged in users should be able to see).
+
+```js
+const client = useApolloClient()
+// ...
+client.resetStore()
+```
+
+#### adding a token to a header using Apollo
+
+```js
+
+import { setContext } from '@apollo/client/link/context'
+
+const authLink = setContext((_, { headers }) => {
+
+  return {
+    const token = localStorage.getItem('phonenumbers-user-token')
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : null
+    }
+  }
+})
+
+const httpLink = createHttpLink({
+  uri: 'http://localhost:4000',
+})
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: [authLink, httpLink]
+})
+```
+
+#### updating cache manually (instead of refetching)
+
+Instead of causing a re-fetch of the data:
+```js
+const [ createPerson ] = useMutation(CREATE_PERSON, {
+  refetchQueries: [ {query: ALL_PERSONS } ],
+  // ...
+})
+```
+
+We can do:
+```js
+const [ createPerson ] = useMutation(CREATE_PERSON, {
+  update: (cache, response) => {
+    cache.updateQuery({query: ALL_PERSONS }, ({ allPersons }) => {
+      return {
+        allPersons: allPersons.concat(response.data.addPerson),
+      }
+    })
+  }
+})
+```
+
+#### disable cache (for debugging etc)
+
+the `fetchPolicy` property can be set to "no-cache"; e.g.
+
+```js
+  useQuery(ALL_PERSONS, {
+    fetchPolicy: "no-cache"
+  })
+```
