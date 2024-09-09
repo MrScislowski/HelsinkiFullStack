@@ -74,6 +74,10 @@ const resolvers = {
         searchOptions.author = authorId;
       }
 
+      if (args.genre) {
+        searchOptions.genres = args.genre;
+      }
+
       return Book.find(searchOptions).populate("author");
     },
     allAuthors: () => Author.find({}).then((res) => res),
@@ -92,15 +96,13 @@ const resolvers = {
         .then((book) => book);
     },
 
-    editAuthor: (root, args) => {
-      const foundAuthor = authors.find((a) => a.name === args.name);
-
-      if (!foundAuthor) return null;
-
-      const updatedAuthor = { ...foundAuthor, born: args.setBornTo };
-      authors = authors.map((a) => (a.name === args.name ? updatedAuthor : a));
-
-      return updatedAuthor;
+    editAuthor: async (root, args) => {
+      const response = await Author.findOneAndUpdate(
+        { name: args.name },
+        { $set: { born: args.setBornTo } },
+        { new: true }
+      );
+      return response;
     },
   },
 };
