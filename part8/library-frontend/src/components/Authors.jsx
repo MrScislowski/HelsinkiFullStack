@@ -74,7 +74,7 @@ const BirthyearForm = () => {
           onChange={(e) => setName(e.target.value)}
         >
           {authors.map((a) => (
-            <option value={a.name} key={a.id}>
+            <option value={a.name} key={a.name}>
               {a.name}
             </option>
           ))}
