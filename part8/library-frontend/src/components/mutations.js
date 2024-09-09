@@ -26,4 +26,12 @@ const EDIT_AUTHOR_BIRTHYEAR = gql`
   }
 `;
 
-export default { ADD_BOOK, EDIT_AUTHOR_BIRTHYEAR };
+const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
+    }
+  }
+`;
+
+export default { ADD_BOOK, EDIT_AUTHOR_BIRTHYEAR, LOGIN };
