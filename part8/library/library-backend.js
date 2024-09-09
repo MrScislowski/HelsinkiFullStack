@@ -109,7 +109,14 @@ const resolvers = {
   },
 
   Mutation: {
-    addBook: (root, args) => {
+    addBook: (root, args, context) => {
+      if (!context.user)
+        throw new GraphQLError("Failed to add book", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error: "user token required to add book",
+          },
+        });
       return Author.findOne({ name: args.author })
         .then((possiblyAuthor) => {
           return possiblyAuthor || new Author({ name: args.author }).save();
@@ -137,7 +144,14 @@ const resolvers = {
         });
     },
 
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, context) => {
+      if (!context.user)
+        throw new GraphQLError("Failed to edit author", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error: "user token required to edit author",
+          },
+        });
       const response = await Author.findOneAndUpdate(
         { name: args.name },
         { $set: { born: args.setBornTo } },
@@ -169,6 +183,27 @@ const resolvers = {
         });
       }
       return createdUser;
+    },
+
+    login: async (root, args) => {
+      if (!args.username || !args.password)
+        throw new GraphQLError("invalid login attempt", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error: "Need username and password",
+          },
+        });
+
+      const user = await User.findOne({ username: args.username });
+      if (!user || args.password !== "secret")
+        throw new GraphQLError("invalid login attempt", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            error: "username/password not correct",
+          },
+        });
+
+      return { value: jwt.sign({ id: user._id }, process.env.JWT_SECRET) };
     },
   },
 };
