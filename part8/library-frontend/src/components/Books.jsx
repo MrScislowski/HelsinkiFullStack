@@ -3,10 +3,11 @@ import queries from "./queries";
 import { useState, useEffect } from "react";
 
 const Books = (props) => {
+  console.log("Books rendered");
   const [chosenGenre, setChosenGenre] = useState(null);
   const [allBooks, setAllBooks] = useState([]);
   const [getAllBooks] = useLazyQuery(queries.GET_ALL_BOOKS);
-  const booksQuery = useQuery(
+  const filteredBooksQuery = useQuery(
     chosenGenre === null ? queries.GET_ALL_BOOKS : queries.GET_BOOKS_BY_GENRE,
     {
       variables: { genre: chosenGenre },
@@ -17,6 +18,11 @@ const Books = (props) => {
   useEffect(() => {
     getAllBooks().then((response) => setAllBooks(response.data.allBooks));
   }, [getAllBooks]);
+
+  // This is just to ensure that when a book is added (=> allBooks is updated), the filtered books query is re-run
+  useEffect(() => {
+    filteredBooksQuery.refetch();
+  }, [allBooks, filteredBooksQuery]);
 
   let allGenres = allBooks.reduce((genres, book) => {
     book.genres.forEach((genre) => genres.add(genre));
@@ -43,11 +49,11 @@ const Books = (props) => {
     return null;
   }
 
-  if (!booksQuery.data || !booksQuery.data.allBooks) {
+  if (!filteredBooksQuery.data || !filteredBooksQuery.data.allBooks) {
     return <div>book data not found...</div>;
   }
 
-  let books = booksQuery.data.allBooks;
+  let books = filteredBooksQuery.data.allBooks;
 
   return (
     <div>

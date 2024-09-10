@@ -4,6 +4,7 @@ import { useState } from "react";
 import mutations from "./mutations";
 
 const Authors = ({ show, user }) => {
+  console.log("Authors rendered");
   const authorsQuery = useQuery(queries.GET_ALL_AUTHORS);
 
   if (!show) {

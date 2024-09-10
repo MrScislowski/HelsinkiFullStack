@@ -12,7 +12,6 @@ const Recommendations = ({ show }) => {
   if (!favGenreQuery.data.me) return <p>No favorite genre data found</p>;
 
   const books = booksQuery.data.allBooks;
-  console.dir(favGenreQuery.data);
   const favGenre = favGenreQuery.data.me.favoriteGenre;
 
   const filteredBooks = books.filter((book) => book.genres.includes(favGenre));
