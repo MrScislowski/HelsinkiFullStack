@@ -1,35 +1,30 @@
-import { useQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import queries from "./queries";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Books = (props) => {
-  const [chosenGenre, setChosenGenre] = useState("patterns");
-  const booksQuery = useQuery(queries.GET_BOOKS_BY_GENRE, {
-    variables: { genre: chosenGenre },
-  });
+  const [chosenGenre, setChosenGenre] = useState(null);
+  const [allBooks, setAllBooks] = useState([]);
+  const [getAllBooks] = useLazyQuery(queries.GET_ALL_BOOKS);
+  const booksQuery = useQuery(
+    chosenGenre === null ? queries.GET_ALL_BOOKS : queries.GET_BOOKS_BY_GENRE,
+    {
+      variables: { genre: chosenGenre },
+    }
+  );
 
-  if (!props.show) {
-    return null;
-  }
+  // Get all the books once, on page load, to populate the genres
+  useEffect(() => {
+    getAllBooks().then((response) => setAllBooks(response.data.allBooks));
+  }, [getAllBooks]);
 
-  if (!booksQuery.data || !booksQuery.data.allBooks) {
-    return <div>book data not found...</div>;
-  }
-
-  let books = booksQuery.data.allBooks;
-
-  let allGenres = books.reduce((genres, book) => {
+  let allGenres = allBooks.reduce((genres, book) => {
     book.genres.forEach((genre) => genres.add(genre));
     return genres;
   }, new Set());
   allGenres = Array.from(allGenres);
 
-  if (chosenGenre) {
-    books = books.filter((book) => book.genres.includes(chosenGenre));
-  }
-
   const GenreSelectionBar = () => {
-    console;
     return (
       <div style={{ display: "flex" }}>
         {allGenres.map((genre) => {
@@ -43,6 +38,16 @@ const Books = (props) => {
       </div>
     );
   };
+
+  if (!props.show) {
+    return null;
+  }
+
+  if (!booksQuery.data || !booksQuery.data.allBooks) {
+    return <div>book data not found...</div>;
+  }
+
+  let books = booksQuery.data.allBooks;
 
   return (
     <div>
