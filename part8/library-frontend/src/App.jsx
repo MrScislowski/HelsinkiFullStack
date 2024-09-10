@@ -8,7 +8,6 @@ import { useApolloClient } from "@apollo/client";
 import config from "./config";
 
 const App = () => {
-  console.log("App rendered");
   const [page, setPage] = useState("authors");
   const [user, setUser] = useState(null);
   const client = useApolloClient();
