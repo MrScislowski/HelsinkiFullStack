@@ -7,16 +7,18 @@ const Books = (props) => {
   const [filteredBooks, setFilteredBooks] = useState([]);
   const getAllBooksQuery = useQuery(queries.GET_ALL_BOOKS);
   const [filteredBooksQuery, filteredBooksResponse] = useLazyQuery(
-    queries.GET_BOOKS_BY_GENRE
+    queries.GET_BOOKS_BY_GENRE,
+    {
+      fetchPolicy: "no-cache",
+    }
   );
 
   // update the filtered book results whenever ALL_BOOKS query updates
   useEffect(() => {
-    console.log("re-running the books effect");
     chosenGenre &&
-      filteredBooksQuery({ variables: { genre: chosenGenre } }).then((res) =>
-        setFilteredBooks(res.data.allBooks)
-      );
+      filteredBooksQuery({ variables: { genre: chosenGenre } }).then((res) => {
+        setFilteredBooks(res.data.allBooks);
+      });
   }, [getAllBooksQuery.data, filteredBooksQuery, chosenGenre]);
 
   if (!props.show) {

@@ -1,20 +1,33 @@
-import { useQuery } from "@apollo/client";
+import { useEffect, useState } from "react";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import queries from "./queries";
 
 const Recommendations = ({ show }) => {
   const favGenreQuery = useQuery(queries.GET_CURRENT_USER);
   const booksQuery = useQuery(queries.GET_ALL_BOOKS);
+  const [filteredBooks, setFilteredBooks] = useState([]);
+  const [favGenre, setFavGenre] = useState(null);
+  const [filteredBooksQuery] = useLazyQuery(queries.GET_BOOKS_BY_GENRE, {
+    fetchPolicy: "no-cache",
+  });
+
+  useEffect(() => {
+    favGenreQuery.data?.me?.favoriteGenre &&
+      setFavGenre(favGenreQuery.data.me.favoriteGenre);
+  }, [favGenreQuery.data]);
+
+  useEffect(() => {
+    favGenre &&
+      filteredBooksQuery({ variables: { genre: favGenre } }).then((res) => {
+        setFilteredBooks(res.data.allBooks);
+      });
+  }, [favGenre, booksQuery.data, filteredBooksQuery]);
 
   if (!show) return null;
 
   if (!favGenreQuery.data || !booksQuery.data) return null;
 
   if (!favGenreQuery.data.me) return <p>No favorite genre data found</p>;
-
-  const books = booksQuery.data.allBooks;
-  const favGenre = favGenreQuery.data.me.favoriteGenre;
-
-  const filteredBooks = books.filter((book) => book.genres.includes(favGenre));
 
   return (
     <>
