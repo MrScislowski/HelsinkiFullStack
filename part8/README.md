@@ -698,3 +698,87 @@ the `fetchPolicy` property can be set to "no-cache"; e.g.
     fetchPolicy: "no-cache"
   })
 ```
+
+### Fragments
+
+These two queries return the same shape of information:
+
+- ```js
+  query {
+    findPerson(name: "Bob") {
+      name
+      phone
+      address {
+        street
+        city
+      }
+    }
+  }
+  ```
+
+- ```js
+  query {
+    allPersons {
+      name
+      phone
+      address {
+        street
+        city
+      }
+    }
+  }
+  ```
+
+Using this fragment:
+```js
+fragment PersonDetails on Person {
+  name
+  phone
+  address {
+    street
+    city
+  }
+}
+```
+
+Can shorten these to:
+- ```js
+  query {
+    allPersons {
+      ...PersonDetails
+    }
+  }
+  ```
+
+- ```js
+  query {
+    findPerson(name: "bob") {
+      ...PersonDetails
+    }
+  }
+  ```
+
+NB: clients are defined in the client, and must be declared whenever used. Commonly like this:
+
+```js
+const PERSON_DETAILS = gql`
+  fragment PersonDetails on Person {
+    id
+    name
+    phone
+    address {
+      street
+      city
+    }
+  }
+`
+
+export const FIND_PERSON = gql`
+  query findPersonByName($name: String!) {
+    findPerson(name: $name) {
+      ...PersonDetails
+    }
+  }
+
+  ${PERSON_DETAILS}
+`
