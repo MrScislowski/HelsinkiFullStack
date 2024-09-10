@@ -32,4 +32,23 @@ const GET_CURRENT_USER = gql`
   }
 `;
 
-export default { GET_ALL_AUTHORS, GET_ALL_BOOKS, GET_CURRENT_USER };
+const GET_BOOKS_BY_GENRE = gql`
+  query booksByGenre($genre: String!) {
+    allBooks(genre: $genre) {
+      id
+      title
+      author {
+        name
+      }
+      published
+      genres
+    }
+  }
+`;
+
+export default {
+  GET_ALL_AUTHORS,
+  GET_ALL_BOOKS,
+  GET_CURRENT_USER,
+  GET_BOOKS_BY_GENRE,
+};

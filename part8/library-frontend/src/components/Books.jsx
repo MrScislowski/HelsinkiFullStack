@@ -3,8 +3,10 @@ import queries from "./queries";
 import { useState } from "react";
 
 const Books = (props) => {
-  const [chosenGenre, setChosenGenre] = useState(null);
-  const booksQuery = useQuery(queries.GET_ALL_BOOKS);
+  const [chosenGenre, setChosenGenre] = useState("patterns");
+  const booksQuery = useQuery(queries.GET_BOOKS_BY_GENRE, {
+    variables: { genre: chosenGenre },
+  });
 
   if (!props.show) {
     return null;
