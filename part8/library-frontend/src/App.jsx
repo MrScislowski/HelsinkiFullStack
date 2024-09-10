@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
+import Recommendations from "./components/Recommendations";
 import { useApolloClient } from "@apollo/client";
 import config from "./config";
 
@@ -11,16 +12,27 @@ const App = () => {
   const [user, setUser] = useState(null);
   const client = useApolloClient();
 
+  useEffect(() => {
+    const userCookie = localStorage.getItem(config.COOKIE_NAME);
+    if (userCookie) {
+      setUser(userCookie);
+    }
+  }, []);
+
   return (
     <div>
       <div>
         <button onClick={() => setPage("authors")}>authors</button>
         <button onClick={() => setPage("books")}>books</button>
         {user && <button onClick={() => setPage("add")}>add book</button>}
+        {user && (
+          <button onClick={() => setPage("recommend")}>recommend</button>
+        )}
         {user ? (
           <button
             onClick={() => {
               setUser(null);
+              setPage("books");
               localStorage.removeItem(config.COOKIE_NAME);
               client.resetStore();
             }}
@@ -37,6 +49,8 @@ const App = () => {
       <Books show={page === "books"} />
 
       <NewBook show={page === "add"} />
+
+      <Recommendations show={page === "recommend"} />
 
       <LoginForm show={page === "login"} setUser={setUser} setPage={setPage} />
     </div>

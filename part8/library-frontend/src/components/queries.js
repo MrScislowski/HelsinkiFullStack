@@ -13,6 +13,7 @@ const GET_ALL_AUTHORS = gql`
 const GET_ALL_BOOKS = gql`
   query {
     allBooks {
+      id
       title
       author {
         name
@@ -23,4 +24,12 @@ const GET_ALL_BOOKS = gql`
   }
 `;
 
-export default { GET_ALL_AUTHORS, GET_ALL_BOOKS };
+const GET_CURRENT_USER = gql`
+  query {
+    me {
+      favoriteGenre
+    }
+  }
+`;
+
+export default { GET_ALL_AUTHORS, GET_ALL_BOOKS, GET_CURRENT_USER };

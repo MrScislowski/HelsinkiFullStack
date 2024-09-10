@@ -1,21 +1,23 @@
 import { useState } from "react";
 import mutations from "./mutations";
-import { useMutation } from "@apollo/client";
+import { useApolloClient, useMutation } from "@apollo/client";
 import config from "../config";
 
 const LoginForm = ({ show, setUser, setPage }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginMutation] = useMutation(mutations.LOGIN);
+  const client = useApolloClient();
 
   if (!show) return null;
 
-  const handleLogin = () => {
+  const handleLogin = (event) => {
     event.preventDefault();
     loginMutation({ variables: { username, password } })
       .then((response) => {
         setUser(response.data.login.value);
         localStorage.setItem(config.COOKIE_NAME, response.data.login.value);
+        client.resetStore();
         setUsername("");
         setPassword("");
         setPage("books");
