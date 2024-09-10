@@ -1,17 +1,24 @@
 import { useState } from "react";
 import mutations from "./mutations";
 import { useMutation } from "@apollo/client";
+import config from "../config";
 
-const LoginForm = () => {
+const LoginForm = ({ show, setUser, setPage }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginMutation, loginResponse] = useMutation(mutations.LOGIN);
+  const [loginMutation] = useMutation(mutations.LOGIN);
+
+  if (!show) return null;
 
   const handleLogin = () => {
     event.preventDefault();
     loginMutation({ variables: { username, password } })
       .then((response) => {
-        alert(`Got successful response: ${JSON.stringify(response, null, 2)}`);
+        setUser(response.data.login.value);
+        localStorage.setItem(config.COOKIE_NAME, response.data.login.value);
+        setUsername("");
+        setPassword("");
+        setPage("books");
       })
       .catch((error) => {
         let feedback = "Unsuccessful login\n";

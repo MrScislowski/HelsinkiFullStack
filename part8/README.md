@@ -628,9 +628,9 @@ Query: {
 },
 ```
 
-#### resetting the Apollo the cache
+#### resetting the Apollo cache
 
-Once logging out happens, we want to get rid of any data in the cache (it may have info rhtat only logged in users should be able to see).
+Once logging out happens, we want to get rid of any data in the cache (it may have info that only logged in users should be able to see).
 
 ```js
 const client = useApolloClient()
@@ -646,8 +646,9 @@ import { setContext } from '@apollo/client/link/context'
 
 const authLink = setContext((_, { headers }) => {
 
+  const token = localStorage.getItem('phonenumbers-user-token')
+
   return {
-    const token = localStorage.getItem('phonenumbers-user-token')
     headers: {
       ...headers,
       authorization: token ? `Bearer ${token}` : null
@@ -661,7 +662,7 @@ const httpLink = createHttpLink({
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: [authLink, httpLink]
+  link: authLink.concat(httpLink)
 })
 ```
 

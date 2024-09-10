@@ -3,10 +3,10 @@ import queries from "./queries";
 import { useState } from "react";
 import mutations from "./mutations";
 
-const Authors = (props) => {
+const Authors = ({ show, user }) => {
   const authorsQuery = useQuery(queries.GET_ALL_AUTHORS);
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
@@ -36,7 +36,7 @@ const Authors = (props) => {
         </tbody>
       </table>
 
-      <BirthyearForm />
+      {user && <BirthyearForm />}
     </div>
   );
 };
