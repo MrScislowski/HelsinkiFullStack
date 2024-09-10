@@ -18,6 +18,7 @@ const GET_ALL_BOOKS = gql`
         name
       }
       published
+      genres
     }
   }
 `;
