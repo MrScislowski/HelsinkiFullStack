@@ -779,6 +779,268 @@ export const FIND_PERSON = gql`
       ...PersonDetails
     }
   }
-
   ${PERSON_DETAILS}
 `
+```
+
+### Subscriptions
+
+(operation type in addition to `query` and `mutation` types). Clients sign up for subscriptions, and the server sends notifications to subscribers when changes happen on the server. WebSockets are used by Apollo under the hood
+
+### Refactored structure
+
+- `schema.js`
+  ```js
+  const typeDefs = `
+    type User {
+    //...
+  `
+
+  module.exports = typeDefs
+  ```
+- `resolvers.js`
+  ```js
+  const resolvers = {
+    Query: {
+      // ...
+  }
+
+  module.exports = resolvers
+  ```
+
+### Set up server for subscriptions
+
+`startStandaloneServer` does not allow subscriptions; need to use `expressMiddleware`, so that the graphQL server is middleware.
+
+```sh
+pnpm install express cors graphql-ws ws @graphql-tools/schema graphql-subscriptions
+```
+
+`index.js`:
+
+```js
+const { expressMiddleware } = require('@apollo/server/express4')
+const { ApolloServerPluginDrainHttpServer } = require('@apollo/server/plugin/drainHttpServer')
+const { makeExecutableSchema } = require('@graphql-tools/schema')
+const express = require('express')
+const cors = require('cors')
+const http = require('http')
+const { WebSocketServer } = require('ws')
+const { useServer } = require('graphql-ws/lib/use/ws')
+// ...
+
+// setup is now within a function
+const start = async () => {
+  const app = express()
+  const httpServer = http.createServer(app)
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: '/',
+  })
+
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+  const serverCleanup = useServer({ schema }, wsServer)
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            }
+          }
+        }
+      }
+      ],
+  })
+
+  await server.start()
+
+  app.use(
+    '/',
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const auth = req ? req.headers.authorization : null
+        if (auth && auth.startsWith('Bearer ')) {
+          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET)
+          const currentUser = await User.findById(decodedToken.id).populate(
+            'friends'
+          )
+          return { currentUser }
+        }
+      },
+    }),
+  )
+
+  const PORT = 4000
+
+  httpServer.listen(PORT, () =>
+    console.log(`Server is now running on http://localhost:${PORT}`)
+  )
+}
+
+start()
+```
+
+### Subscriptions on server
+
+- Schema:
+  ```js
+  type Subscription {
+    personAdded: Person!
+  }
+  ```
+- Resolver:
+  ```js
+  const { PubSub } = require('graphql-subscriptions')
+  const pubsub = new PubSub()
+
+  // ...
+  const resolvers = {
+    // ...
+    Mutation: {
+      addPerson: async (root, args, context) => {
+        // ...
+
+        pubsub.publish('PERSON_ADDED', { personAdded: person })
+
+        return person
+      },
+    },
+    Subscription: {
+      personAdded: {
+        subscribe: () => pubsub.asyncIterator('PERSON_ADDED')
+      }
+    }
+  }
+
+### Subscriptions on client
+
+- dependency:
+  ```sh
+  pnpm install graphql-ws
+  ```
+- `main.jsx` changes:
+  ```js
+  import {
+    // ...
+    split
+  } from '@apollo/client'
+  import { getMainDefinition } from '@apollo/client/utilities'
+  import { GraphQLWsLink } from '@apollo/client/link/subscriptions'
+  import { createClient } from 'graphql-ws'
+  // ...
+
+  const wsLink = new GraphQLWsLink(
+    createClient({ url: 'ws://localhost:4000' })
+  )
+
+  const splitLink = split(
+    ({ query }) => {
+      const definition = getMainDefinition(query)
+      return (
+        definition.kind === 'OperationDefinition' &&
+        definition.operation === 'subscription'
+      )
+    },
+    wsLink,
+    authLink.concat(httpLink)
+  )
+
+  const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: splitLink
+  })
+  ```
+- `queries.js`
+  ```js
+  export const PERSON_ADDED = gql`
+    subscription {
+      personAdded {
+        ...PersonDetails
+      }
+    }
+    ${PERSON_DETAILS}
+  `
+  ```
+- `App.jsx` (a bit complicated b/c `PersonForm` adds the person to the cache was well as this subscription)
+  ```js
+  import { useQuery, useMutation, useSubscription } from '@apollo/client'
+
+  export const updateCache = (cache, query, addedPerson) => {
+    const uniqByName = (a) => {
+      let seen = new Set()
+      return a.filter((item) => {
+        let k = item.name
+        return seen.has(k) ? false : seen.add(k)
+      })
+    }
+  }
+
+  const App = () => {
+    // ...
+
+    useSubscription(PERSON_ADDED, {
+      onData: ({ data, client }) => {
+        const addedPerson = data.data.personAdded
+        notify(`${addedPerson.name} added`)
+
+        updateCache(client.cache, { query: ALL_PERSONS}, addedPerson)
+        }
+      })
+    }
+  ```
+- Can also use that `updateCache` function in `PersonForm`
+  ```js
+  import { updateCache } from '../App'
+
+  const PersonForm = ({ setError }) => {
+    // ...
+
+    const [createPerson] = useMutation(CREATE_PERSON, {
+      onError: //...
+      update: (cache, response) => {
+        updateCache(cache, { query: ALL_PERSONS }, response.data.addPerson)
+      }
+    })
+  }
+  ```
+
+### What is the N + 1 problem?
+
+It's a performance anti-pattern where you make N + 1 database calls, when you could just do one or two complex calls.
+
+E.g. you have a collection of `Car` objects, and each `Car` has a collection of `Wheel` objects. In other words, `Car` -> `Wheel` is a 1-to-many relationship. You want to print out all the wheels of each car. If you do:
+
+```sql
+SELECT * FROM Cars;
+```
+
+then for each `Car`
+
+```sql
+SELECT * FROM Wheel WHERE CarId = ?
+```
+
+You do 1 select to get the list of cars, then N to get the wheels of the N cars.
+
+It's more optimal to do
+
+```sql
+SELECT * FROM Wheel
+```
+
+then do the join in memory, or do an explicit SQL join
+
+I guess most ORMs have Lazy loading / eager loading...
+
+
+### stuff that didn't get covered
+
+GraphQL foundation's DataLoader library offers good solution for n + 1 problem
