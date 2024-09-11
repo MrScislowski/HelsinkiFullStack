@@ -2,6 +2,8 @@ const Book = require("./models/Book");
 const Author = require("./models/Author");
 const User = require("./models/User");
 
+const jwt = require("jsonwebtoken");
+
 const { GraphQLError } = require("graphql");
 
 const { PubSub } = require("graphql-subscriptions");
@@ -61,7 +63,6 @@ const resolvers = {
           return newBook.save().then((book) => book.populate("author"));
         })
         .then((book) => {
-          console.log("about to fire pubsub.publish...");
           pubsub.publish("BOOK_ADDED", { bookAdded: book });
           return book;
         })
@@ -140,8 +141,7 @@ const resolvers = {
   Subscription: {
     bookAdded: {
       subscribe: () => {
-        console.log("about to fire subscription handler for bookAdded");
-        pubsub.asyncIterator("BOOK_ADDED");
+        return pubsub.asyncIterator("BOOK_ADDED");
       },
     },
   },
