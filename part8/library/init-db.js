@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/Book");
 const Author = require("./models/Author");
+const User = require("./models/User");
 
 require("dotenv").config();
 
@@ -94,6 +95,13 @@ let books = [
   },
 ];
 
+const users = [
+  {
+    username: "root",
+    favoriteGenre: "patterns",
+  },
+];
+
 Book.deleteMany({})
   .then(() => {
     console.log("deleted books");
@@ -101,6 +109,10 @@ Book.deleteMany({})
   })
   .then(() => {
     console.log("deleted authors");
+    return User.deleteMany({});
+  })
+  .then(() => {
+    console.log("deleted users");
     return Author.insertMany(
       authors.map((a) => {
         const { id, ...rest } = a;
@@ -118,8 +130,12 @@ Book.deleteMany({})
       })
     );
   })
-  .finally(() => {
+  .then(() => {
     console.log("added books");
+    return User.insertMany(users);
+  })
+  .finally(() => {
+    console.log("added users");
     console.log("database populated");
     mongoose.connection.close();
   })
