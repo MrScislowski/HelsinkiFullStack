@@ -11,6 +11,9 @@ const { WebSocketServer } = require("ws");
 const { useServer } = require("graphql-ws/lib/use/ws");
 const { GraphQLError } = require("graphql");
 
+const { PubSub } = require("graphql-subscriptions");
+const pubsub = new PubSub();
+
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const Book = require("./models/Book");
@@ -89,6 +92,10 @@ const typeDefs = `
       password: String!
     ): Token
   }
+
+  type Subscription {
+    bookAdded: Book!
+  }
 `;
 
 const resolvers = {
@@ -144,7 +151,11 @@ const resolvers = {
           const newBook = new Book({ ...args, author: author._id });
           return newBook.save().then((book) => book.populate("author"));
         })
-        .then((book) => book)
+        .then((book) => {
+          console.log("about to fire pubsub.publish...");
+          pubsub.publish("BOOK_ADDED", { bookAdded: book });
+          return book;
+        })
         .catch((error) => {
           throw new GraphQLError("Adding book failed", {
             extensions: {
@@ -215,6 +226,14 @@ const resolvers = {
         });
 
       return { value: jwt.sign({ id: user._id }, process.env.JWT_SECRET) };
+    },
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => {
+        console.log("about to fire subscription handler for bookAdded");
+        pubsub.asyncIterator("BOOK_ADDED");
+      },
     },
   },
 };
