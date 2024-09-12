@@ -44,6 +44,8 @@ const resolvers = {
             error: "user token required to add book",
           },
         });
+
+      let savedBook;
       return Author.findOne({ name: args.author })
         .then((possiblyAuthor) => {
           return possiblyAuthor || new Author({ name: args.author }).save();
@@ -57,32 +59,21 @@ const resolvers = {
           });
         })
         .then((author) => {
-          console.log("------------------------------------------");
-          console.log("-----------About to Add Book to DB  -----------");
-
           const newBook = new Book({ ...args, author: author._id });
-          return newBook
-            .save()
-            .then(({book, author}) =)
-            .populate("author")
-            .then((book) => {
-              return {
-                book: book,
-                author: author,
-              };
-            });
+          return newBook.save();
         })
-        .then(({ book, author }) => {
-          console.log("------------------------------------------");
-          console.log("----------- About to add book to Author  -----------");
-          console.log(
-            `book is ${JSON.stringify(book)} and author is ${JSON.stringify(
-              author
-            )}`
+        .then((book) => {
+          savedBook = book;
+          return Author.findByIdAndUpdate(
+            book.author,
+            {
+              $push: { books: book._id },
+            },
+            { new: true }
           );
-          return Author.findByIdAndUpdate(author._id, {
-            $push: { books: book._id },
-          }).then(() => book);
+        })
+        .then(() => {
+          return savedBook.populate("author");
         })
         .then((book) => {
           pubsub.publish("BOOK_ADDED", { bookAdded: book });
