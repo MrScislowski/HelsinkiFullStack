@@ -981,6 +981,12 @@ start()
         return seen.has(k) ? false : seen.add(k)
       })
     }
+    cache.updateQuery(query, ({ allPersons }) =>
+    {
+      return {
+        allPersons: uniqByName(allPersons.concat(addedPerson)),
+        }
+    })
   }
 
   const App = () => {

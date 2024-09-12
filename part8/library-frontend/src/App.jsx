@@ -15,7 +15,18 @@ const App = () => {
   useSubscription(queries.BOOK_ADDED, {
     onData: ({ data, client }) => {
       const addedBook = data.data.bookAdded;
-      alert(`Added book ${JSON.stringify(addedBook, null, 2)}`);
+
+      client.cache.updateQuery(
+        { query: queries.GET_ALL_BOOKS },
+        ({ allBooks }) => {
+          // simpler alternative to the Set function shown in the course. I *think* this always works...
+          return {
+            allBooks: allBooks.find((book) => book.id === addedBook.id)
+              ? allBooks
+              : allBooks.concat(addedBook),
+          };
+        }
+      );
     },
   });
 
