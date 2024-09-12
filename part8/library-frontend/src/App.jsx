@@ -4,13 +4,20 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
-import { useApolloClient } from "@apollo/client";
+import queries from "./components/queries";
+import { useApolloClient, useSubscription } from "@apollo/client";
 import config from "./config";
 
 const App = () => {
   const [page, setPage] = useState("authors");
   const [user, setUser] = useState(null);
   const client = useApolloClient();
+  useSubscription(queries.BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      alert(`Added book ${JSON.stringify(addedBook, null, 2)}`);
+    },
+  });
 
   useEffect(() => {
     const userCookie = localStorage.getItem(config.COOKIE_NAME);
