@@ -1050,3 +1050,12 @@ I guess most ORMs have Lazy loading / eager loading...
 ### stuff that didn't get covered
 
 GraphQL foundation's DataLoader library offers good solution for n + 1 problem
+
+
+### Seeing what Mongoose is doing under the hood
+
+This lets you see what queries mongoose is sending to mongodb, which I find quite cool:
+
+```js
+mongoose.set("debug", true);
+```

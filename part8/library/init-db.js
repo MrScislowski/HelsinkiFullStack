@@ -130,8 +130,16 @@ Book.deleteMany({})
       })
     );
   })
-  .then(() => {
+  .then((books) => {
     console.log("added books");
+    return Promise.all(
+      books.map((book) =>
+        Author.findByIdAndUpdate(book.author, { $push: { books: book._id } })
+      )
+    );
+  })
+  .then(() => {
+    console.log("populated books into authors");
     return User.insertMany(users);
   })
   .finally(() => {

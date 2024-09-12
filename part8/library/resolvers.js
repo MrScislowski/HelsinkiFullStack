@@ -11,9 +11,7 @@ const pubsub = new PubSub();
 
 const resolvers = {
   Author: {
-    bookCount: (root) => {
-      return Book.countDocuments({ author: root._id }).then((count) => count);
-    },
+    bookCount: (root) => root.books.length,
   },
 
   Query: {
@@ -59,8 +57,32 @@ const resolvers = {
           });
         })
         .then((author) => {
+          console.log("------------------------------------------");
+          console.log("-----------About to Add Book to DB  -----------");
+
           const newBook = new Book({ ...args, author: author._id });
-          return newBook.save().then((book) => book.populate("author"));
+          return newBook
+            .save()
+            .then(({book, author}) =)
+            .populate("author")
+            .then((book) => {
+              return {
+                book: book,
+                author: author,
+              };
+            });
+        })
+        .then(({ book, author }) => {
+          console.log("------------------------------------------");
+          console.log("----------- About to add book to Author  -----------");
+          console.log(
+            `book is ${JSON.stringify(book)} and author is ${JSON.stringify(
+              author
+            )}`
+          );
+          return Author.findByIdAndUpdate(author._id, {
+            $push: { books: book._id },
+          }).then(() => book);
         })
         .then((book) => {
           pubsub.publish("BOOK_ADDED", { bookAdded: book });
