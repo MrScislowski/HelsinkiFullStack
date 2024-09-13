@@ -272,3 +272,84 @@ use in package.json
 ## `unknown` and `any`
 
 `unknown` means "I don't know". `any` means "I don't care"
+
+### disabling implicit any
+
+In `tsconfig.json`, the line `"noImplicitAny": true,`.
+
+### disabling explicit any
+
+Use ESlint for this. Install...
+
+```sh
+pnpm install --save-dev eslint @eslint/js @types/eslint__js typescript typescript-eslint
+```
+
+Configure `eslint.config.mjs`
+```js
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config({
+  files: ['**/*.ts'],
+  extends: [
+    eslint.configs.recommended,
+    ...tseslint.configs.recommendedTypeChecked,
+  ],
+  languageOptions: {
+    parserOptions: {
+      project: true,
+      tsconfigRootDir: import.meta.dirname,
+    },
+  },
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'error',
+  },
+});
+```
+
+Create a linting rule in `package.json`
+
+```json
+"lint": "eslint ."
+```
+
+### Other linting addons
+
+Install
+
+```sh
+pnpm install --save-dev @stylistic/eslint-plugin
+```
+
+Amend `eslint.config.mjs`:
+
+```js
+// ...
+plugins: {
+  "@stylistic": stylistic,
+},
+ rules: {
+    '@stylistic/semi': 'error',
+    '@typescript-eslint/no-unsafe-assignment': 'error',
+    '@typescript-eslint/no-explicit-any': 'error',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
+    '@typescript-eslint/restrict-plus-operands': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { 'argsIgnorePattern': '^_' }
+    ],
+  },
+```
+
+### Type assertion - dirty trick for types
+
+Suppose `calculator` function took two `number` types, and an `Operation` type. You can silence an eslint rule like:
+
+```js
+const {v1, v2, op} = req.body;
+
+const result = calculator(Number(v1), Number(v2), op as Operation)
+```
