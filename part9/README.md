@@ -178,3 +178,93 @@ There's an Eslint rule called "array-simple", that states you use the `[]` synta
 
 ## `import` vs `require`
 
+The following:
+```js
+const express = require('express')
+```
+
+Doesn't provide as good typing as this:
+```js
+import express from 'express'
+```
+
+Which import statement to use depends on the export method used in the package.
+
+### Module Deep-dive
+
+#### ESM export
+
+- Can have multiple named exports, but just one default export
+- named exports (are imported by same name, but can be renamed using `as`):
+  - `export { myFunction2, myVariable2 };`
+  - `export { myFunction2 as fn2, myVariable as v2}`
+  - `export const myVariable = Math.sqrt(2);`
+- default exports (can be imported by any name):
+  - `export default myFunction;`
+  - `export default Math.sqrt(2)`
+
+#### CJS export
+
+- named export equivalent:
+  - `exports.myFunction2 = //...`
+  - `exports.myVariable2 = //...`
+- default exports:
+  - `module.exports = //...`
+- However, unlike in ESM, if you want a default export AND named exports, your only option is to put the properties directly onto the default export
+  ```js
+  // Default export
+  const defaultExport = (a, b) => a + b;
+
+  // Named exports
+  const subtract = (a, b) => a - b;
+  const multiply = (a, b) => a * b;
+
+  // Attach named exports as properties of the default export
+  defaultExport.subtract = subtract;
+  defaultExport.multiply = multiply;
+
+  // Export the default function with named exports as properties
+  module.exports = defaultExport;
+
+  // app.js (CommonJS)
+  const math = require('./math');
+
+  console.log(math(4, 2)); // 6 (default export)
+  console.log(math.subtract(4, 2)); // 2 (named export)
+  console.log(math.multiply(4, 2)); // 8 (named export)
+  ```
+
+#### Interoperability
+
+Putting this in your `tsconfig.json` allows you to use import using `import` even if the modules use CommonJS
+
+```json
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
+  }
+}
+```
+
+## `ts-node-dev` is equivalent to `nodemon`
+
+Install
+
+```sh
+npm install --save-dev ts-node-dev
+```
+
+use in package.json
+
+```json
+{
+  // ...
+  "scripts": {
+      // ...
+
+      "dev": "ts-node-dev index.ts",
+  },
+  // ...
+}
+```
