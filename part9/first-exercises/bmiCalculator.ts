@@ -18,7 +18,35 @@ const parseBmiArguments = (args: string[]): BmiInputData => {
   };
 };
 
-const calculateBmi = (data: BmiInputData): string => {
+export const parseBmiParams = (
+  params: Record<string, unknown>
+): BmiInputData => {
+  if (!("weight" in params && "height" in params)) {
+    throw new Error(
+      `Requires 'weight' and 'height' query params. Received ${Object.keys(
+        params
+      ).join(",")}`
+    );
+  }
+
+  const parsedParams: { [key: string]: number } = {};
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (isNaN(Number(value))) {
+      throw new Error(`${key} was required to be a number, but was '${value}'`);
+    }
+    parsedParams[key] = Number(value);
+  });
+
+  const { height, weight } = parsedParams;
+
+  return {
+    height,
+    weight,
+  };
+};
+
+export const calculateBmi = (data: BmiInputData): string => {
   const { weight, height } = data;
   const heightInM = height / 100;
   const bmi = weight / Math.pow(heightInM, 2);
@@ -32,13 +60,15 @@ const calculateBmi = (data: BmiInputData): string => {
   return description;
 };
 
-try {
-  const result = calculateBmi(parseBmiArguments(process.argv));
-  console.log(result);
-} catch (error: unknown) {
-  let errorMessage = "Error occurred: ";
-  if (error instanceof Error) {
-    errorMessage += error.message;
+if (require.main === module) {
+  try {
+    const result = calculateBmi(parseBmiArguments(process.argv));
+    console.log(result);
+  } catch (error: unknown) {
+    let errorMessage = "Error occurred: ";
+    if (error instanceof Error) {
+      errorMessage += error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
