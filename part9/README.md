@@ -156,3 +156,25 @@ let values: Array<number>;
 ```
 
 There's an Eslint rule called "array-simple", that states you use the `[]` syntax for simple arrays, and the generics syntax for more complex ones.
+
+## A more complete tsconfig
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}
+```
+
+## `import` vs `require`
+
