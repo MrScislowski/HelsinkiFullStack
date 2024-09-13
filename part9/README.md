@@ -268,3 +268,7 @@ use in package.json
   // ...
 }
 ```
+
+## `unknown` and `any`
+
+`unknown` means "I don't know". `any` means "I don't care"
