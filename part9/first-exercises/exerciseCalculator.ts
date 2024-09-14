@@ -1,4 +1,4 @@
-import { parseNumber } from "./utils";
+import { parseNumber, parseNumberArray, parseRequestBody } from "./utils";
 
 type Rating = 1 | 2 | 3;
 
@@ -19,20 +19,23 @@ interface ExerciseCalculatorInput {
   target: number;
 }
 
-const parseRequestBodyExerciseData = (
-  body: Record<string, unknown>
+export const parseRequestBodyExerciseData = (
+  possibleBody: unknown
 ): ExerciseCalculatorInput => {
-  ["target", "exerciseLog"].forEach((key) => {
-    if (!(key in body)) {
-      throw new Error(`'${key}' required in request body`);
-    }
-  });
+  const body = parseRequestBody(possibleBody);
 
-  if (!("target" in body)) {
-    throw new Error();
+  if (!(body && "target" in body && "daily_exercises" in body)) {
+    throw new Error("parameters missing");
   }
 
-  const target = parseNumber(body.target);
+  try {
+    const target = parseNumber(body.target);
+    const exerciseLog = parseNumberArray(body.daily_exercises);
+
+    return { target, exerciseLog };
+  } catch (_e) {
+    throw new Error("malformatted parameters");
+  }
 };
 
 const parseCommandLineExerciseData = (
@@ -54,7 +57,7 @@ const parseCommandLineExerciseData = (
   };
 };
 
-const calculateExercises = (data: ExerciseCalculatorInput): Result => {
+export const calculateExercises = (data: ExerciseCalculatorInput): Result => {
   const { exerciseLog, target } = data;
 
   const periodLength = exerciseLog.length;
