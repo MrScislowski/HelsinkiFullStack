@@ -3,10 +3,10 @@ import express from "express";
 const app = express();
 
 app.get("/api/ping", (_req, res) => {
-  res.send("ping received");
+  res.json({ data: "ping received" }).send();
 });
 
-const PORT = 3003;
+const PORT = 3001;
 
 app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
