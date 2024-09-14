@@ -353,3 +353,44 @@ const {v1, v2, op} = req.body;
 
 const result = calculator(Number(v1), Number(v2), op as Operation)
 ```
+
+## tsc
+
+Whenever typescript is installed, you can use `tsc`
+
+- `package.json`
+
+  ```json
+  // ...
+  "scripts": {
+    "tsc": "tsc",
+    "start": "node build/index.js"
+    // ...
+  },
+  ```
+
+- Initialize `tsconfig.json` by doing: (NB: options before the `--` go to pnpm, after go to the script, `tsc`). Actually, on windows `pnpm run tsc --init` works better...
+
+  ```sh
+  pnpm run tsc -- --init
+  ```
+
+- Example of `tsconfig.json` to keep:
+
+  ```json
+  {
+    "compilerOptions": {
+      "target": "ES6", // ECMAScript version used to generate JS; ES6 supported by most browsers
+      "outDir": "./build/", // compiled code goes here
+      "module": "commonjs", // use `require` syntax instead of `import`. `import` not supported in older versions of node
+      "strict": true, // shorthand for noImplicitAny, strictNullChecks, and a bunch of other stuff
+      "noUnusedLocals": true,
+      "noUnusedParameters": true,
+      "noImplicitReturns": true,
+      "noFallthroughCasesInSwitch": true,
+      "esModuleInterop": true // interoperability between CommonJS and ES Modules
+    }
+  }
+  ```
+
+  - Add `ignores: ["build/*"],` to `eslint.config.mjs` so the compiled code isn't linted
