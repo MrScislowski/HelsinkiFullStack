@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6", // ECMAScript version used to generate JS; ES6 supported by most browsers
+    "rootDir": "./src",
     "outDir": "./build/", // compiled code goes here
     "module": "commonjs", // use `require` syntax instead of `import`. `import` not supported in older versions of node
     "strict": true, // shorthand for noImplicitAny, strictNullChecks, and a bunch of other stuff
