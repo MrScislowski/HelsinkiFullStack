@@ -8,4 +8,13 @@ router.get("/", (_req, res) => {
   res.json(data);
 });
 
+router.post("/", (req, res) => {
+  console.log("about to add a patient");
+
+  const patientData = parseNewPatientData(req.body);
+
+  patientsService.addPatient();
+  res.send();
+});
+
 export default router;

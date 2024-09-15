@@ -1,12 +1,21 @@
 import allPatients from "../data/patients";
-import { Patient } from "../types";
+import { v1 as uuid } from "uuid";
+import { NonSensitivePatient, Patient, ProposedPatient } from "../types";
+
+let patients = allPatients;
 
 const getAll = (): Patient[] => {
-  return allPatients;
+  return patients;
 };
 
-const getNonSensitive = (): Omit<Patient, "ssn">[] => {
-  return allPatients.map(({ ssn: _ssn, ...rest }) => rest);
+const getNonSensitive = (): NonSensitivePatient[] => {
+  return patients.map(({ ssn: _ssn, ...rest }) => rest);
 };
 
-export default { getAll, getNonSensitive };
+const addPatient = (patient: ProposedPatient): Patient => {
+  const newPatient = { id: uuid(), ...patient };
+  patients = patients.concat(newPatient);
+  return newPatient;
+};
+
+export default { getAll, getNonSensitive, addPatient };
