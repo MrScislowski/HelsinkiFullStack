@@ -394,3 +394,32 @@ Whenever typescript is installed, you can use `tsc`
   ```
 
   - Add `ignores: ["build/*"],` to `eslint.config.mjs` so the compiled code isn't linted
+
+
+## Project structure
+
+- They're defining routes in `src/routes/diaries.ts` instead of `src/controllers/...`
+- `src/services` will be modules do the data manipulation ("business logic"). The naming was made popular by the Java Spring framework
+- Need to put `"resolveJsonModule": true` in `tsconfig.json` to import json files as javascript objects. Thing is, you'd have to use a type assertion if you wanted it typed.
+- Don't have two identical filenames with different file type/extensions in the same directory b/c imports will be unpredictable
+
+
+## Utility Types
+
+Defines types from existing types, for example:
+
+- `Pick<DiaryEntry, 'id' | 'date' | 'weather' | 'visibility'>[]`
+- `Omit<DiaryEntry, 'comment'>[]`
+
+## Types of request & response
+
+`res` by default has type:
+```ts
+Response<any, Record<string, any>, number>
+//       ^ body
+```
+
+If you want to make it more descriptive, you could do:
+```ts
+router.get('/', (_req, res: Response<DiaryEntry[]>) => {/* ... */})
+```
