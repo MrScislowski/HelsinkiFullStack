@@ -423,3 +423,68 @@ If you want to make it more descriptive, you could do:
 ```ts
 router.get('/', (_req, res: Response<DiaryEntry[]>) => {/* ... */})
 ```
+
+## Type Guards
+
+- This is a parsing function, not a type guard:
+  ```ts
+  const parseComment = (comment: unknown): string => {
+    if (!comment || !isString(comment)) {
+      throw new Error('Incorrect or missing comment');
+    }
+
+    return comment;
+  };
+  ```
+
+- This is the type guard:
+  ```ts
+  const isString = (text: unknown): text is string => {
+    return typeof text === 'string' || text instanceof String;
+  };
+  ```
+  - The reason it has to use `typeof` and `instanceof` is because `typeof` works if you create a string using the primitive constructor. But if you create a string using the object constructor `s = new String('hi')`, you have to use `instanceof`.
+
+### Enums with type guards
+
+- Define enum:
+  ```ts
+  export enum Weather {
+    Sunny = 'sunny',
+    Rainy = 'rainy',
+    Cloudy = 'cloudy',
+    Stormy = 'stormy',
+    Windy = 'windy',
+  }
+  ```
+- use it in type guard:
+  ```ts
+  const isWeather = (param: string): param is Weather => {
+    return Object.values(Weather).map(v => v.toString()).includes(param);
+  };
+  ```
+- (may have to use parseWeather now )
+
+### Check to see all properties exist
+
+I don't love the `if( /* ... && ... && ... */ )` line, but apparently it's necessary for now...
+```ts
+const toNewDiaryEntry = (object: unknown): NewDiaryEntry => {
+  if ( !object || typeof object !== 'object' ) {
+    throw new Error('Incorrect or missing data');
+  }
+
+  if ('comment' in object && 'date' in object && 'weather' in object && 'visibility' in object)  {
+    const newEntry: NewDiaryEntry = {
+      weather: parseWeather(object.weather),
+      visibility: parseVisibility(object.visibility),
+      date: parseDate(object.date),
+      comment: parseComment(object.comment)
+    };
+
+    return newEntry;
+  }
+
+  throw new Error('Incorrect data: some fields are missing');
+};
+```
