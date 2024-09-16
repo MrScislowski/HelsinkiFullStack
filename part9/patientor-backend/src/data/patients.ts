@@ -1,4 +1,5 @@
-import { Patient } from "../types";
+import { Gender, Patient } from "../types";
+import * as z from "zod";
 
 const data: Patient[] = [
   {
@@ -41,6 +42,8 @@ const data: Patient[] = [
     gender: "male",
     occupation: "Digital evangelist",
   },
-];
+].map((p) => {
+  return { ...p, gender: z.nativeEnum(Gender).parse(p.gender) };
+});
 
 export default data;
