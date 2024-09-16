@@ -584,8 +584,16 @@ router.use(errorMiddleware)
 
 ### Using Vite
 
+UNIX:
+
 ```sh
 pnpm create vite@latest my-app-name -- --template react-ts
+```
+
+WINDOWS:
+
+```sh
+pnpm create vite@latest my-app-name --template react-ts
 ```
 
 This creates a projects with the following differences from previous work:
