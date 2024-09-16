@@ -668,3 +668,39 @@ default:
 ```
 
 And that will create a linting/compiling error whenever the `Shape` type is extended, reminding you to extend the handling code.
+
+## Typing with React hooks
+
+### Cheatsheets
+https://react-typescript-cheatsheet.netlify.app/
+
+### Typescript can't infer types of arrays
+
+So do something like:
+
+```ts
+const [notes, setNotes] = useState<Note[]>([])
+```
+
+### Events in forms
+
+These should be typed `React.SyntheticEvent`, like so:
+
+```ts
+const handleClick = (event: React.SyntheticEvent) => {
+  event.preventDefault()
+  // ...
+}
+```
+
+### Typing axios
+
+```ts
+axios.get<Note[]>( /* */ );
+```
+
+However, if the backend acts weird at all, TS isn't going to catch it. You should parse the backend's response just as we did (e.g. using zod)
+
+## Types vs Interfaces
+
+typescriptlang.org heuristic: use `interface` until you need to use features from `type`
