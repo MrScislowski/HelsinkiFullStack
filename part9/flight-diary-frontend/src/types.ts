@@ -3,4 +3,7 @@ export interface DiaryEntryData {
   date: string;
   weather: string;
   visibility: string;
+  comment: string;
 }
+
+export type DiaryEntryDataUnsaved = Omit<DiaryEntryData, "id">;
