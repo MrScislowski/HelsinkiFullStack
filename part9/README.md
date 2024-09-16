@@ -579,3 +579,37 @@ router.post("/", /* ... */)
 
 router.use(errorMiddleware)
 ```
+
+## React with Types
+
+### Using Vite
+
+```sh
+pnpm create vite@latest my-app-name -- --template react-ts
+```
+
+This creates a projects with the following differences from previous work:
+- `.jsx` files are now `.tsx`
+- there's a `tsconfig.json` file which:
+  - has the key `lib` that includes type definitions for browser stuff, like `document`
+  - is running in bundler mode
+
+### Basic pattern:
+
+```tsx
+interface WelcomeProps {
+  name: string;
+}
+
+const Welcome = (props: WelcomeProps) => {
+  return <h1>Hello, {props.name}</h1>;
+};
+```
+
+Without the extra interface:
+
+```tsx
+const Welcome = ({name}: {name: string}) => {
+  return <h1>Hello, {props.name}</h1>;
+};
+```
