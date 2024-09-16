@@ -1,4 +1,4 @@
-import { ProposedPatient } from "./types";
+import { Gender, ProposedPatient } from "./types";
 
 const isString = (data: unknown): data is string => {
   return typeof data === "string" || data instanceof String;
@@ -9,6 +9,19 @@ const parseString = (data: unknown): string => {
     throw new Error(`${data} is not a string, as required`);
   }
   return data;
+};
+
+const isGender = (text: string): text is Gender => {
+  return Object.values(Gender)
+    .map((g) => g.toString())
+    .includes(text);
+};
+
+const parseGender = (data: unknown): Gender => {
+  if (data && isString(data) && isGender(data)) {
+    return data;
+  }
+  throw new Error(`${data} could not be parsed as a gender`);
 };
 
 export const parseNewPatientData = (data: unknown): ProposedPatient => {
@@ -33,7 +46,7 @@ export const parseNewPatientData = (data: unknown): ProposedPatient => {
     name: parseString(data.name),
     dateOfBirth: parseString(data.dateOfBirth),
     ssn: parseString(data.ssn),
-    gender: parseString(data.gender),
+    gender: parseGender(data.gender),
     occupation: parseString(data.occupation),
   };
 };

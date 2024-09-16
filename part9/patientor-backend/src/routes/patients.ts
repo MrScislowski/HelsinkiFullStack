@@ -10,10 +10,18 @@ router.get("/", (_req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const patientData = parseNewPatientData(req.body);
+  try {
+    const patientData = parseNewPatientData(req.body);
 
-  const savedPatient = patientsService.addPatient(patientData);
-  res.json(savedPatient);
+    const savedPatient = patientsService.addPatient(patientData);
+    res.json(savedPatient);
+  } catch (e) {
+    let message = "Error: ";
+    if (e instanceof Error) {
+      message += e.message;
+    }
+    res.status(400).json({ error: message });
+  }
 });
 
 export default router;
