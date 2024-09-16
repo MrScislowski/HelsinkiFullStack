@@ -15,17 +15,26 @@ const Part = ({ coursePart: part }: PartProps) => {
   ];
   switch (part.kind) {
     case "basic": {
-      returnValue.push(
-        <>
-          <em>{part.description}</em>
-        </>
-      );
+      returnValue.push(<em>{part.description}</em>);
       break;
     }
     case "group": {
+      returnValue.push(
+        <span>project exercises: {part.groupProjectCount}</span>
+      );
       break;
     }
     case "background": {
+      returnValue.push(<span>{part.backgroundMaterial}</span>);
+      break;
+    }
+    case "special": {
+      returnValue.push(
+        <>
+          <em>{part.description}</em> <br />
+          <span>Required skills: {part.requirements.join(", ")}</span>
+        </>
+      );
       break;
     }
     default: {
@@ -37,8 +46,3 @@ const Part = ({ coursePart: part }: PartProps) => {
 };
 
 export default Part;
-
-/*
-{" "}
-      {ex.name} {ex.exerciseCount}{" "}
-*/
