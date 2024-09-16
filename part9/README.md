@@ -488,3 +488,94 @@ const toNewDiaryEntry = (object: unknown): NewDiaryEntry => {
   throw new Error('Incorrect data: some fields are missing');
 };
 ```
+
+## Schema Validation Libraries
+
+- Zod works well with typescript
+- `pnpm install zod`
+- This code:
+  ```ts
+  const isString = (text: unknown): text is string => {
+    return typeof text === 'string' || text instanceof String;
+  };
+
+  const parseComment = (comment: unknown): string => {
+    if (!isString(comment)) {
+      throw new Error('Incorrect comment');
+    }
+
+    return comment;
+  };
+  ```
+
+  replaceable with this:
+
+  ```ts
+  const parseComment = (comment: unknown): string => {
+    return z.string().parse(comment);
+  };
+  ```
+- It supports a bunch of other types too:
+  - `z.string().date().parse(object.date)`
+  - `z.string().optional().parse(object.comment)`
+  - `z.nativeEnum(Weather).parse(object.weather)`
+- and actually, you can defined a whole schema and parse it in one fell swoop:
+  ```ts
+  const newEntrySchema = z.object({
+    weather: z.nativeEnum(Weather),
+    visibility: z.nativeEnum(Visibility),
+    date: z.string().date(),
+    comment: z.string().optional(),
+  })
+  ```
+  and then parse as so:
+  ```ts
+  try {
+    const parsedNewEntry = newEntrySchema.parse(object)
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      res.tatus(400).send({error: error.issues})
+    }
+  }
+  ```
+
+- You can use the zod schema to infer types...
+  ```ts
+  export type NewDiaryEntry = z.infer<typeof newEntrySchema>;
+  ```
+
+### Parsing the body in middleWare
+
+Define the middleware:
+```ts
+const newDiaryParser = (req: Request, _res: Response, next: NextFunction) => {
+  try {
+    newEntrySchema.parse(req.body);
+    next()
+  } catch (error: unknown) {
+    next(error)
+  }
+}
+```
+
+Use it:
+```ts
+app.post("/", newDiaryParser, (req: Request<unknown, unknown, DiaryEntry>, res: Response<DiaryEntry>) => {
+
+})
+```
+
+And define an error middleware:
+```ts
+const errorMiddleware = (error: unknown, _req: Request, res: Response, next: NextFunction) => {
+  if (error instanceof z.ZodError) {
+    res.status(400).send({error: error.issues});
+  } else {
+    next(error);
+  }
+}
+
+router.post("/", /* ... */)
+
+router.use(errorMiddleware)
+```
