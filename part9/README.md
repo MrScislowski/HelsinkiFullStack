@@ -621,3 +621,50 @@ const Welcome = ({name}: {name: string}) => {
   return <h1>Hello, {props.name}</h1>;
 };
 ```
+
+## Discriminated Unions
+
+We can use a hard-coded text field; in this case `kind` to do some kind of nice inheritance/interface stuff:
+
+```ts
+interface Circle {
+  kind: "circle";
+  radius: number;
+}
+
+interface Square {
+  kind: "square";
+  sideLength: number;
+}
+
+type Shape = Circle | Square;
+```
+
+Now when we check the `kind` type, TS knows what type it is:
+```ts
+const printShapeInfo = (shape: Shape) => {
+  switch (shape.kind) {
+    case "circle":
+      console.log(`circle with radius ${shape.radius}`);
+      break;
+    case "square":
+      console.log(`square with side length ${shape.sideLength}`);
+      break;
+    default:
+      console.log(`Unknown shape ${shape}`)
+    // ...
+  }
+}
+```
+
+## `never` for exhaustiveness checks...
+
+Whenever we're coding all the different behaviors depending on the `kind` attribute, we can make sure the code is robust for new added type by placing this in the `default` clause:
+
+```ts
+default:
+  const _exhaustiveCheck: never = shape
+  break;
+```
+
+And that will create a linting/compiling error whenever the `Shape` type is extended, reminding you to extend the handling code.
