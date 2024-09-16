@@ -10,3 +10,12 @@ GET http://localhost:3001/api/patients
 
 ###
 POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+  "name": "David Brent",
+  "dateOfBirth": "1982-07-11",
+  "gender": "male",
+  "occupation": "Office General Manager",
+  "ssn": "11111111"
+}

@@ -1,5 +1,6 @@
 import express from "express";
 import patientsService from "../services/patientsService";
+import { parseNewPatientData } from "../utils";
 
 const router = express.Router();
 
@@ -9,12 +10,10 @@ router.get("/", (_req, res) => {
 });
 
 router.post("/", (req, res) => {
-  console.log("about to add a patient");
-
   const patientData = parseNewPatientData(req.body);
 
-  patientsService.addPatient();
-  res.send();
+  const savedPatient = patientsService.addPatient(patientData);
+  res.json(savedPatient);
 });
 
 export default router;
