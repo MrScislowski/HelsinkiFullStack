@@ -2,14 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { DiaryEntryData } from "./types";
 import DiaryEntries from "./components/DiaryEntries";
+import diaryService from "./services/diaryService";
 
 const App = () => {
   const [entries, setEntries] = useState<DiaryEntryData[]>([]);
 
   useEffect(() => {
-    axios
-      .get<DiaryEntryData[]>("http://localhost:3000/api/diaries")
-      .then((res) => setEntries(res.data));
+    diaryService.getAll().then((data) => setEntries(data));
   }, []);
 
   if (entries.length === 0) {
