@@ -30,8 +30,8 @@ const Entry = ({ entry }: EntryProps) => {
       <article>
         <ul>
           <li style={{ ...fieldStyle, fontWeight: "bold" }}> {entry.date} </li>
-          <li style={fieldStyle}> {entry.visibility} </li>
-          <li style={fieldStyle}> {entry.weather} </li>
+          <li style={fieldStyle}> 👁 {entry.visibility} </li>
+          <li style={fieldStyle}> ☁ {entry.weather} </li>
         </ul>
       </article>
     </li>
