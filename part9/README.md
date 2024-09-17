@@ -704,3 +704,14 @@ However, if the backend acts weird at all, TS isn't going to catch it. You shoul
 ## Types vs Interfaces
 
 typescriptlang.org heuristic: use `interface` until you need to use features from `type`
+
+## `Omit` with `Union` types
+
+```ts
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+// Define Entry without the 'id' property
+type EntryWithoutId = UnionOmit<Entry, 'id'>;
+```
+
+(Otherwise the result isn't a union, but just the intersection of all the common types of the input union)
