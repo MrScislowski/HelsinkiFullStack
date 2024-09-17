@@ -1,3 +1,5 @@
+import * as z from "zod";
+
 export enum Gender {
   male = "male",
   female = "female",
@@ -10,37 +12,73 @@ export interface Diagnosis {
   latin?: string;
 }
 
-interface BaseEntry {
-  id: string;
-  date: string;
-  specialist: string;
-  description: string;
-  diagnosisCodes?: string[];
-}
+const diagnosisSchema = z.object({
+  code: z.string(),
+  name: z.string(),
+  latin: z.string().optional(),
+});
 
-interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
-  employerName: string;
-  sickLeave?: {
-    startDate: string;
-    endDate: string;
-  };
-}
+const baseEntrySchema = z.object({
+  id: z.string(),
+  date: z.string().date(),
+  specialist: z.string(),
+  description: z.string(),
+  // TODO: This was in the notes: diagnosisCodes?: Diagnosis['code'][];
+  // I don't really understand that. And how do I implement it in zod?
+  throw new Error("TODO HERE!!")
+});
 
-interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
-  discharge: {
-    date: string;
-    criteria: string;
-  };
-}
+export const occupationalHealthcareEntrySchema = baseEntrySchema.extend({
+  type: z.literal("OccupationalHealthcare"),
+  employerName: z.string(),
+  sickLeave: z
+    .object({
+      startDate: z.string(),
+      endDate: z.string(),
+    })
+    .optional(),
+});
 
-interface HealthCheck extends BaseEntry {
-  type: "HealthCheck";
-  healthCheckRating: number;
-}
+export type OccupationalHealthcareEntry = z.infer<
+  typeof occupationalHealthcareEntrySchema
+>;
 
-export type Entry = OccupationalHealthcareEntry | HospitalEntry | HealthCheck;
+export const hospitalEntrySchema = baseEntrySchema.extend({
+  type: z.literal("Hospital"),
+  discharge: z.object({
+    date: z.string().date(),
+    criteria: z.string(),
+  }),
+});
+
+export type HospitalEntry = z.infer<typeof hospitalEntrySchema>;
+
+export const healthCheckSchema = baseEntrySchema.extend({
+  type: z.literal("healthCheck"),
+  healthCheckRating: z.number().gte(0).lte(2),
+});
+
+export type HealthCheck = z.infer<typeof healthCheckSchema>;
+
+export const entrySchema = z.discriminatedUnion("type", [
+  occupationalHealthcareEntrySchema,
+  hospitalEntrySchema,
+  healthCheckSchema,
+]);
+
+export type Entry = z.infer<typeof entrySchema>;
+
+const omits = {
+  id: true,
+} as const;
+
+export const unsavedEntrySchema = z.discriminatedUnion("type", [
+  occupationalHealthcareEntrySchema.omit(omits),
+  hospitalEntrySchema.omit(omits),
+  healthCheckSchema.omit(omits),
+]);
+
+export type UnsavedEntry = z.infer<typeof unsavedEntrySchema>;
 
 export interface Patient {
   id: string;

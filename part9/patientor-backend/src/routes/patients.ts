@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Response } from "express";
 import patientsService from "../services/patientsService";
 import * as z from "zod";
-import { Gender } from "../types";
+import { Gender, unsavedEntrySchema, Entry } from "../types";
 
 const router = express.Router();
 
@@ -48,5 +48,34 @@ router.post("/", (req, res) => {
     res.status(400).json({ error: message });
   }
 });
+
+// add an entry
+router.post(
+  "/:id/entries",
+  (req, res: Response<Entry | { error: object | string }>) => {
+    try {
+      const patientId = req.params.id;
+      const patient = patientsService.getPatient(patientId);
+      if (!patient) {
+        return res.status(404).send();
+      }
+
+      const unsavedEntry = unsavedEntrySchema.parse(req.body);
+      const savedEntry = patientsService.addEntry(patientId, unsavedEntry);
+
+      res.json(savedEntry);
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ error: err.issues });
+      } else if (err instanceof Error) {
+        res.status(400).json({ error: err.message });
+      } else {
+        res.status(400).json({ error: "unknown error type" });
+      }
+    }
+    // to make 'Not all code paths return a value' error go away
+    return;
+  }
+);
 
 export default router;
