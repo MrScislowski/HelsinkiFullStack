@@ -1,12 +1,14 @@
-import { Patient, Entry } from "../../types";
+import { Patient, Entry, Diagnosis } from "../../types";
 import { useMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
 import patients from "../../services/patients";
+import diagnosesService from "../../services/diagnoses";
 import { Female, Male } from "@mui/icons-material";
 
 const SinglePatientView = () => {
   const urlMatch = useMatch("/patients/:id");
   const [patient, setPatient] = useState<Patient | undefined>(undefined);
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   const id: string | undefined = urlMatch?.params.id;
 
@@ -14,6 +16,10 @@ const SinglePatientView = () => {
     // get the patient from the service here
     id && patients.getById(id).then((res) => setPatient(res));
   }, [id]);
+
+  useEffect(() => {
+    diagnosesService.getAll().then((res) => setDiagnoses(res));
+  }, []);
 
   if (!patient) return <p>patient not found</p>;
 
@@ -48,7 +54,7 @@ const EntryView = ({ entry }: EntryViewProps) => {
       {entry.diagnosisCodes && (
         <ul>
           {entry.diagnosisCodes.map((d) => (
-            <li key={d}>{d}</li>
+            <li key={d}>{d} </li>
           ))}
         </ul>
       )}
