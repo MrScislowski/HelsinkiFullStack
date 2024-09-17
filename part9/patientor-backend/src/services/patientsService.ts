@@ -12,10 +12,10 @@ const getNonSensitive = (): NonSensitivePatient[] => {
   return patients.map(({ ssn: _ssn, entries: _entries, ...rest }) => rest);
 };
 
-const getPatient = (id: string): Patient => {
+const getPatient = (id: string): Patient | null => {
   const thePatient = patients.find((p) => p.id === id);
   if (!thePatient) {
-    throw new Error(`Patient with id ${id} not found`);
+    return null;
   }
   return thePatient;
 };

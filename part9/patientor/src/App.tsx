@@ -35,10 +35,7 @@ const App = () => {
           </Button>
           <Divider hidden />
           <Routes>
-            <Route
-              path="/:id"
-              element={<SinglePatientView patient={selectedPatient} />}
-            />
+            <Route path="/:id" element={<SinglePatientView />} />
             <Route
               path="/"
               element={
