@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { DiaryEntryData } from "../types";
+import { DiaryEntryData, Visibility, Weather } from "../types";
 import diaryService from "../services/diaryService";
 import { AxiosError } from "axios";
 
@@ -63,21 +63,45 @@ const AddEntryForm = ({ entries, setEntries }: AddEntryFormProps) => {
 
         <label>
           visibility:
-          <input
-            type="text"
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
-          />
+          {Object.values(Visibility)
+            .map((v) => v.toString())
+            .map((v) => {
+              return (
+                <label key={v}>
+                  <input
+                    key={v}
+                    name="visibility"
+                    type="radio"
+                    checked={visibility === v}
+                    value={v}
+                    onChange={(e) => setVisibility(e.target.value)}
+                  />
+                  {v}
+                </label>
+              );
+            })}
           <br />
         </label>
 
         <label>
           weather:
-          <input
-            type="text"
-            value={weather}
-            onChange={(e) => setWeather(e.target.value)}
-          />
+          {Object.values(Weather)
+            .map((v) => v.toString())
+            .map((v) => {
+              return (
+                <label key={v}>
+                  <input
+                    key={v}
+                    name="weather"
+                    type="radio"
+                    checked={weather === v}
+                    value={v}
+                    onChange={(e) => setWeather(e.target.value)}
+                  />
+                  {v}
+                </label>
+              );
+            })}
           <br />
         </label>
 
