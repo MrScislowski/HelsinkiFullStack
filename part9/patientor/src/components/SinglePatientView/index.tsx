@@ -34,7 +34,7 @@ const SinglePatientView = () => {
       </ul>
       <h4>entries</h4>
       {patient.entries.map((e) => (
-        <EntryView key={e.id} entry={e} />
+        <EntryView key={e.id} entry={e} diagnoses={diagnoses} />
       ))}
     </>
   );
@@ -42,9 +42,10 @@ const SinglePatientView = () => {
 
 interface EntryViewProps {
   entry: Entry;
+  diagnoses: Diagnosis[];
 }
 
-const EntryView = ({ entry }: EntryViewProps) => {
+const EntryView = ({ entry, diagnoses }: EntryViewProps) => {
   return (
     <div>
       <span>
@@ -53,8 +54,10 @@ const EntryView = ({ entry }: EntryViewProps) => {
       <br />
       {entry.diagnosisCodes && (
         <ul>
-          {entry.diagnosisCodes.map((d) => (
-            <li key={d}>{d} </li>
+          {entry.diagnosisCodes.map((dc) => (
+            <li key={dc}>
+              {dc} {diagnoses.find((d) => d.code === dc)?.name}
+            </li>
           ))}
         </ul>
       )}
