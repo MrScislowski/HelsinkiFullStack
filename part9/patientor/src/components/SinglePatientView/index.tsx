@@ -1,9 +1,23 @@
-import { Patient, Entry, Diagnosis } from "../../types";
+import {
+  Patient,
+  Entry,
+  Diagnosis,
+  HealthCheck,
+  HospitalEntry,
+  OccupationalHealthcareEntry,
+} from "../../types";
 import { useMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
 import patients from "../../services/patients";
 import diagnosesService from "../../services/diagnoses";
-import { Female, Male } from "@mui/icons-material";
+import {
+  Factory,
+  Favorite,
+  Female,
+  HealthAndSafety,
+  LocalHospital,
+  Male,
+} from "@mui/icons-material";
 
 const SinglePatientView = () => {
   const urlMatch = useMatch("/patients/:id");
@@ -23,6 +37,23 @@ const SinglePatientView = () => {
 
   if (!patient) return <p>patient not found</p>;
 
+  let populatedPatient = undefined;
+
+  if (diagnoses.length !== 0) {
+    // populate the patient diagnosis codes
+    populatedPatient = {
+      ...patient,
+      entries: patient.entries.map((entry) => {
+        return {
+          ...entry,
+          diagnosisCodes: entry.diagnosisCodes?.map((dc) => {
+            return `${dc} ${diagnoses.find((d) => d.code === dc)?.name}`;
+          }),
+        };
+      }),
+    };
+  }
+
   return (
     <>
       <h3>
@@ -33,8 +64,8 @@ const SinglePatientView = () => {
         <li>occupation: {patient.occupation}</li>
       </ul>
       <h4>entries</h4>
-      {patient.entries.map((e) => (
-        <EntryView key={e.id} entry={e} diagnoses={diagnoses} />
+      {populatedPatient?.entries.map((e) => (
+        <EntryView key={e.id} entry={e} />
       ))}
     </>
   );
@@ -42,26 +73,119 @@ const SinglePatientView = () => {
 
 interface EntryViewProps {
   entry: Entry;
-  diagnoses: Diagnosis[];
 }
 
-const EntryView = ({ entry, diagnoses }: EntryViewProps) => {
+const EntryView = ({ entry }: EntryViewProps) => {
   return (
-    <div>
-      <span>
-        {entry.date} <em>{entry.description}</em>
-      </span>
-      <br />
+    <div
+      style={{
+        borderStyle: "solid",
+        margin: "5px",
+        padding: "3px",
+        borderRadius: "7px",
+      }}
+    >
+      <EntryDetails entry={entry} />
+    </div>
+  );
+};
+
+const EntryDetails = ({ entry }: { entry: Entry }) => {
+  switch (entry.type) {
+    case "HealthCheck":
+      return <HealthCheckView entry={entry} />;
+    case "OccupationalHealthcare":
+      return <OccupationalHealthcareView entry={entry} />;
+    case "Hospital":
+      return <HospitalView entry={entry} />;
+    default:
+      const _exhaustive: never = entry;
+      return _exhaustive;
+  }
+};
+
+const HealthCheckView = ({ entry }: { entry: HealthCheck }) => {
+  return (
+    <article>
+      <div>
+        {entry.date} <HealthAndSafety />
+      </div>
+      <div>
+        <em>{entry.description}</em>
+      </div>
+      <Favorite
+        style={{
+          color:
+            entry.healthCheckRating == 0
+              ? "green"
+              : entry.healthCheckRating == 1
+              ? "yellow"
+              : "red",
+        }}
+      />
+      <div>Diagnosed by {entry.specialist}</div>
+    </article>
+  );
+};
+
+const OccupationalHealthcareView = ({
+  entry,
+}: {
+  entry: OccupationalHealthcareEntry;
+}) => {
+  return (
+    <article>
+      <div>
+        {entry.date} <Factory /> <em>{entry.employerName}</em>
+      </div>
+      <div>
+        <em>{entry.description}</em>
+      </div>
+
+      {entry.sickLeave && (
+        <div>
+          sick leave {entry.sickLeave.startDate} - {entry.sickLeave.endDate}
+        </div>
+      )}
+
       {entry.diagnosisCodes && (
         <ul>
-          {entry.diagnosisCodes.map((dc) => (
-            <li key={dc}>
-              {dc} {diagnoses.find((d) => d.code === dc)?.name}
-            </li>
+          {entry.diagnosisCodes.map((d) => (
+            <li key={d}>{d}</li>
           ))}
         </ul>
       )}
-    </div>
+
+      <div>Diagnosed by {entry.specialist}</div>
+    </article>
+  );
+};
+
+const HospitalView = ({ entry }: { entry: HospitalEntry }) => {
+  return (
+    <article>
+      <p>
+        {entry.date} <LocalHospital />
+      </p>
+
+      <div>
+        <em>{entry.description}</em>
+      </div>
+
+      <div>
+        Discharge: {entry.discharge.date} - {entry.discharge.criteria}
+      </div>
+
+      {entry.diagnosisCodes && (
+        <ul>
+          {entry.diagnosisCodes.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+      )}
+
+      <div>Diagnosed by {entry.specialist}</div>
+    </article>
   );
 };
 
