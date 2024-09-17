@@ -5,9 +5,17 @@ import { Gender } from "../types";
 
 const router = express.Router();
 
+// Get all patients
 router.get("/", (_req, res) => {
   const data = patientsService.getNonSensitive();
   res.json(data);
+});
+
+// Get one patient detailed info
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  const patientData = patientsService.getPatient(id);
+  res.json(patientData);
 });
 
 const newPatientSchema = z.object({
@@ -18,11 +26,15 @@ const newPatientSchema = z.object({
   occupation: z.string(),
 });
 
+// add a patient
 router.post("/", (req, res) => {
   try {
     const patientData = newPatientSchema.parse(req.body);
 
-    const savedPatient = patientsService.addPatient(patientData);
+    const savedPatient = patientsService.addPatient({
+      ...patientData,
+      entries: [],
+    });
     res.json(savedPatient);
   } catch (e) {
     let message = "Error: ";

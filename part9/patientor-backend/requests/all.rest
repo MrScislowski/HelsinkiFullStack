@@ -19,3 +19,6 @@ Content-Type: application/json
   "occupation": "Office General Manager",
   "ssn": "11111111"
 }
+
+###
+GET http://localhost:3001/api/patients/d2773336-f723-11e9-8f0b-362b9e155667

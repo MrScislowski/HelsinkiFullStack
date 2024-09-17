@@ -9,7 +9,15 @@ const getAll = (): Patient[] => {
 };
 
 const getNonSensitive = (): NonSensitivePatient[] => {
-  return patients.map(({ ssn: _ssn, ...rest }) => rest);
+  return patients.map(({ ssn: _ssn, entries: _entries, ...rest }) => rest);
+};
+
+const getPatient = (id: string): Patient => {
+  const thePatient = patients.find((p) => p.id === id);
+  if (!thePatient) {
+    throw new Error(`Patient with id ${id} not found`);
+  }
+  return thePatient;
 };
 
 const addPatient = (patient: ProposedPatient): Patient => {
@@ -18,4 +26,4 @@ const addPatient = (patient: ProposedPatient): Patient => {
   return newPatient;
 };
 
-export default { getAll, getNonSensitive, addPatient };
+export default { getAll, getNonSensitive, addPatient, getPatient };

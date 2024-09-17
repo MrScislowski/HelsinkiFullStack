@@ -43,7 +43,7 @@ const data: Patient[] = [
     occupation: "Digital evangelist",
   },
 ].map((p) => {
-  return { ...p, gender: z.nativeEnum(Gender).parse(p.gender) };
+  return { ...p, gender: z.nativeEnum(Gender).parse(p.gender), entries: [] };
 });
 
 export default data;
