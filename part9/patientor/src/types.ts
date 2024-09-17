@@ -7,7 +7,7 @@ export interface Diagnosis {
 export enum Gender {
   Male = "male",
   Female = "female",
-  Other = "other"
+  Other = "other",
 }
 
 export interface Patient {
@@ -15,8 +15,41 @@ export interface Patient {
   name: string;
   occupation: string;
   gender: Gender;
-  ssn?: string;
-  dateOfBirth?: string;
+  ssn: string;
+  dateOfBirth: string;
+  entries: Entry[];
 }
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+
+interface BaseEntry {
+  id: string;
+  date: string;
+  specialist: string;
+  description: string;
+  diagnosisCodes?: string[];
+}
+
+interface OccupationalHealthcareEntry extends BaseEntry {
+  type: "OccupationalHealthcare";
+  employerName: string;
+  sickLeave?: {
+    startDate: string;
+    endDate: string;
+  };
+}
+
+interface HospitalEntry extends BaseEntry {
+  type: "Hospital";
+  discharge: {
+    date: string;
+    criteria: string;
+  };
+}
+
+interface HealthCheck extends BaseEntry {
+  type: "HealthCheck";
+  healthCheckRating: number;
+}
+
+export type Entry = OccupationalHealthcareEntry | HospitalEntry | HealthCheck;
