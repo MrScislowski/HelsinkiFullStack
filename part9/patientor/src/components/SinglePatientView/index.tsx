@@ -18,6 +18,7 @@ import {
   LocalHospital,
   Male,
 } from "@mui/icons-material";
+import AddEntryForm from "../AddEntryForm";
 
 const SinglePatientView = () => {
   const urlMatch = useMatch("/patients/:id");
@@ -63,6 +64,7 @@ const SinglePatientView = () => {
         <li>ssn: {patient.ssn}</li>
         <li>occupation: {patient.occupation}</li>
       </ul>
+      <AddEntryForm />
       <h4>entries</h4>
       {populatedPatient?.entries.map((e) => (
         <EntryView key={e.id} entry={e} />
