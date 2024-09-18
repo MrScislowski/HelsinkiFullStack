@@ -64,7 +64,7 @@ const SinglePatientView = () => {
         <li>ssn: {patient.ssn}</li>
         <li>occupation: {patient.occupation}</li>
       </ul>
-      <AddEntryForm />
+      <AddEntryForm /> <br />
       <h4>entries</h4>
       {populatedPatient?.entries.map((e) => (
         <EntryView key={e.id} entry={e} />

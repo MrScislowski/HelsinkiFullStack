@@ -20,8 +20,19 @@ const AddEntryForm = () => {
   const [healthRating, setHealthRating] = useState("");
   const [diagnosisCodes, setDiagnosisCodes] = useState("");
 
+  const clearFormEntries = () => {
+    setDescription("");
+    setDate("");
+    setSpecialist("");
+    setHealthRating("");
+    setDiagnosisCodes("");
+  };
+
+  const addEntry = () => {};
+
   return (
-    <div>
+    <div style={{ borderStyle: "dotted", padding: "10px" }}>
+      <h3>New HealthCheck Entry</h3>
       <form onSubmit={() => alert("to be implemented")}>
         <TextField
           label="Description"
@@ -54,29 +65,18 @@ const AddEntryForm = () => {
           onChange={({ target }) => setDiagnosisCodes(target.value)}
         />
 
-        <Grid>
-          <Grid item>
-            <Button
-              color="secondary"
-              variant="contained"
-              style={{ float: "left" }}
-              type="button"
-              onClick={() => alert("to be implemented")}
-            >
-              Cancel
-            </Button>
-          </Grid>
-          <Grid item>
-            <Button
-              style={{
-                float: "right",
-              }}
-              type="submit"
-              variant="contained"
-            >
-              Add
-            </Button>
-          </Grid>
+        <Grid style={{ display: "flex", justifyContent: "space-between" }}>
+          <Button
+            color="secondary"
+            variant="contained"
+            type="button"
+            onClick={clearFormEntries}
+          >
+            Cancel
+          </Button>
+          <Button type="submit" variant="contained">
+            Add
+          </Button>
         </Grid>
       </form>
     </div>
