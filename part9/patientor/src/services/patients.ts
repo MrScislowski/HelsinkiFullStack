@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { Entry, EntrySansId, Patient, PatientFormValues } from "../types";
 
 import { apiBaseUrl } from "../constants";
@@ -25,11 +25,26 @@ const addEntry = async (
   patientId: string,
   entryData: EntrySansId
 ): Promise<Entry> => {
-  const { data } = await axios.post<Entry>(
-    `${apiBaseUrl}patients/${patientId}/entries`,
-    entryData
-  );
-  return data;
+  try {
+    const { data } = await axios.post<Entry>(
+      `${apiBaseUrl}/patients/${patientId}/entries`,
+      entryData
+    );
+    return data;
+  } catch (err: unknown) {
+    let message: string;
+    if (
+      err instanceof AxiosError &&
+      err.response?.data?.error[0]?.path[0] &&
+      err.response?.data?.error[0]?.message
+    ) {
+      message = `Invalid ${err.response?.data?.error[0]?.path[0]}: ${err.response?.data.error[0].message}`;
+    } else {
+      message = "unknown error. Check console for details";
+      console.log(err);
+    }
+    throw new Error(message);
+  }
 };
 
 export default {
