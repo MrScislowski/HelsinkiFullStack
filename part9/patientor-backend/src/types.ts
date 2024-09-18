@@ -6,26 +6,20 @@ export enum Gender {
   other = "other",
 }
 
-export interface Diagnosis {
-  code: string;
-  name: string;
-  latin?: string;
-}
-
 const diagnosisSchema = z.object({
   code: z.string(),
   name: z.string(),
   latin: z.string().optional(),
 });
 
+export type Diagnosis = z.infer<typeof diagnosisSchema>;
+
 const baseEntrySchema = z.object({
   id: z.string(),
   date: z.string().date(),
   specialist: z.string(),
   description: z.string(),
-  // TODO: This was in the notes: diagnosisCodes?: Diagnosis['code'][];
-  // I don't really understand that. And how do I implement it in zod?
-  throw new Error("TODO HERE!!")
+  diagnosisCodes: z.array(diagnosisSchema.shape.code).optional(),
 });
 
 export const occupationalHealthcareEntrySchema = baseEntrySchema.extend({
@@ -54,7 +48,7 @@ export const hospitalEntrySchema = baseEntrySchema.extend({
 export type HospitalEntry = z.infer<typeof hospitalEntrySchema>;
 
 export const healthCheckSchema = baseEntrySchema.extend({
-  type: z.literal("healthCheck"),
+  type: z.literal("HealthCheck"),
   healthCheckRating: z.number().gte(0).lte(2),
 });
 
