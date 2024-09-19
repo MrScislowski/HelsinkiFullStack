@@ -47,14 +47,17 @@ export interface HospitalEntry extends BaseEntry {
   };
 }
 
-export interface HealthCheck extends BaseEntry {
+export interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
   healthCheckRating: number;
 }
 
-export type Entry = OccupationalHealthcareEntry | HospitalEntry | HealthCheck;
+export type Entry =
+  | OccupationalHealthcareEntry
+  | HospitalEntry
+  | HealthCheckEntry;
 
 export type EntrySansId =
   | Omit<OccupationalHealthcareEntry, "id">
   | Omit<HospitalEntry, "id">
-  | Omit<HealthCheck, "id">;
+  | Omit<HealthCheckEntry, "id">;

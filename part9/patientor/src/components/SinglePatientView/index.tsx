@@ -2,7 +2,7 @@ import {
   Patient,
   Entry,
   Diagnosis,
-  HealthCheck,
+  HealthCheckEntry,
   HospitalEntry,
   OccupationalHealthcareEntry,
 } from "../../types";
@@ -106,7 +106,7 @@ const EntryDetails = ({ entry }: { entry: Entry }) => {
   }
 };
 
-const HealthCheckView = ({ entry }: { entry: HealthCheck }) => {
+const HealthCheckView = ({ entry }: { entry: HealthCheckEntry }) => {
   return (
     <article>
       <div>
