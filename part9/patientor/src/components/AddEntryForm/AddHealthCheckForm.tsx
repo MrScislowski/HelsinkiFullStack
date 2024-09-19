@@ -6,21 +6,24 @@ import {
   TextField,
   Grid,
   Button,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import patientsService from "../../services/patients";
-import { Patient } from "../../types";
+import { Diagnosis, Patient } from "../../types";
 
 interface Props {
   patient: Patient;
   setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
+  diagnosisCodes: Diagnosis[];
 }
 
-const AddHealthCheckForm = ({patient, setPatient}: Props) => {
+const AddHealthCheckForm = ({patient, setPatient, diagnosisCodes: allDiagnosisCodes}: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [healthRating, setHealthRating] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState("");
+  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
   const [notification, setNotification] = useState("");
 
   const patientId = patient.id;
@@ -32,7 +35,7 @@ const AddHealthCheckForm = ({patient, setPatient}: Props) => {
     setDate("");
     setSpecialist("");
     setHealthRating("");
-    setDiagnosisCodes("");
+    setDiagnosisCodes([]);
   };
 
   const addEntry = (event: React.SyntheticEvent) => {
@@ -44,7 +47,7 @@ const AddHealthCheckForm = ({patient, setPatient}: Props) => {
         date,
         specialist,
         healthCheckRating: Number(healthRating),
-        diagnosisCodes: diagnosisCodes.split(", "),
+        diagnosisCodes: diagnosisCodes,
         type: "HealthCheck",
       })
       .then((newEntry) => {
@@ -83,6 +86,7 @@ const AddHealthCheckForm = ({patient, setPatient}: Props) => {
           label="Date"
           fullWidth
           value={date}
+          type="date"
           onChange={({ target }) => setDate(target.value)}
         />
         <TextField
@@ -97,12 +101,17 @@ const AddHealthCheckForm = ({patient, setPatient}: Props) => {
           value={healthRating}
           onChange={({ target }) => setHealthRating(target.value)}
         />
-        <TextField
+
+        <Select
           label="Diagnosis codes"
           fullWidth
+          multiple
           value={diagnosisCodes}
-          onChange={({ target }) => setDiagnosisCodes(target.value)}
-        />
+          onChange={(e) => console.dir(e.target.value)}>
+            {allDiagnosisCodes.map(code => {
+              return <MenuItem key={code.code} value={code.code}>{`${code.code} - ${code.name}`}</MenuItem>;
+            })}
+        </Select>
 
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
           <Button

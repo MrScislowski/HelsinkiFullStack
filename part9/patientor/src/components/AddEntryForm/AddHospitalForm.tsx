@@ -8,14 +8,15 @@ import {
   Button,
 } from "@mui/material";
 import patientsService from "../../services/patients";
-import { Patient } from "../../types";
+import { Diagnosis, Patient } from "../../types";
 
 interface Props {
   patient: Patient;
   setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
+  diagnosisCodes: Diagnosis[];
 }
 
-const AddHospitalForm = ({patient, setPatient}: Props) => {
+const AddHospitalForm = ({patient, setPatient, diagnosisCodes: allDiagnosisCodes}: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
@@ -86,6 +87,7 @@ const AddHospitalForm = ({patient, setPatient}: Props) => {
           label="Date"
           fullWidth
           value={date}
+          type="date"
           onChange={({ target }) => setDate(target.value)}
         />
         <TextField
@@ -98,6 +100,7 @@ const AddHospitalForm = ({patient, setPatient}: Props) => {
           label="Discharge date"
           fullWidth
           value={dischargeDate}
+          type="date"
           onChange={({ target }) => setDischargeDate(target.value)}
         />
         <TextField

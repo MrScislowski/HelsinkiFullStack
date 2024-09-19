@@ -8,14 +8,15 @@ import {
   Button,
 } from "@mui/material";
 import patientsService from "../../services/patients";
-import { Patient } from "../../types";
+import { Diagnosis, Patient } from "../../types";
 
 interface Props {
   patient: Patient;
   setPatient: React.Dispatch<React.SetStateAction<Patient | undefined>>;
+  diagnosisCodes: Diagnosis[];
 }
 
-const AddOccupationalHealthcareForm = ({patient, setPatient}: Props) => {
+const AddOccupationalHealthcareForm = ({patient, setPatient, diagnosisCodes: allDiagnosisCodes}: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
@@ -89,6 +90,7 @@ const AddOccupationalHealthcareForm = ({patient, setPatient}: Props) => {
           label="Date"
           fullWidth
           value={date}
+          type="date"
           onChange={({ target }) => setDate(target.value)}
         />
         <TextField
@@ -107,12 +109,14 @@ const AddOccupationalHealthcareForm = ({patient, setPatient}: Props) => {
           label="Sick Leave Start Date"
           fullWidth
           value={sickleaveStartDate}
+          type="date"
           onChange={({ target }) => setSickleaveStartDate(target.value)}
         />
         <TextField
           label="Sick Leave End Date"
           fullWidth
           value={sickleaveEndDate}
+          type="date"
           onChange={({ target }) => setSickleaveEndDate(target.value)}
         />
           <TextField
