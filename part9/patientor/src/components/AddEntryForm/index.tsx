@@ -154,7 +154,7 @@ const AddEntryForm = ({ patient, setPatient }: Props) => {
           onChange={(e) => {
             setFormState({
               ...formState,
-              diagnosisCodes: formState.diagnosisCodes?.concat(e.target.value),
+              diagnosisCodes: [...e.target.value],
             });
           }}
         >
@@ -177,9 +177,12 @@ const AddEntryForm = ({ patient, setPatient }: Props) => {
         {formState.type === "Hospital" && (
           <AddHospitalForm formState={formState} setFormState={setFormState} />
         )}
-        {/* {entryType === "Occupational Healthcare" && (
-          <AddOccupationalHealthcareForm />
-        )} */}
+        {formState.type === "OccupationalHealthcare" && (
+          <AddOccupationalHealthcareForm
+            formState={formState}
+            setFormState={setFormState}
+          />
+        )}
 
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
           <Button
