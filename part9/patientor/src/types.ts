@@ -30,6 +30,13 @@ interface BaseEntry {
   diagnosisCodes?: string[];
 }
 
+const blankBaseEntry: Omit<BaseEntry, "id"> = {
+  date: "",
+  description: "",
+  specialist: "",
+  diagnosisCodes: [],
+};
+
 export interface OccupationalHealthcareEntry extends BaseEntry {
   type: "OccupationalHealthcare";
   employerName: string;
@@ -39,6 +46,16 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
   };
 }
 
+export const blankOccupationalHealtcareEntry: Omit<
+  OccupationalHealthcareEntry,
+  "id"
+> = {
+  ...blankBaseEntry,
+  type: "OccupationalHealthcare",
+  employerName: "",
+  sickLeave: { startDate: "", endDate: "" },
+};
+
 export interface HospitalEntry extends BaseEntry {
   type: "Hospital";
   discharge: {
@@ -47,10 +64,25 @@ export interface HospitalEntry extends BaseEntry {
   };
 }
 
+export const blankHospitalEntry: Omit<HospitalEntry, "id"> = {
+  ...blankBaseEntry,
+  type: "Hospital",
+  discharge: {
+    date: "",
+    criteria: "",
+  },
+};
+
 export interface HealthCheckEntry extends BaseEntry {
   type: "HealthCheck";
   healthCheckRating: number;
 }
+
+export const blankHealthCheckEntry: Omit<HealthCheckEntry, "id"> = {
+  ...blankBaseEntry,
+  type: "HealthCheck",
+  healthCheckRating: -1,
+};
 
 export type Entry =
   | OccupationalHealthcareEntry
