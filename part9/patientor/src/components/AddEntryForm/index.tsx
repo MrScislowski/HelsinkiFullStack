@@ -174,8 +174,10 @@ const AddEntryForm = ({ patient, setPatient }: Props) => {
             setFormState={setFormState}
           />
         )}
-        {/* {entryType === "Hospital" && <AddHospitalForm />}
-        {entryType === "Occupational Healthcare" && (
+        {formState.type === "Hospital" && (
+          <AddHospitalForm formState={formState} setFormState={setFormState} />
+        )}
+        {/* {entryType === "Occupational Healthcare" && (
           <AddOccupationalHealthcareForm />
         )} */}
 
