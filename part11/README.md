@@ -38,3 +38,14 @@ CI/CD should answer the questions... how to make sure:
 - builds will be consistent and will run on the platform we're deploying to
 - changes don't overwrite one another
 - deployments happen automatically when one merges to main branch
+
+## Types of CI setup
+
+There's an entire server dedicated to CI.
+
+- self-hosted (often using jenkins)
+  - 😀 flexible, and plugins for lots of stuff. Resources under your control, secrets never exposed.
+  - 😔 complicated to set up. Lot of boilerplate. Need to learn jenkins domain-specific language.
+- cloud-based (e.g. github actions)
+  - 😀 simpler set up, especially for common tasks
+  - 😔 less flexible for weird setup. Resources more limited (2 vCPUs and 8GB of RAM on github), and may be billed for compute time
