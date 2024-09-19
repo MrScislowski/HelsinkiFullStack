@@ -2,6 +2,7 @@ import express, { Response } from "express";
 import patientsService from "../services/patientsService";
 import * as z from "zod";
 import { Gender, unsavedEntrySchema, Entry } from "../types";
+import { zodErrorToText } from "../utils";
 
 const router = express.Router();
 
@@ -38,12 +39,13 @@ router.post("/", (req, res) => {
     });
     res.json(savedPatient);
   } catch (e) {
-    let message = "Error: ";
+    let message;
     if (e instanceof z.ZodError) {
-      res.status(400).send({ error: e.issues });
-    }
-    if (e instanceof Error) {
-      message += e.message;
+      message = zodErrorToText(e);
+    } else if (e instanceof Error) {
+      message = e.message;
+    } else {
+      message = "Unknown error";
     }
     res.status(400).json({ error: message });
   }
@@ -64,14 +66,16 @@ router.post(
       const savedEntry = patientsService.addEntry(patientId, unsavedEntry);
 
       res.json(savedEntry);
-    } catch (err: unknown) {
-      if (err instanceof z.ZodError) {
-        res.status(400).json({ error: err.issues });
-      } else if (err instanceof Error) {
-        res.status(400).json({ error: err.message });
+    } catch (e) {
+      let message;
+      if (e instanceof z.ZodError) {
+        message = zodErrorToText(e);
+      } else if (e instanceof Error) {
+        message = e.message;
       } else {
-        res.status(400).json({ error: "unknown error type" });
+        message = "Unknown error";
       }
+      res.status(400).json({ error: message });
     }
     // to make 'Not all code paths return a value' error go away
     return;
