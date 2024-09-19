@@ -1,14 +1,6 @@
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 
-import {
-  TextField,
-  Grid,
-  Button,
-  Select,
-  MenuItem,
-} from "@mui/material";
+import { TextField, Grid, Button, Select, MenuItem } from "@mui/material";
 import patientsService from "../../services/patients";
 import { Diagnosis, Patient } from "../../types";
 
@@ -18,12 +10,18 @@ interface Props {
   diagnosisCodes: Diagnosis[];
 }
 
-const AddHealthCheckForm = ({patient, setPatient, diagnosisCodes: allDiagnosisCodes}: Props) => {
+const AddHealthCheckForm = ({
+  patient,
+  setPatient,
+  diagnosisCodes: allDiagnosisCodes,
+}: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
   const [healthRating, setHealthRating] = useState("");
-  const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
+  const [diagnosisCodes, setDiagnosisCodes] = useState<
+    Array<Diagnosis["code"]>
+  >([]);
   const [notification, setNotification] = useState("");
 
   const patientId = patient.id;
@@ -107,10 +105,18 @@ const AddHealthCheckForm = ({patient, setPatient, diagnosisCodes: allDiagnosisCo
           fullWidth
           multiple
           value={diagnosisCodes}
-          onChange={(e) => console.dir(e.target.value)}>
-            {allDiagnosisCodes.map(code => {
-              return <MenuItem key={code.code} value={code.code}>{`${code.code} - ${code.name}`}</MenuItem>;
-            })}
+          onChange={(e) => {
+            setDiagnosisCodes(diagnosisCodes.concat(e.target.value));
+          }}
+        >
+          {allDiagnosisCodes.map((code) => {
+            return (
+              <MenuItem
+                key={code.code}
+                value={code.code}
+              >{`${code.code} - ${code.name}`}</MenuItem>
+            );
+          })}
         </Select>
 
         <Grid style={{ display: "flex", justifyContent: "space-between" }}>
