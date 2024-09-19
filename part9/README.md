@@ -715,3 +715,52 @@ type EntryWithoutId = UnionOmit<Entry, 'id'>;
 ```
 
 (Otherwise the result isn't a union, but just the intersection of all the common types of the input union)
+
+
+## Course Submission details
+
+### How many Exercises?
+
+
+```powershell
+(git log --oneline -E --grep "^(Exercise )?9\.[0-9]+" --after "2024/01/01").Count
+```
+
+=> 30 exercises
+
+### How long spent?
+
+My first commit of unit 9 was: 96c63e953702804e37547feca11064771e2721cc
+
+```powershell
+$startTimestamps = (git log 96c63e953702804e37547feca11064771e2721cc^..HEAD -E --grep "^[ ]*start session[ ]*$" --pretty="%at")
+$endTimestamps = (git log 96c63e953702804e37547feca11064771e2721cc^..HEAD -E --grep "^[ ]*end session[ ]*" --pretty="%at")
+```
+
+#### Fixing stuff
+
+Shoot... these are not the same length. => Look through the git log and find a place where there was an end session without a corresponding start... the first commit after an end was 8a66bd8 =>
+
+```sh
+git log 8a66bd8..8a66bd8
+```
+to get the time, `Sat Sep 14 15:30:47 2024 -0500`, then
+
+```sh
+git commit --allow-empty --date "Sat Sep 14 15:30:47 2024 -0500" -m "start session"
+```
+
+#### Back to the calculation
+
+Powershell to do the math:
+```powershell
+$total = 0
+$previous = 0
+for ($i=0; $i -lt $startTimestamps.Length; $i++) {
+    $total += ($endTimestamps[$i] - $startTimestamps[$i])
+}
+
+Write-Host ($total / 60 / 60)
+```
+
+=> 18.68 hours
