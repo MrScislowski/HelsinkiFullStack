@@ -32,13 +32,10 @@ const addEntry = async (
     );
     return data;
   } catch (err: unknown) {
+    console.log(err);
     let message: string;
-    if (
-      err instanceof AxiosError &&
-      err.response?.data?.error[0]?.path[0] &&
-      err.response?.data?.error[0]?.message
-    ) {
-      message = `Invalid ${err.response?.data?.error[0]?.path[0]}: ${err.response?.data.error[0].message}`;
+    if (err instanceof AxiosError) {
+      message = err.response?.data.error || "Axios Error";
     } else {
       message = "unknown error. Check console for details";
       console.log(err);
