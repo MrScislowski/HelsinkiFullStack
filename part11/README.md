@@ -3,7 +3,11 @@
 ## Why CI/CD
 
 - "works on my machine" problems
-- different changes to same code - which gets shipped?`
+  - build packages in known environment of CI system
+- different changes to same code - which gets shipped?
+  - => disallow commits on the `main` branch
+  - CI system runs on all pull requests (PR) against main branch, and only get merged if all tests pass
+  - only allow merges to main branch if the branch is up to date with the main branch
 
 ## Glossary
 
@@ -19,3 +23,18 @@
   - Test: to ensure we don't break existing features
   - Package: Put it all together in an easily movable batch
   - Deploy: Make it available to the world
+- package & deploy are sometimes not considered to be part of "CI", but they're where a lot of the problems can crop up, and every time something is integrated, it might break the deployment
+- "CD": the main branch is kept deployable at all times
+- NB: `main` branch is often the production version. Sometimes it'll be some other `release` branch
+
+## Principles
+
+The goal is better, faster software development, with fewer preventable bugs, and better team cooperation.
+
+CI/CD should answer the questions... how to make sure:
+
+- tests are run on all code that will be deployed
+- main branch is deployable at all times
+- builds will be consistent and will run on the platform we're deploying to
+- changes don't overwrite one another
+- deployments happen automatically when one merges to main branch
