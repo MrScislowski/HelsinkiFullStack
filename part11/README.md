@@ -111,3 +111,29 @@ A workflow can be started once:
 - an event on GitHub occurs, such as someone pushing a commit to a repo, or when an issue/pull request is created
 - a scheduled event (specified using cron-syntax)
 - an external event occurs, e.g. a command in an external application like Slack or Discord
+
+### more complicated lint / test/ build steps
+
+```yml
+jobs:
+  simple_deployment_pipeline:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check style
+        run: npm run eslint
+```
+
+Notes:
+
+- use the same virtual environment as will be running in production
+- `uses` keyword tells workflow to run a specific action. Actions are reusable pieces of codes, like a function. `checkout` is a github action that is documented [here](https://github.com/actions/checkout). The version number is included in case updates break it in future.
+- `setup-node` is documented [here](https://github.com/actions/setup-node). The `with` gives the action a "parameter".
+- after the environment has been set up, we can run all the scripts from `package.json` just like on our own machine.
+- NB: it is optional to specify a name for each action; you can just say `run: npm run eslint`
