@@ -49,3 +49,17 @@ There's an entire server dedicated to CI.
 - cloud-based (e.g. github actions)
   - 😀 simpler set up, especially for common tasks
   - 😔 less flexible for weird setup. Resources more limited (2 vCPUs and 8GB of RAM on github), and may be billed for compute time
+
+## How GitHub Actions Work
+
+- A triggering event happens (e.g. a push to the main branch)
+- the workflow (a series of jobs) associated with that trigger is executed
+- cleanup happens
+
+### General requirements for CI operating on a repository
+
+- The definition of what the CI needs to do needs to be defined either in the repository, or in the CI system
+- The CI needs to be able to access the repository
+- The CI needs permissions to perform the actions it is supposed to do (e.g. if it needs to be able to deploy ato a production environment, it needs credentials for that environment)
+
+Since GitHub provides both the repository and the CI platform, a lot of this interconnection is taken care of frictionlessly.
