@@ -63,3 +63,51 @@ There's an entire server dedicated to CI.
 - The CI needs permissions to perform the actions it is supposed to do (e.g. if it needs to be able to deploy ato a production environment, it needs credentials for that environment)
 
 Since GitHub provides both the repository and the CI platform, a lot of this interconnection is taken care of frictionlessly.
+
+## Workflows
+
+Hierarchy of a workflow:
+
+- Job1
+  - step1
+  - step2
+- Job2
+  - step1
+
+Each workflow must specify at least one Job. The Jobs are run in parallel. The steps to each job are run sequentially.
+
+### specifying workflows
+
+- specified in `.github/workflows`
+- each workflow is its own separate file, configured using `YAML`
+- each workflow contains:
+  - name
+  - triggers: events that trigger the workflow to be executed
+  - jobs: the separate jobs that the workflow will execute
+
+### example workflow
+
+```yaml
+name: Hello World!
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Say hello
+        run: |
+          echo "Hello World!"
+```
+
+### trigger options
+
+A workflow can be started once:
+
+- an event on GitHub occurs, such as someone pushing a commit to a repo, or when an issue/pull request is created
+- a scheduled event (specified using cron-syntax)
+- an external event occurs, e.g. a command in an external application like Slack or Discord
