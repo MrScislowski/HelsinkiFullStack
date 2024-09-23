@@ -162,3 +162,19 @@ Warning: React version not specified in eslint-plugin-react settings. See https:
 I wonder if it's got to do with wildcards and filesystem stuff on windows...
 
 Hmmm... if I just run `npx run eslint .` on windows, I get the same stuff as on Mac. And running `pnpm dlx eslint .` gives similar, but even more informative.
+
+### Playwright starts its own frontend/backend
+
+put this kind of thing in `playwright.config.js`:
+
+```js
+  webServer: {
+    command: "npm run start-prod",
+    url: "http://127.0.0.1:5000/",
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI,
+  },
+  use: {
+    baseURL: "http://localhost:5000/",
+  },
+```
