@@ -178,3 +178,18 @@ put this kind of thing in `playwright.config.js`:
     baseURL: "http://localhost:5000/",
   },
 ```
+
+## Deployment
+
+Rules:
+
+- deployment system should never leave software in a broken state
+- silent failures are very bad
+
+Requirements:
+
+- should be able to fail gracefully at any step of the deployment
+- should allow a rollback to a previous deployment
+  - this should be easier/less failure prone than a full deployment
+  - auto rollback in case of deployment failures
+-
