@@ -137,3 +137,28 @@ Notes:
 - `setup-node` is documented [here](https://github.com/actions/setup-node). The `with` gives the action a "parameter".
 - after the environment has been set up, we can run all the scripts from `package.json` just like on our own machine.
 - NB: it is optional to specify a name for each action; you can just say `run: npm run eslint`
+
+### Note about Exercises 11.5-11.9
+
+`pnpm run eslint` on my windows box gives:
+
+```
+Oops! Something went wrong! :(
+
+ESLint: 8.57.1
+
+No files matching the pattern "'./**/*.{js,jsx}'" were found.
+Please check for typing mistakes in the pattern.
+
+ ELIFECYCLE  Command failed with exit code 2.
+```
+
+But on my mac, it runs fine except for a warning:
+
+```
+Warning: React version not specified in eslint-plugin-react settings. See https://github.com/jsx-eslint/eslint-plugin-react#configuration .
+```
+
+I wonder if it's got to do with wildcards and filesystem stuff on windows...
+
+Hmmm... if I just run `npx run eslint .` on windows, I get the same stuff as on Mac. And running `pnpm dlx eslint .` gives similar, but even more informative.
