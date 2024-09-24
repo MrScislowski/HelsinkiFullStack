@@ -202,3 +202,68 @@ Fly.io allows "health checks" to be performed (e.g. issue a GET request to a spe
 Allows health checks also, but since I'm using the deploy hook, the build is triggered by a simple GET request by github actions, so github doesn't know that the deployment was unsuccessful... that seems sub-optimal.
 
 Also, render is HELLA slow to deploy.
+
+## Pull Requests
+
+Instead of committing any changes directly to the main branch, commit to a branch based on the freshest possible version of the main branch, then create a GitHub Pull Request (PR) to request a merge to main.
+
+Github action to trigger stuff when a PR is
+
+- opened, or
+- updated:
+
+```yaml
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+```
+
+### Conditionally running some steps
+
+Workflow context gives information that can be used. `github.event_name` will be "push" whenever code is pushed, or a pull request is merged.
+
+```yaml
+jobs:
+  linting:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout the code
+        uses: actions/checkout@v4
+      # ...
+      - name: set up fly.io
+        if: ${{ github.event_name == 'push' }}
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: deploy to fly.io
+        if: ${{ github.event_name == 'push' }}
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+```
+
+Alternatively, you could split these up to different jobs:
+
+```yaml
+jobs:
+  build-and-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+    # ...
+  deploy:
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name == 'push' }}
+    needs: build-and-test
+    steps:
+      - name: set up fly.io
+        if: ${{ github.event_name == 'push' }}
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: deploy to fly.io
+        if: ${{ github.event_name == 'push' }}
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+```
