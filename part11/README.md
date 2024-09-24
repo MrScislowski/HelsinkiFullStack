@@ -193,6 +193,12 @@ Requirements:
   - this should be easier/less failure prone than a full deployment
   - auto rollback in case of deployment failures
 
-### Health Check
+### FlyIO - Health Check
 
 Fly.io allows "health checks" to be performed (e.g. issue a GET request to a specific URL and expect a certain response), and the deployment will be considered successful/unsuccesful based on these checks.
+
+### Render
+
+Allows health checks also, but since I'm using the deploy hook, the build is triggered by a simple GET request by github actions, so github doesn't know that the deployment was unsuccessful... that seems sub-optimal.
+
+Also, render is HELLA slow to deploy.
