@@ -1,0 +1,38 @@
+# fly.toml app configuration file generated for full-stack-open-pokedex-summer-log-9248 on 2024-09-23T12:22:42-05:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'full-stack-open-pokedex-summer-log-9248'
+primary_region = 'ewr'
+
+[build]
+
+[env]
+  PORT = "3000"
+
+[processes]
+  app = "node app.js" # <- new, to run the backend
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[deploy]
+  strategy = "canary" # <- new, to fail instantly on health check fail
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[[http_service.checks]] # <- new, to check an endpoint is up
+  grace_period = "10s"
+  interval = "30s"
+  method = "GET"
+  timeout = "5s"
+  path = "/health"

@@ -192,4 +192,7 @@ Requirements:
 - should allow a rollback to a previous deployment
   - this should be easier/less failure prone than a full deployment
   - auto rollback in case of deployment failures
--
+
+### Health Check
+
+Fly.io allows "health checks" to be performed (e.g. issue a GET request to a specific URL and expect a certain response), and the deployment will be considered successful/unsuccesful based on these checks.
