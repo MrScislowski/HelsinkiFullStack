@@ -326,3 +326,7 @@ jobs:
 ### manipulating functions
 
 [Here](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions)
+
+### distinguishing between a direct push, and a PR merge...
+
+Looking for differences between a direct push and an applying pull request merge, it seems that the `event.commits[n].distinct` property is `true` for a direct push, but `false` for a merging push. Also I noticed that the `event.head_commit.committer.username` was `web-flow` for the pull request, but `MrScislowski` for the direct commit. But that may just reflect my doing it from the web interface instead of the command line.
