@@ -267,3 +267,30 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 ```
+
+## Versioning
+
+Versioning strategies:
+
+- Semantic versioning: `{major}.{minor}.{patch}`. E.g. version `1.93.2` has major version 1, minor version 93 and patch number 2.
+  - changes that the user can't notice are `patch` changes
+  - small changes to functionality are `minor` changes
+  - major functionality changes are `major`
+- Hash versioning (aka SHA versioning): version "number" is a hash derived from the contents of the repo and the changes introduced in the commit that created the version (git does this for you automatically). Hash versioning is almost always used in conjunction with automation.
+
+The best of both worlds can be achieved at the end of a CI step, an incremented version number is attached to the relevant commit with a `git tag`.
+
+```yaml
+update-version:
+  runs-on: ubuntu-20.04
+  needs: deploy
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: "0"
+
+    - name: Bump version and push tag
+      uses: anothrNick/github-tag-action@1.67.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this environment variable is produced by gh itself by default
+```
