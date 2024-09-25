@@ -294,3 +294,35 @@ update-version:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # this environment variable is produced by gh itself by default
 ```
+
+## Further configuration using gh context
+
+### available info / variables
+
+[Here](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/accessing-contextual-information-about-workflow-runs#github-context) is information about what information is available during github actions.
+
+To play around / probe it:
+
+```yaml
+jobs:
+  a_test_job:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: github context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: commits
+        env:
+          COMMITS: ${{ toJson(github.event.commits) }}
+        run: echo "$COMMITS"
+      - name: commit messages
+        env:
+          COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
+        run: echo "$COMMIT_MESSAGES"
+```
+
+### manipulating functions
+
+[Here](https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/evaluate-expressions-in-workflows-and-actions)
