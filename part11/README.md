@@ -407,3 +407,24 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+### third party actions: specify hash instead of version number
+
+This will never change, whereas in principle, a version number could change
+
+```yaml
+uses: anothrNick/github-tag-action@8c8163ef62cf9c4677c8e800f36270af27930f42
+```
+
+### protecting main branch
+
+Go to repo -> Settings (top menu) -> Branches (left menu) -> Add branch ruleset
+
+- Ruleset nam: "Protect Main"
+- Envorcement status: Active
+- Add target -> include by pattern -> "main"
+- branch rules:
+  - require a pull request before merging, required approvals = 1
+  - require status checks to pass
+    - search for and add `build-and-test`
+    - require branches to be up to date before merging
