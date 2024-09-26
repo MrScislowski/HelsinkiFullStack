@@ -330,3 +330,80 @@ jobs:
 ### distinguishing between a direct push, and a PR merge...
 
 Looking for differences between a direct push and an applying pull request merge, it seems that the `event.commits[n].distinct` property is `true` for a direct push, but `false` for a merging push. Also I noticed that the `event.head_commit.committer.username` was `web-flow` for the pull request, but `MrScislowski` for the direct commit. But that may just reflect my doing it from the web interface instead of the command line.
+
+### skipping a deploy if it is a merge AND one of the commit messages in the merge has text "#skip"
+
+```yaml
+name: Linting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  check-whether-deploy-necessary:
+    runs-on: ubuntu-20.04
+    if: ${{ github.event_name == 'push' && !( contains(join(github.event.commits.*.distinct, ', '), 'false') && contains(join(github.event.commits.*.message, ', '), '#skip') ) }}
+    steps:
+      - run: echo "deploy deemed necessary..."
+
+  build-and-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Check style
+        run: npm run eslint
+      - name: build
+        run: npm run build
+      - name: test
+        run: npm run test
+      - name: install playwright browsers
+        run: npx playwright install --with-deps
+      - name: run playwright tests
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
+  deploy:
+    runs-on: ubuntu-20.04
+    needs: [check-whether-deploy-necessary, build-and-test]
+    steps:
+      - name: check out source code
+        uses: actions/checkout@v4
+      - name: set up fly.io
+        if: ${{ github.event_name == 'push' }}
+        uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: deploy to fly.io
+        if: ${{ github.event_name == 'push' }}
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    # - name: deploy to render.com
+    #   run: curl ${{ secrets.RENDER_DEPLOY_HOOK }}
+
+  update-version:
+    runs-on: ubuntu-20.04
+    needs: deploy
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
