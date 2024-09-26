@@ -428,3 +428,11 @@ Go to repo -> Settings (top menu) -> Branches (left menu) -> Add branch ruleset
   - require status checks to pass
     - search for and add `build-and-test`
     - require branches to be up to date before merging
+
+## Visibility
+
+I think this refers to other stakeholders being able to observe the build development. Often there are integrations between git and project management/bug tracking software. You may name pull requests "BUG-123: Fix user copy issue" so that the bug tracking system could associate it with bug #123
+
+## Notifications
+
+GitHub Actions sends an email on build failure. But there are other integrations to, e.g. Slack and Discord.
