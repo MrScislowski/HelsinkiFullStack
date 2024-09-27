@@ -436,3 +436,68 @@ I think this refers to other stakeholders being able to observe the build develo
 ## Notifications
 
 GitHub Actions sends an email on build failure. But there are other integrations to, e.g. Slack and Discord.
+
+### Choice of Notification Extension
+
+On the [github marketplace](https://github.com/marketplace), [discord for github actions](https://github.com/marketplace/actions/actions-for-discord) had 397 stars, but it only runs on linux runners, and I didn't love the argument options. So I'm opting for [Actions Status Discord](https://github.com/marketplace/actions/actions-status-discord). My goal is to have it not give my name etc on the discord webhook channel, so I stay anonymous.
+
+Here's how I did it:
+```yaml
+name: Visibility
+
+on:
+  push:
+    branches:
+      - notmain
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Check style
+        run: npm run eslint
+      - name: build
+        run: npm run build
+
+      - name: Report build failure to discord
+        uses: sarisia/actions-status-discord@v1.15.0
+        if: failure()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: "${{ github.event.repository.name }} build failed"
+          description: |
+            See commit ${{ github.sha }}
+          color: 0x8f4700
+
+  update-version:
+    runs-on: ubuntu-20.04
+    needs: build-and-test
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: "0"
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.67.0
+        id: set_version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Report new id to discord
+        uses: sarisia/actions-status-discord@v1.15.0
+        if: success()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: "New version (${{ steps.set_version.outputs.new_tag }}) of ${{ github.event.repository.name }}"
+          description: |
+            For source code, see commit ${{ github.sha }}
+          color: 0x005e24
+```
