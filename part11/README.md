@@ -501,3 +501,11 @@ jobs:
             For source code, see commit ${{ github.sha }}
           color: 0x005e24
 ```
+
+## Metrics
+
+It's a good idea to keep track of how long builds are taking so you can identify any sudden changes etc. These can be self-reported "`push`" metrics (the build reports how long it took), or "`pull`" metrics (fetched from the API afterwards). Datadog is a cloud service that aggregates these (and other) metrics
+
+## Periodic Tasks
+
+Common periodic tasks it's best to use a tool that already does the job (e.g. Dependabot for checking packages for security vulnerabilities) than to roll your own. Github Actions provides a scheduled trigger that can execute a task at a particular time.
