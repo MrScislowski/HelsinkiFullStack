@@ -508,4 +508,4 @@ It's a good idea to keep track of how long builds are taking so you can identify
 
 ## Periodic Tasks
 
-Common periodic tasks it's best to use a tool that already does the job (e.g. Dependabot for checking packages for security vulnerabilities) than to roll your own. Github Actions provides a scheduled trigger that can execute a task at a particular time.
+Common periodic tasks it's best to use a tool that already does the job (e.g. Dependabot for checking packages for security vulnerabilities) than to roll your own. Github Actions provides a scheduled trigger that can execute a task at a particular time. ([github actions schedule](https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows#schedule))
