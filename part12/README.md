@@ -194,3 +194,107 @@ Docker engine turns images into containers.
     ```
 
 - more in-depth best practices for node apps inside docker [here](https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/)
+
+### Docker compose
+
+- Helps manage containers
+- uses yaml, so they can be committed to repo
+- example:
+
+  - config file: `docker-compose.yml`
+
+    ```yml
+    services:
+    app: # The name of the service, can be anything
+      image: express-server # Declares which image to use
+      build: . # Declares where to build if image is not found
+      ports: # Declares the ports to publish
+        - 3000:3000
+    ```
+
+  - build and run the application:
+
+    ```sh
+    docker compose up
+    ```
+
+  - rebuild the image:
+
+    ```sh
+    docker compose up --build
+    ```
+
+- A mongo example:
+
+  - configuration file `docker-compose.dev.yml`
+    ```yml
+    services:
+      mongo:
+        image: mongo
+        ports:
+          - 3456:27017
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+          MONGO_INITDB_DATABASE: the_database
+    ```
+  - to distinguish between two configuration files,
+    ```sh
+    docker compose -f docker-compose.dev.yml up
+    ```
+  - to start it in the background:
+    ```sh
+    docker compose -f docker-compose.dev.yml up -d.
+    ```
+  - to view the logs from the background process
+
+    ```sh
+    docker compose -f docker-compose.dev.yml logs -f
+    ```
+
+  - But this code doesn't actually initialize the database and create users/entries at the beginning. Instead of extending the image, we can `bind mount` a file to the container.
+
+    - this is done by passing `-v FILE-IN-HOST:FILE-IN-CONTAINER` to `docker run`
+    - or, using `docker compose`:
+
+      ```yml
+      services:
+        mongo:
+          # ...
+          volumes:
+            - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      ```
+
+  - NB: these two files are now linked; changes to one causes changes to the other
+  - `docker compose -f docker-compose.dev.yml down --volumes` will start from a clean slate to do `docker compose -f docker-compose.dev.yml up` to initialize the database
+
+  - to make sure data persists once the container is shut down / restarted. There are two options to do this:
+
+    1. `bind mount` (declare a location in your filesystem to store it). Example `docker compose` config file:
+
+    ```yml
+    services:
+      mongo:
+        # ...
+        volumes:
+          -  #
+          - ./mongo/data:/data/db
+    ```
+
+    2. `named volume` (docker will decide where to store the data)
+
+    ```yml
+    services:
+      mongo:
+        # ...
+    volumes:
+      mongo_data:
+    ```
+
+    You can then work with the volumes using:
+
+    ```sh
+    docker volume ls
+    docker volume inspect
+    docker volume rm
+    ```
