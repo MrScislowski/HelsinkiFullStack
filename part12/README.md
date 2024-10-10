@@ -59,3 +59,41 @@ Docker engine turns images into containers.
   ```
 
   stops the container
+
+- ```sh
+  docker container diff stoic_sammet
+  ```
+
+  lists the differences between the original image that the container was generated from, and the current state of the container
+
+- ```sh
+  docker commit stoic_sammet hello-node-world
+  ```
+
+  creates a new image called `hello-node-world` based on the current state of the container
+
+- ```sh
+  docker image ls
+  ```
+
+  lists all the images you have. (`hello-node-world` should now appear in that list)
+
+- ```sh
+  docker rm stoic_sammet
+  ```
+
+  remove the old container
+
+- There are already lighter weight installs with node in docker hub. E.g.
+
+  ```sh
+  docker container run -it --name hello-node node:20 bash
+  ```
+
+  (NB: gives your own name to the container)
+
+- To copy files from local filesystem to container:
+
+  ```sh
+  docker container cp ./index.js hello-node:/usr/src/app/index.js
+  ```
