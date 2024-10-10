@@ -14,7 +14,7 @@ Docker engine turns images into containers.
 
 `Docker compose` allows you to "orchestrate" (control) multiple containers at once
 
-## Docker
+## Basic Docker
 
 - ```sh
   docker container run hello-world
@@ -97,3 +97,100 @@ Docker engine turns images into containers.
   ```sh
   docker container cp ./index.js hello-node:/usr/src/app/index.js
   ```
+
+## Building Images & Configuring Environments
+
+- Dockerfile is a simple text file that contains all the instructions to create an image:
+
+  ```
+  FROM node:20
+
+  WORKDIR /usr/src/app
+
+  COPY ./index.js ./index.js
+
+  CMD node index.js
+  ```
+
+  - `FROM` specifies the base for the image
+  - `CMD` is the default command when `docker run` is called (can be overwritten w/ argument given after image name)
+  - `WORKDIR` is created if it doesn't already exist. Important to prevent accidental overwriting of existing image files
+
+  To build an image called `fs-hello-world` with the Dockerfile in the current directory (`.`), use the command:
+
+  ```sh
+  docker build -t fs-hello-world .
+  ```
+
+- To build a simple express app:
+
+  - Build the app locally... In a new directory `using-dockerfile`
+    ```sh
+    pnpm dlx express-generator
+    ```
+    Then install dependencies with
+    ```sh
+    npm install
+    ```
+    And test running the app with the command given by the generator, For me it was:
+    ```sh
+    DEBUG=using-dockerfile:* npm start
+    ```
+  - Now create this `Dockerfile`:
+
+    ```
+    FROM node:20
+
+    WORKDIR /usr/src/app
+
+    COPY . .
+
+    CMD DEBUG=dockerfile:* npm start
+    ```
+
+  - Then build the image and run it:
+    ```sh
+    docker build -t express-server .
+    docker run -p 3123:3000 express-server
+    ```
+
+- A better way... The problem with that, was it copied the `node_modules` from the local system to the image which is not optimal. Better to do:
+
+  - ignore stuff in a `.dockerignore`
+
+    ```
+    .dockerignore
+    .gitignore
+    node_modules
+    Dockerfile
+    ```
+
+  - modify `Dockerfile` to install stuff itself, and don't bother with dev dependencies:
+
+    ```
+    // ...
+    RUN npm clean-install --omit=dev # aka npm ci
+    CMD DEBUG=using-dockerfile:* npm start
+    ```
+
+  - and actually, using `ENV` in `Dockerfile` is even better:
+
+    ```
+    // ...
+    ENV DEBUG=using-dockerfile:*
+    CMD npm start
+    ```
+
+  - don't run as root... `Dockerfile`:
+
+    ```
+    FROM node:20
+    WORKDIR /usr/src/app
+    COPY --chown=node:node . .
+    RUN npm ci
+    ENV DEBUG=playground:*
+    USER node
+    CMD npm start
+    ```
+
+- more in-depth best practices for node apps inside docker [here](https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/)
