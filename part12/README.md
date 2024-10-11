@@ -318,3 +318,73 @@ services:
 ```
 
 There was also some set-up already done for me...
+
+### Docker-izing React
+
+#### First attempt... generate all the files needed for the react app:
+
+```sh
+npm create vite@latest hello-front -- --template react
+cd hello-front
+```
+
+To build it, we'd do:
+
+```sh
+npm install
+npm run build
+```
+
+To server it, we could do,
+
+```sh
+npm install -g serve
+serve dist
+```
+
+So our dockerfile could be:
+
+```yml
+FROM node:20
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm ci
+
+RUN npm run build
+
+RUN npm install -g serve
+
+CMD ["serve", "dist"]
+```
+
+#### Improvement...
+
+- A goal is to create Docker images so that nothing irrelevant is included
+- minimal number of dependencies => images less likely to break / become vulnerable
+- Multi-stage builds are a solution to this... they split the build process into many separate stages, and limit what parts of the image files are moved between the stages (to reduce size of images etc)
+
+```yml
+# The first FROM is now a stage called build-stage
+
+FROM node:20 AS build-stage
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+RUN npm ci
+
+RUN npm run build
+
+# This is a new stage, everything before this is gone, except for the files that we want to COPY
+
+FROM nginx:1.25-alpine
+
+# COPY the directory dist from the build-stage to /usr/share/nginx/html
+# The target location here was found from the Docker hub page
+
+COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
+```
