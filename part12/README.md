@@ -298,3 +298,9 @@ Docker engine turns images into containers.
     docker volume inspect
     docker volume rm
     ```
+
+### Debugging Docker
+
+- `docker container run -d -p 8080:80 nginx`: `-d` runs in detached mode
+- `docker exec -it wonderful_ramanujan bash`: connects to an already running container
+- `docker compose up -d`
