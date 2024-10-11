@@ -304,3 +304,17 @@ Docker engine turns images into containers.
 - `docker container run -d -p 8080:80 nginx`: `-d` runs in detached mode
 - `docker exec -it wonderful_ramanujan bash`: connects to an already running container
 - `docker compose up -d`
+
+### Redis
+
+```yml
+services:
+  mongo:
+    # ...
+  redis:
+    image: redis
+    ports:
+      - 6378:6379
+```
+
+There was also some set-up already done for me...
