@@ -388,3 +388,85 @@ FROM nginx:1.25-alpine
 
 COPY --from=build-stage /usr/src/app/dist /usr/share/nginx/html
 ```
+
+## Development in containers
+
+Pros of developing in containers:
+
+- development and production environments can be more similar
+- different developers can all have the same environment
+- new members / computers can be set up simply by installing container runtime
+
+Need to do these things to move application to container:
+
+- start the application in development mode
+- access files with VS Code
+
+### `dev.Dockerfile`
+
+```yml
+FROM node:20
+
+WORKDIR /usr/src/app
+
+COPY . .
+
+# Change npm ci to npm install since we are going to be in development mode
+RUN npm install
+
+# npm run dev is the command to start the application in development mode
+CMD ["npm", "run", "dev", "--", "--host"]
+```
+
+The `--host` parameter exposes the development server to be visible outside the Docker network (not just to localhost)
+
+```sh
+docker build -f ./dev.Dockerfile -t hello-front-dev .
+```
+
+### Accessing files with text editor
+
+This course will use volumes to solve this problem (which works for any editor). VSCode has [native ways](https://code.visualstudio.com/docs/remote/containers) of solving this problem too.
+
+This connects our current working directory with the /usr/src/app directory, and edits we make to files should be made to the container too.
+
+```sh
+docker run -p 5173:5173 -v "$(pwd):/usr/src/app/" hello-front-dev
+```
+
+#### Mac problems
+
+The `rollup` library (maybe used in the vite development server?) has different versions for different processor architectures, and the M1/M2 installed version may be used instead of the linux-based one appropriate for the container. So isntalling the linux version can fix it:
+
+```sh
+docker run -it -v "$(pwd):/usr/src/app/" front-dev bash
+npm install
+```
+
+#### compose
+
+With this configuration, `docker compose -f docker-compose.dev.yml` will run the application in development node, and you don't even need Node installed to develop it!
+
+`docker-compose.dev.yml`:
+
+```yml
+services:
+  app:
+    image: hello-front-dev
+    build:
+      context: . # The context will pick this directory as the "build context"
+      dockerfile: dev.Dockerfile # This will simply tell which dockerfile to read
+    volumes:
+      - ./:/usr/src/app # The path can be relative, so ./ is enough to say "the same location as the docker-compose.yml"
+    ports:
+      - 5173:5173
+    container_name: hello-front-dev # This will name the container hello-front-dev
+```
+
+Installing dependencies is annoying in a set up like this. Instead of `npm install axios` you have to do it in the running container:
+
+```sh
+docker exec hello-front-dev npm install axios
+```
+
+Or add it to the `package.json` and run `docker build` again.
