@@ -443,6 +443,8 @@ docker run -it -v "$(pwd):/usr/src/app/" front-dev bash
 npm install
 ```
 
+When you mount the current directory to the container's working directory, the local `node_modules` directory overrides the `node_modules` that were installed during the build process.
+
 #### compose
 
 With this configuration, `docker compose -f docker-compose.dev.yml` will run the application in development node, and you don't even need Node installed to develop it!
@@ -470,3 +472,45 @@ docker exec hello-front-dev npm install axios
 ```
 
 Or add it to the `package.json` and run `docker build` again.
+
+### Networking between containers
+
+If our `docker-compose.dev.yml` looks like:
+
+```yml
+services:
+  app:
+    image: hello-front-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 5173:5173
+    container_name: hello-front-dev
+
+  debug-helper:
+    image: busybox
+```
+
+And we run:
+
+```sh
+docker compose -f docker-compose.dev.yml run debug-helper wget -O - http://app:5173
+```
+
+It connects. If we had changed the port assignment in the `docker-compose.dev.yml` file to:
+
+```yml
+ports:
+  - 3210:5173
+```
+
+This command:
+
+```sh
+docker compose -f docker-compose.dev.yml run debug-helper wget -O - http://app:5173
+```
+
+would still work because the port is still 5173 within the docker network.
