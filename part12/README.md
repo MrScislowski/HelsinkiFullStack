@@ -514,3 +514,54 @@ docker compose -f docker-compose.dev.yml run debug-helper wget -O - http://app:5
 ```
 
 would still work because the port is still 5173 within the docker network.
+
+## Reverse Proxy
+
+- Can act as the single point of entry to your application, and can put both both frontend and backend behind it
+- implementation options: traefik, caddy, nginx, apache
+
+### Using nginx
+
+`nginx.dev.conf`: development configuration
+
+```
+# events is required, but defaults are ok
+events { }
+
+# A http server, listening at port 80
+http {
+  server {
+    listen 80;
+
+    # Requests starting with root (/) are handled
+    location / {
+      # The following 3 lines are required for the hot loading to work (websocket).
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection 'upgrade';
+
+      # Requests are directed to http://localhost:5173
+      proxy_pass http://app:5173;
+    }
+  }
+}
+```
+
+`nginx.conf` would be used for production configuration.
+
+To start this up on a container, `docker-compose.dev.yml`:
+
+```yml
+services:
+  app:
+    # ...
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app # wait for the frontend container to be started
+```
