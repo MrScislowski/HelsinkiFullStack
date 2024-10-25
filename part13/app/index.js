@@ -11,7 +11,7 @@ app.use(cors());
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 
 const notes = sequelize
-  .query("SELECT * FROM notes", QueryTypes.SELECT)
+  .query("SELECT * FROM blogs", QueryTypes.SELECT)
   .then((data) => {
     console.log("data received is:");
     console.log(JSON.stringify(data, null, 2));
