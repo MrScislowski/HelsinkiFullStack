@@ -120,3 +120,29 @@ const newNote = Note.build(req.body);
 newNote.important = true;
 await newNote.save();
 ```
+
+### Creating empty db if not already exist...
+
+```js
+Note.sync();
+```
+
+### Find by id
+
+```js
+Note.findByPk(/*id here*/);
+```
+
+### Modify a note
+
+```js
+const note = await Note.findByPk(/*id*/);
+note.important = true;
+await note.save();
+```
+
+### Humean readable form of a note
+
+```js
+console.log(note.toJSON());
+```
