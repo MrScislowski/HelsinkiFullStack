@@ -146,3 +146,7 @@ await note.save();
 ```js
 console.log(note.toJSON());
 ```
+
+## Application structure with sequelize
+
+https://fullstackopen.com/en/part13/join_tables_and_queries#application-structuring
