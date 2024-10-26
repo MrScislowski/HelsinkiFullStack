@@ -18,6 +18,11 @@ app.get("/api/blogs", async (req, res) => {
   res.json(blogs);
 });
 
+app.post("/api/blogs", async (req, res) => {
+  const newBlog = await Blog.create(req.body);
+  res.json(newBlog);
+});
+
 app.listen(3000, () => {
   console.log("listening on port 3000");
 });

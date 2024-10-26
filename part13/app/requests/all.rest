@@ -1,3 +1,13 @@
 ###
 GET http://localhost:3000/api/blogs
 
+###
+POST http://localhost:3000/api/blogs
+Content-Type: application/json
+
+{
+  "author": "Matt Yglesias",
+  "url": "https://www.slowboring.com/p/bidens-foreign-policy-disappointment",
+  "title": "Biden's foreign policy disappointment",
+  "likes": 136
+}
