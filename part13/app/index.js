@@ -23,6 +23,17 @@ app.post("/api/blogs", async (req, res) => {
   res.json(newBlog);
 });
 
+app.delete("/api/blogs/:id", async (req, res) => {
+  const theBlog = await Blog.findByPk(req.params.id);
+
+  if (!theBlog) {
+    res.status(404).send();
+  } else {
+    await theBlog.destroy();
+    res.status(204).send();
+  }
+});
+
 app.listen(3000, () => {
   console.log("listening on port 3000");
 });

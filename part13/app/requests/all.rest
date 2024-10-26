@@ -11,3 +11,6 @@ Content-Type: application/json
   "title": "Biden's foreign policy disappointment",
   "likes": 136
 }
+
+###
+DELETE http://localhost:3000/api/blogs/3
