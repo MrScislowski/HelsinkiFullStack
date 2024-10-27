@@ -150,3 +150,41 @@ console.log(note.toJSON());
 ## Application structure with sequelize
 
 https://fullstackopen.com/en/part13/join_tables_and_queries#application-structuring
+
+- `util/config.js` loads & exports environment variables
+- `util/db.js` initializes the database:
+
+  ```js
+  const Sequelize = require("sequelize");
+  const { DATABASE_URL } = require("./config");
+
+  const sequelize = new Sequelize(DATABASE_URL);
+
+  const connectToDatabase = async () => {
+    try {
+      await sequelize.authenticate();
+      console.log("connected to the database");
+    } catch (err) {
+      console.log("failed to connect to the database");
+      return process.exit(1);
+    }
+
+    return null;
+  };
+
+  module.exports = { connectToDatabase, sequelize };
+  ```
+
+- `models/note.js` has to import the database
+  ```js
+  const { sequelize } = require("../util/db");
+  ```
+
+For all the routes that involve finding a note by id (aka primary key), we can define a middleware:
+
+```js
+const noteFinder = async (req, res, next) => {
+  req.note = await Note.findByPk(req.params.id);
+  next();
+};
+```
