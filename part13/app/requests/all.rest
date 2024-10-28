@@ -22,3 +22,29 @@ Content-Type: application/json
 {
   "likes": 195
 }
+
+### Invalid request - POST missing required fields
+POST http://localhost:3000/api/blogs
+Content-Type: application/json
+
+{
+  "author": "This has an author",
+  "url": "And a URL, but no title",
+  "likes": 136
+}
+
+### Invalid request - PUT missing 'likes'
+PUT http://localhost:3000/api/blogs/4
+Content-Type: application/json
+
+{
+  "author": "Nobody"
+}
+
+### Invalid request - likes should be a number
+PUT http://localhost:3000/api/blogs/4
+Content-Type: application/json
+
+{
+  "likes": "Yes, I do!"
+}

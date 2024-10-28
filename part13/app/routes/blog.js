@@ -30,10 +30,26 @@ router.put("/:id", async (req, res) => {
   if (!theBlog) {
     res.status(404).send();
   } else {
+    if (!Number.isInteger(req.body.likes)) {
+      throw new Error(
+        "'likes' property must be specified, and must be an integer"
+      );
+    }
     theBlog.likes = req.body.likes;
     await theBlog.save();
     res.status(200).send();
   }
 });
+
+const errorHandler = (err, req, res, next) => {
+  if (err instanceof Error) {
+    return res.status(400).send(err.message);
+  }
+
+  console.error(err);
+  return res.status(500).send();
+};
+
+router.use(errorHandler);
 
 module.exports = router;
