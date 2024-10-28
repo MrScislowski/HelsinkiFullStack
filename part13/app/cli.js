@@ -1,10 +1,4 @@
-require("dotenv").config();
-const { Sequelize } = require("sequelize");
-const BlogInit = require("./models/BlogInit");
-
-const sequelize = new Sequelize(process.env.DATABASE_URL);
-
-const Blog = BlogInit(sequelize);
+const Blog = require("./models/Blog");
 
 const main = async () => {
   await Blog.sync();
