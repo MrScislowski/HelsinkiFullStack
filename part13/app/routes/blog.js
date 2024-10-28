@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const { Blog } = require("../models/index");
+const { Blog, User } = require("../models/index");
 const { getUserFromToken } = require("../middleware/user");
 
 router.get("/", async (req, res) => {
-  const blogs = await Blog.findAll();
+  const blogs = await Blog.findAll({
+    include: { model: User },
+  });
   res.json(blogs);
 });
 

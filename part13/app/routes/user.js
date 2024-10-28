@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-const { User } = require("../models/index");
+const { User, Blog } = require("../models/index");
 
 router.get("/", async (req, res) => {
-  const users = await User.findAll();
+  const users = await User.findAll({
+    include: {
+      model: Blog,
+    },
+  });
   res.json(users);
 });
 

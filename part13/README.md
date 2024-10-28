@@ -251,3 +251,6 @@ Note.init({
   // ...
 });
 ```
+
+Exercise 13.12.
+[ ] reduce the amount of extraneous info in the joins
