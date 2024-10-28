@@ -252,6 +252,6 @@ Note.init({
 });
 ```
 
-[ ] create route to list all user
-[ ] create a route for changing username
-[ ] make sure created_at and updated_at timestamps work correctly with new user creation & changing username
+Exercise 13.9.
+
+[ ]
