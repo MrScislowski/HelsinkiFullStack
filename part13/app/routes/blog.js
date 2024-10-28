@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const Blog = require("../models/Blog");
+const { Blog } = require("../models/index");
 const { getUserFromToken } = require("../middleware/user");
 
 router.get("/", async (req, res) => {
@@ -13,7 +13,7 @@ router.post("/", getUserFromToken, async (req, res) => {
   if (!req.user) {
     throw new Error("Must be logged in and provide token to make a post");
   }
-  const newBlog = await Blog.create(req.body);
+  const newBlog = await Blog.create({ ...req.body, userId: req.user.id });
   res.json(newBlog);
 });
 

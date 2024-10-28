@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
 
-const User = require("../models/User");
+const { User } = require("../models/index");
 
 router.post("/", async (req, res) => {
   const username = req.body.username;
