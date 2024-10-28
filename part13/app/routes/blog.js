@@ -10,18 +10,17 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", getUserFromToken, async (req, res) => {
-  if (!req.user) {
-    throw new Error("Must be logged in and provide token to make a post");
-  }
   const newBlog = await Blog.create({ ...req.body, userId: req.user.id });
   res.json(newBlog);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", getUserFromToken, async (req, res) => {
   const theBlog = await Blog.findByPk(req.params.id);
 
   if (!theBlog) {
     res.status(404).send();
+  } else if (theBlog.userId !== req.user.id) {
+    throw new Error("You can only delete blogs that you posted");
   } else {
     await theBlog.destroy();
     res.status(204).send();

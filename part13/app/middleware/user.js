@@ -11,7 +11,7 @@ const getUserFromToken = async (req, res, next) => {
     const userFromToken = jwt.verify(token, config.SECRET);
     req.user = userFromToken;
   } else {
-    req.user = null;
+    throw new Error("Must be logged in and provide token to make a post");
   }
   next();
 };
