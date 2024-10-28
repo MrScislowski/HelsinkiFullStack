@@ -1,3 +1,5 @@
+
+########## BLOGS ##########
 ###
 GET http://localhost:3000/api/blogs
 
@@ -47,4 +49,17 @@ Content-Type: application/json
 
 {
   "likes": "Yes, I do!"
+}
+
+########## USERS ##########
+###
+GET http://localhost:3000/api/users
+
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Ali Brown",
+  "username": "user1"
 }
