@@ -188,3 +188,66 @@ const noteFinder = async (req, res, next) => {
   next();
 };
 ```
+
+## User Management
+
+To associate tables (e.g. users and notes), you can use a "foreign key".
+
+`models/index.js` has:
+
+```js
+const Note = require("./note");
+const User = require("./user");
+
+User.hasMany(Note);
+Note.belongsTo(User);
+Note.sync({ alter: true });
+User.sync({ alter: true });
+```
+
+"alter" means that tables in the database will match changes to the model definitions.
+
+Making a join query now looks like this:
+
+```js
+const users = await User.findAll({
+  include: {
+    model: Note,
+  },
+});
+```
+
+If you want just some fields of the join, (for a different query btw)
+
+```js
+const notes = await Note.findAll({
+  attributes: { exclude: ['user_id'] },
+  include: {
+    model: User,
+    attributes: ['name'];
+  }
+})
+```
+
+### Behind the scenes with foreign keys / joins / etc
+
+The code:
+
+```js
+User.hasMany(Note);
+Note.belongsTo(User);
+```
+
+Is equivalent to doing the following in the `Note` model:
+
+```js
+Note.init({
+  // ...
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: { model: "users", key: "id" },
+  },
+  // ...
+});
+```
