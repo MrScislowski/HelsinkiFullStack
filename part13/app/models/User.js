@@ -17,6 +17,9 @@ User.init(
       type: DataTypes.TEXT,
       unique: true,
       allowNull: false,
+      validate: {
+        isEmail: true,
+      },
     },
   },
   {

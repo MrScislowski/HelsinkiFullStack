@@ -79,3 +79,20 @@ Content-Type: application/json
 {
   "username": "user1"
 }
+
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Charlie Dreyfus",
+  "username": "user2@example.com"
+}
+
+###
+PUT http://localhost:3000/api/user2%40example.com
+Content-Type: application/json
+
+{
+  "username": "user2_1@example.com"
+}
