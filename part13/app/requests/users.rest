@@ -1,0 +1,76 @@
+
+########## USERS ##########
+###
+GET http://localhost:3000/api/users
+
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Ali Brown",
+  "username": "user1"
+}
+
+###
+PUT http://localhost:3000/api/users/user1
+Content-Type: application/json
+
+{
+  "username": "username_1"
+}
+
+###
+PUT http://localhost:3000/api/users/username_1
+Content-Type: application/json
+
+{
+  "username": "user1"
+}
+
+###
+POST http://localhost:3000/api/users
+Content-Type: application/json
+
+{
+  "name": "Charlie Dreyfus",
+  "username": "user2@example.com"
+}
+
+###
+PUT http://localhost:3000/api/users/user2%40example.com
+Content-Type: application/json
+
+{
+  "username": "user2_1@example.com"
+}
+
+###
+PUT http://localhost:3000/api/users/user2_1%40example.com
+Content-Type: application/json
+
+{
+  "username": "notanemail"
+}
+
+###
+POST http://localhost:3000/api/login
+Content-Type: application/json
+
+{
+  "username": "user1",
+  "password": "secret"
+}
+
+### Get a token from the command above...
+###
+POST http://localhost:3000/api/blogs
+Content-Type: application/json
+Authorization: Bearer ???
+
+{
+  "author": "Nate Silver",
+  "url": "https://www.natesilver.net/p/trumps-dominating-the-news-again",
+  "title": "Trump's dominating the new again. Maybe that's good news for Harris",
+  "likes": 209
+}

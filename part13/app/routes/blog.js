@@ -2,13 +2,17 @@ const express = require("express");
 const router = express.Router();
 
 const Blog = require("../models/Blog");
+const { getUserFromToken } = require("../middleware/user");
 
 router.get("/", async (req, res) => {
   const blogs = await Blog.findAll();
   res.json(blogs);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", getUserFromToken, async (req, res) => {
+  if (!req.user) {
+    throw new Error("Must be logged in and provide token to make a post");
+  }
   const newBlog = await Blog.create(req.body);
   res.json(newBlog);
 });
