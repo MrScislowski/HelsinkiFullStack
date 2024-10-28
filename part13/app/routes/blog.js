@@ -24,4 +24,16 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+router.put("/:id", async (req, res) => {
+  let theBlog = await Blog.findByPk(req.params.id);
+
+  if (!theBlog) {
+    res.status(404).send();
+  } else {
+    theBlog.likes = req.body.likes;
+    await theBlog.save();
+    res.status(200).send();
+  }
+});
+
 module.exports = router;
