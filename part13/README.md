@@ -423,3 +423,6 @@ And then in `package.json`:
 ```json
 "db:rollback": "node ./utils/rollback.js"
 ```
+
+TODO:
+[ ] "user_id" vs "userId" is a real pain in the ass once we use migrations... I'm getting both in my blogs object, so that excluding it isn't working at the moment...
