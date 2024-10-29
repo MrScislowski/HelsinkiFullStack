@@ -3,7 +3,7 @@
 GET http://localhost:3000/api/blogs
 
 ###
-GET http://localhost:3000/api/blogs?search=the
+GET http://localhost:3000/api/blogs?search=is
 
 ###
 POST http://localhost:3000/api/blogs

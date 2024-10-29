@@ -6,12 +6,16 @@ const { getUserFromToken } = require("../middleware/user");
 const { Op } = require("sequelize");
 
 router.get("/", async (req, res) => {
-  const where = {};
+  let where = {};
 
   if (req.query?.search) {
-    console.log("Adding the search string to the query");
-    where.title = { [Op.iLike]: `%${req.query.search}%` };
-    console.log(where);
+    where = {
+      ...where,
+      [Op.or]: [
+        { title: { [Op.iLike]: `%${req.query.search}%` } },
+        { author: { [Op.iLike]: `%${req.query.search}%` } },
+      ],
+    };
   }
 
   const blogs = await Blog.findAll({
