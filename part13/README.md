@@ -302,3 +302,124 @@ router.get("/", async (req, res) => {
   res.json(notes);
 });
 ```
+
+## Migrations
+
+### Sequelize
+
+Instead of having `Note.sync({alter: true})`, we should use migrations. A migration is a single javascript file that that describes modification(s) to the database. Migration files have functions `up` and `down`, to apply and undo the migration, respectively.
+
+Here's an example migration (note that we have to use snake_case instead of camel case for the column/table names):
+
+```js
+const { DataTypes } = require("sequelize");
+
+module.exports = {
+  up: async ({ context: queryInterface }) => {
+    await queryInterface.createTable("notes", {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      content: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      important: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      date: {
+        type: DataTypes.DATE,
+      },
+    });
+    await queryInterface.createTable("users", {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      username: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+    });
+    await queryInterface.addColumn("notes", "user_id", {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: { model: "users", key: "id" },
+    });
+  },
+  down: async ({ context: queryInterface }) => {
+    await queryInterface.dropTable("notes");
+    await queryInterface.dropTable("users");
+  },
+};
+```
+
+We should save this as `./migrations/20241029_00_initialize_notes_and_users.js`.
+
+There's a sequelize command line tool for running the migrations, but we'll use umzug:
+
+### umzug
+
+```sh
+pnpm install umzug
+```
+
+Then use it like:
+
+```js
+// ...
+const { Umzug, SequelizeStorage } = require("umzug");
+
+const sequelize = new Sequelize(DATABASE_URL);
+
+const migrationConf = {
+  migrations: {
+    glob: "migrations/*.js",
+  },
+  storage: new SequelizeStorage({ sequelize, tableName: "migrations" }),
+  context: sequelize.getQueryInterface(),
+  logger: console,
+};
+
+const runMigrations = async () => {
+  const migrator = new Umzug(migrationConf);
+
+  const migrations = await migrator.up();
+  console.log("Migrations up to date", {
+    files: migrations.map((mig) => mig.name),
+  });
+};
+
+const rollbackMigration = async () => {
+  await sequelize.authenticate();
+  const migrator = new Umzug(migrationConf);
+  await migrator.down();
+};
+
+// ...
+sequelize.authenticate();
+await runMigrations();
+```
+
+This will automatically run migrations every time the database is loaded. To allow us to roll back migrations, create `utils/rollback.js`:
+
+```js
+const { rollbackMigration } = require("./db");
+
+rollbackMigration();
+```
+
+And then in `package.json`:
+
+```json
+"db:rollback": "node ./utils/rollback.js"
+```
