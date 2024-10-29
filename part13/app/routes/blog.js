@@ -6,7 +6,15 @@ const { getUserFromToken } = require("../middleware/user");
 
 router.get("/", async (req, res) => {
   const blogs = await Blog.findAll({
-    include: { model: User },
+    attributes: {
+      exclude: ["userId"],
+    },
+    include: {
+      model: User,
+      attributes: {
+        exclude: ["createdAt", "updatedAt"],
+      },
+    },
   });
   res.json(blogs);
 });
