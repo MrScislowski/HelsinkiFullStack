@@ -252,5 +252,53 @@ Note.init({
 });
 ```
 
-Exercise 13.12.
-[ ] reduce the amount of extraneous info in the joins
+## Sequelize operators
+
+```js
+const { Op } = require("sequelize");
+```
+
+You can then use them like:
+
+```js
+Note.findAll({
+  where: {
+    [Op.and]: [{ a: 5 }, { b: 6 }],
+    [Op.or]: [{ a: 5 }, { b: 6 }],
+    // ...
+  },
+});
+```
+
+There is also `Op.` eq, ne, is, not, col, gt, gte, lt, lte, between, notBetween, all, in, notIn, like, notLike, startsWith, endsWith, substring, iLike, notILike, regexp, notRegexp, iRegexp, notIRegexp, any, match
+
+### Unnecessary `where` clauses
+
+Setting a variable to be an empty object, and then setting fields on it will reduce unnecessary clauses
+
+```js
+router.get("/", async (req, res) => {
+  const where = {};
+
+  if (req.query.important) {
+    where.important = req.query.important === "true";
+  }
+
+  if (req.query.search) {
+    where.content = {
+      [Op.substring]: req.query.search,
+    };
+  }
+
+  const notes = await Note.findAll({
+    attributes: { exclude: ["userId"] },
+    include: {
+      model: User,
+      attributes: ["name"],
+    },
+    where,
+  });
+
+  res.json(notes);
+});
+```
