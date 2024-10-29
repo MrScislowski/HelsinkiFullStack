@@ -3,8 +3,17 @@ const router = express.Router();
 
 const { Blog, User } = require("../models/index");
 const { getUserFromToken } = require("../middleware/user");
+const { Op } = require("sequelize");
 
 router.get("/", async (req, res) => {
+  const where = {};
+
+  if (req.query?.search) {
+    console.log("Adding the search string to the query");
+    where.title = { [Op.iLike]: `%${req.query.search}%` };
+    console.log(where);
+  }
+
   const blogs = await Blog.findAll({
     attributes: {
       exclude: ["userId"],
@@ -15,6 +24,7 @@ router.get("/", async (req, res) => {
         exclude: ["createdAt", "updatedAt"],
       },
     },
+    where,
   });
   res.json(blogs);
 });
