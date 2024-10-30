@@ -12,13 +12,6 @@ router.get("/", async (req, res) => {
           exclude: ["userId"],
         },
       },
-      {
-        model: Blog,
-        as: "bookmarked_blogs",
-        through: {
-          attributes: [],
-        },
-      },
     ],
   });
   res.json(users);
@@ -26,16 +19,25 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
   const user = await User.findByPk(req.params.id, {
-    include: {
-      model: Blog,
-      as: "bookmarked_blogs",
-      through: {
-        attributes: [],
+    include: [
+      {
+        model: Blog,
+        as: "bookmarked_blogs",
+        through: {
+          attributes: [],
+        },
+        attributes: {
+          exclude: ["userId"],
+        },
+        include: {
+          model: ReadingList,
+          where: {
+            userId: req.params.id,
+          },
+          attributes: ["id", "read"],
+        },
       },
-      attributes: {
-        exclude: ["userId"],
-      },
-    },
+    ],
   });
   res.json(user);
 });

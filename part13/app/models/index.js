@@ -3,7 +3,10 @@ const Blog = require("./Blog");
 const ReadingList = require("./ReadingList");
 
 User.hasMany(Blog);
+User.hasMany(ReadingList);
+
 Blog.belongsTo(User);
+Blog.hasMany(ReadingList);
 
 // From a natural language perspective, it amkes more sense to say "blog belongs to many user as a reading list".
 // But actually, maybe the "as" is going with the "user" part... in which case, "blog belongs to many user. The user is a blog_reader"
