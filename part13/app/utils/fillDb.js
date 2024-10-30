@@ -26,21 +26,21 @@ const main = async () => {
         author: "Charles Eisenstein",
         url: "https://charleseisenstein.org/essays/the-coronation/",
         title: "The Coronation",
-        user_id: 1,
+        userId: 1,
       },
       {
         author: "Nate Silver",
         url: "https://www.natesilver.net/p/the-border-may-tip-the-election-to",
         title: "The border may tip the election to Trump",
         likes: 250,
-        user_id: 2,
+        userId: 2,
       },
       {
         author: "Matt Yglesias",
         url: "https://www.slowboring.com/p/bidens-foreign-policy-disappointment",
         title: "Biden's foreign policy disappointment",
         likes: 136,
-        user_id: 1,
+        userId: 1,
       },
       {
         author: "Nate Silver",
@@ -48,7 +48,7 @@ const main = async () => {
         title:
           "Trump's dominating the news again. Maybe that's good news for Harris.",
         likes: 350,
-        user_id: 1,
+        userId: 1,
       },
     ],
     {
