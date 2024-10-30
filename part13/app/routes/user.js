@@ -1,16 +1,25 @@
 const express = require("express");
 const router = express.Router();
 
-const { User, Blog } = require("../models/index");
+const { User, Blog, ReadingList } = require("../models/index");
 
 router.get("/", async (req, res) => {
   const users = await User.findAll({
-    include: {
-      model: Blog,
-      attributes: {
-        exclude: ["userId"],
+    include: [
+      {
+        model: Blog,
+        attributes: {
+          exclude: ["userId"],
+        },
       },
-    },
+      {
+        model: Blog,
+        as: "bookmarked_blogs",
+        through: {
+          attributes: [],
+        },
+      },
+    ],
   });
   res.json(users);
 });

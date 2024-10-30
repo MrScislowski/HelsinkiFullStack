@@ -1,5 +1,5 @@
 const { connectToDatabase, sequelize } = require("./db");
-const { Blog, User } = require("../models/index");
+const { Blog, User, ReadingList } = require("../models/index");
 
 const main = async () => {
   await connectToDatabase();
@@ -58,6 +58,15 @@ const main = async () => {
     {
       validate: true,
     }
+  );
+
+  await ReadingList.bulkCreate(
+    [
+      { userId: 1, blogId: 1 },
+      { userId: 1, blogId: 2 },
+      { userId: 2, blogId: 2 },
+    ],
+    { validate: true }
   );
 };
 
