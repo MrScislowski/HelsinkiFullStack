@@ -423,3 +423,21 @@ And then in `package.json`:
 ```json
 "db:rollback": "node ./utils/rollback.js"
 ```
+
+## Many-to-many relationship
+
+These are often handled with an "associative table" (also known as join table, junction table or cross-reference table), say, AB with two one-to-many relationships A → AB and B → AB. So it consists of two foreign keys
+
+We can make the model aware of that (if the associative table is called `Membership`)
+
+```js
+User.belongsToMany(Team, { through: Membership });
+Team.belongsToMany(User, { through: Membership });
+```
+
+These can be renamed if the names would be clobbered; e.g.
+
+```js
+User.belongsToMany(Note, { through: UserNotes, as: "marked_notes" }); // Users already has created notes; these marked notes are different
+Note.belongsToMany(User, { through: UserNotes, as: "users_marked" }); // Notes already have a user who created them; that'd be clobbered
+```
