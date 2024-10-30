@@ -27,6 +27,7 @@ const main = async () => {
         url: "https://charleseisenstein.org/essays/the-coronation/",
         title: "The Coronation",
         userId: 1,
+        year: 2020,
       },
       {
         author: "Nate Silver",
@@ -34,6 +35,7 @@ const main = async () => {
         title: "The border may tip the election to Trump",
         likes: 250,
         userId: 2,
+        year: 2024,
       },
       {
         author: "Matt Yglesias",
@@ -41,6 +43,7 @@ const main = async () => {
         title: "Biden's foreign policy disappointment",
         likes: 136,
         userId: 1,
+        year: 2024,
       },
       {
         author: "Nate Silver",
@@ -49,6 +52,7 @@ const main = async () => {
           "Trump's dominating the news again. Maybe that's good news for Harris.",
         likes: 350,
         userId: 1,
+        year: 2024,
       },
     ],
     {

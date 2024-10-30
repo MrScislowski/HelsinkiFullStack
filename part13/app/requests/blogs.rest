@@ -57,11 +57,13 @@ Content-Type: application/json
 ###
 POST http://localhost:3000/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJ1c2VyMkBleGFtcGxlLmNvbSIsImlhdCI6MTczMDI5NTkyM30.7Nq_bYmuL2hqb6ijAwyXsl_8mAlNbjLUvBBIUq2TlSY
 
 {
   "author": "Matt Yglesias",
-  "url": "https://www.slowboring.com/p/bidens-foreign-policy-disappointment",
-  "title": "Biden's foreign policy disappointment",
-  "likes": 136
+  "url": "https://www.slowboring.com/p/i-changed-my-mind",
+  "title": "I changed my mind",
+  "likes": 90,
+  "year": 2024
 }
 
