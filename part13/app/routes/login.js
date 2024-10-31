@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const config = require("../utils/config");
+const { v1 } = require("uuid");
 
-const { User } = require("../models/index");
+const { User, Session } = require("../models/index");
 
 router.post("/", async (req, res) => {
   const username = req.body.username;
@@ -18,9 +19,18 @@ router.post("/", async (req, res) => {
     return res.status(400).send("invalid username or password");
   }
 
-  const userForToken = { id: theUser.id, username: theUser.username };
+  const sessionId = v1();
+
+  const userForToken = {
+    id: theUser.id,
+    username: theUser.username,
+    sessionId,
+  };
 
   const token = jwt.sign(userForToken, config.SECRET);
+
+  await Session.create({ userId: theUser.id, sessionId });
+
   return res.status(200).json({
     token,
     id: userForToken.id,

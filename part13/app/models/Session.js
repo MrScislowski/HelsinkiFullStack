@@ -12,9 +12,9 @@ Session.init(
     userId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: { model: "user", key: "id" },
+      references: { model: "users", key: "id" },
     },
-    token: {
+    sessionId: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
@@ -23,7 +23,7 @@ Session.init(
     sequelize,
     underscored: true,
     timestamps: true,
-    modelName: "user",
+    modelName: "session",
   }
 );
 
