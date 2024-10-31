@@ -441,3 +441,61 @@ These can be renamed if the names would be clobbered; e.g.
 User.belongsToMany(Note, { through: UserNotes, as: "marked_notes" }); // Users already has created notes; these marked notes are different
 Note.belongsToMany(User, { through: UserNotes, as: "users_marked" }); // Notes already have a user who created them; that'd be clobbered
 ```
+
+### Sequelize scopes
+
+In the options to `Model.init()` (alongside `underscored`, `timestamps`, etc), you can set scopes:
+
+```js
+{
+  defaultScope: {
+      where: {
+        disabled: false
+      }
+  },
+  scopes: {
+    admin: {
+      where: {
+        admin: true
+      }
+    },
+    disabled: {
+      where: {
+        disabled: true
+      }
+    },
+    name(value) {
+      return {
+        where: {
+          name: {
+            [Op.iLike]: value
+          }
+        }
+      }
+    },
+  }
+    // ...
+}
+```
+
+These scopes are used like this:
+
+```js
+// all admins
+const adminUsers = await User.scope("admin").findAll();
+
+// all inactive users
+const disabledUsers = await User.scope("disabled").findAll();
+
+// users with the string jami in their name
+const jamiUsers = await User.scope({ method: ["name", "%jami%"] }).findAll();
+
+//Chaining scopes...  admins with the string jami in their name
+const jamiUsers = await User.scope("admin", {
+  method: ["name", "%jami%"],
+}).findAll();
+```
+
+### Migrations and models repeating
+
+It is necessary to copy-paste between models and migrations; they're meant to be completely separate. There are command line tools to manage both, but this course won't cover them.
