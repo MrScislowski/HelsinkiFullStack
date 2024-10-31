@@ -80,6 +80,11 @@ Content-Type: application/json
   "password": "secret"
 }
 
+###
+DELETE http://localhost:3000/api/logout
+Authorization: Bearer ???
+
+
 ### Get a token from the command above...
 ###
 POST http://localhost:3000/api/blogs

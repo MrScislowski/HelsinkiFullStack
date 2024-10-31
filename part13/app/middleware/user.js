@@ -18,8 +18,10 @@ const getUserFromToken = async (req, res, next) => {
   }
 
   const result = await Session.findAndCountAll({
-    userId: userFromToken.id,
-    sessionId: userFromToken.sessionId,
+    where: {
+      userId: userFromToken.id,
+      sessionId: userFromToken.sessionId,
+    },
   });
 
   if (result.count !== 1) {

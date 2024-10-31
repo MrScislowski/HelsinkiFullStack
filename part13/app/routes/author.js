@@ -5,7 +5,6 @@ const { Blog } = require("../models/index");
 const { sequelize } = require("../utils/db");
 
 router.get("/", async (req, res) => {
-  console.log("about to get all authors");
   const blogs = await Blog.findAll({
     attributes: [
       "author",
