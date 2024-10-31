@@ -19,6 +19,10 @@ router.post("/", async (req, res) => {
     return res.status(400).send("invalid username or password");
   }
 
+  if (theUser.disabled) {
+    return res.status(400).send("this user's account is disabled");
+  }
+
   const sessionId = v1();
 
   const userForToken = {
