@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const { getUserFromToken } = require("../middleware/user");
 
-const { User, Blog, ReadingList } = require("../models/index");
+const { User, Blog, ReadingList, Session } = require("../models/index");
+const { where } = require("sequelize");
 
 router.get("/", async (req, res) => {
   const users = await User.findAll({
@@ -52,6 +54,16 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const newUser = await User.create(req.body);
   res.json(newUser);
+});
+
+router.post("/disable", getUserFromToken, async (req, res) => {
+  await Session.destroy({
+    where: { user_id: req.user.id },
+  });
+
+  await User.update({ disabled: true }, { where: { id: req.user.id } });
+
+  res.status(200).send("account disabled");
 });
 
 router.put("/:username", async (req, res) => {
