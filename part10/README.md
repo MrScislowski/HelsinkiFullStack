@@ -271,3 +271,44 @@ const Main = () => {
     )
 }
 ```
+
+### Form State Management
+
+`useState` can be used just like in react, but there are libraries. `Formik` is one of them. I think `react-hook-form` is probably the more modern version of this, but not used in this course.
+
+### Expo Snack
+
+A bit like JSFiddle; an online sandbox for code snippets.
+
+### yup - validation schema library that works with formik
+
+```sh
+pnpm install yup
+```
+
+```jsx
+import * as yup from 'yup';
+// ...
+
+const validationSchema = yup.object().shape({
+  mass: yup
+    .number()
+    .min(1, 'weight must be greater or equal to 1')
+    .required('weight is required'),
+  height: //...
+});
+
+// ...
+const formik = useFormik({
+  initialValues, validationSchema, onSubmit,
+})
+
+// ...
+return (
+  <View>
+  <TextInput
+  // ...
+  />
+  {formik.touched.mass && formik.errors.mass && (<Text style={{ color: 'red' }}>{formik.errors.mass}</Text>)}
+)
+```
