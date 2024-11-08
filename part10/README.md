@@ -230,3 +230,44 @@ export default Text;
 ```
 
 And then use that `Text` component elsewhere
+
+## Routing
+
+Install the library
+
+```sh
+pnpm install react-router-native
+```
+
+Wrap the app in a router provider:
+
+```jsx
+import { NativeRouter } from "react-router-native";
+// ...
+
+const App = () => {
+  return (
+    <NativeRouter>
+      <Main />
+    </NativeRouter>
+  );
+};
+```
+
+Within the `Main` component, add some routes:
+
+```jsx
+import { Route, Reoutes, Navigate } from 'react-router-native';
+// ...
+
+const Main = () => {
+    return (
+        // ...
+        <Routes>
+            <Route path="/" element={<RepositoryList />} />
+            <Route path="*" element={Navigate to="/" replace />} />
+        </Routes>
+        // ...
+    )
+}
+```
