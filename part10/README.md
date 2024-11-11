@@ -618,3 +618,129 @@ const useSignIn = () => {
   const authStorage = useContext(AuthStorageContext);
 };
 ```
+
+### kent c dodds article on using context effectively
+
+(based on [this article](https://kentcdodds.com/blog/how-to-use-react-context-effectively))
+
+- don't provide a default value for context, so that runtime errors are caught earlier
+
+- He thinks that this:
+
+  ```ts
+  import * as React from "react";
+  import { SomethingContext } from "some-context-package";
+
+  function YourComponent() {
+    const something = React.useContext(SomethingContext);
+  }
+  ```
+
+  Isn't as good as this:
+
+  ```ts
+  import * as React from "react";
+  import { useSomething } from "some-context-package";
+
+  function YourComponent() {
+    const something = useSomething();
+  }
+  ```
+
+  Because in the hook, we can do:
+
+  ```ts
+  function useSomething() {
+    const context = React.useContext(SomethingContext);
+    if (context === undefined) {
+      throw new Error("useSomething must be used within a SomethingContext");
+    }
+    return context;
+  }
+  ```
+
+- He doesn't use action creators because if you use typescript, and have typed your actions correctly, the autocomplete/inline type system will catch things.
+
+- if there's an async request, over the course of which you need to dispatch multiple things, he recommends creating a helper function in the context module that accepts dispatch and any other data required:
+
+  ```js
+  async function updateUser(dispatch, user, updates) {
+    dispatch({ type: "start update", updates });
+    try {
+      const updatedUser = await userClient.updateUser(user, updates);
+      dispatch({ type: "finish update", updatedUser });
+    } catch (error) {
+      dispatch({ type: "fail update", error });
+    }
+  }
+
+  export { UserProvider, useUser, updateUser };
+  ```
+
+  Which can be used like this:
+
+  ```js
+  import { useUser, updateUser } from "./user-context";
+
+  function UserSettings() {
+    const [{ user, status, error }, userDispatch] = useUser();
+
+    function handleSubmit(event) {
+      event.preventDefault();
+      updateUser(userDispatch, user, formState);
+    }
+
+    // more code...
+  }
+  ```
+
+Another of his articles [here](https://kentcdodds.com/blog/application-state-management-with-react)
+
+- Linked [video](https://www.youtube.com/watch?v=3XaXKiXtNjw) shows that, say you had a dashboard that rendered a welcome message to the user:
+
+  ```js
+  const App = () => {
+    const [user, setUser] = useState();
+
+    return <Dashboard user={user} />;
+  };
+
+  const Dashboard = ({user}) => {
+    return (
+    <>
+      <DashboardHeader />
+      <DashboardContent user={user} />
+    </>
+    )
+  }
+
+  const DashboardContent = ({user}) {
+    return ( <>
+      <GenericAnnouncements />
+      <WelcomeMessage user={user}>
+      </>
+    )
+  }
+
+  const WelcomeMessage ({user}) {
+    return <p> hello {user.name} </p>
+  }
+  ```
+
+  You can avoid the drilling, by setting the components of the dashboard in the root level, and using {children}
+
+  ```js
+  const Dashboard = () => {
+    return <>
+    {children}
+    </>
+  }
+
+  return <Dashboard>
+    <DashboardHeader />
+    <GenericAnnouncements />
+    <WelcomeMessage user={user}>
+    </Dashboard>;
+  ```
+
+- context is appropriate for user-specific state. For a cache (like, syncing with a server, kent dodds recommends react-query)
