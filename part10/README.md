@@ -530,3 +530,91 @@ class ShoppingCartStorage {
   }
 }
 ```
+
+In the `App` component, we create this storage:
+
+```js
+// ...
+import AuthStorage from "./src/utils/authStorage";
+
+const authStorage = new AuthStorage();
+const apolloClient = createApolloClient(authStorage);
+```
+
+In the `apolloClient.js` file we can have this local storage be used to set the header:
+
+```js
+// ...
+import { createHttpLink } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+
+const httpLink = createHttpLink({
+  uri: APOLLO_URL,
+});
+
+const createApolloClient = (authStorage) => {
+  const authLink = setContext(async (_, { headers }) => {
+    try {
+      const accessToken = await authStorage.getAccessToken();
+      return {
+        headers: {
+          ...headers,
+          authorization: accessToken ? `Bearer ${accessToken}` : "",
+        },
+      };
+    } catch (e) {
+      console.log(e);
+      return {
+        headers,
+      };
+    }
+  });
+  return new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
+};
+```
+
+To integrate the storage to the `useSignIn` hook we use react context.
+
+`src/contexts/AuthStorageContext.js`:
+
+```js
+import { createContext } from "react";
+
+const AuthStorageContext = createContext();
+
+export default AuthStorageContext;
+```
+
+`App`:
+
+```js
+// ...
+import AuthStorageContext from "./src/contexts/AuthStorageContext";
+
+// ...
+
+const App = () => {
+  return (
+    <NativeRouter>
+    <ApolloProvider client={apolloClient}>
+    <AuthStorageContext.Provider value={authStorage}>
+    <Main />
+    // ...
+  )
+}
+```
+
+Now whenever you need it (e.g. in `useSignIn`):
+
+```js
+// ...
+import { useContext } from "react";
+import AuthStorageContext from "../contexts/AuthStorageContext";
+
+const useSignIn = () => {
+  const authStorage = useContext(AuthStorageContext);
+};
+```
