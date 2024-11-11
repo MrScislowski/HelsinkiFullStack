@@ -231,6 +231,52 @@ export default Text;
 
 And then use that `Text` component elsewhere
 
+### Platform specific code
+
+`Platform.OS` variable
+
+```jsx
+import { React } from "react";
+import { Platform, Text, StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+  text: {
+    color: Platform.OS === "android" ? "green" : "blue", // 'ios' is the other possible value
+  },
+});
+
+const WhatIsMyPlatform = () => {
+  return <Text style={styles.text}>Your platform is: {Platform.OS}</Text>;
+};
+```
+
+`Platform.select` function
+
+```jsx
+const styles = StyleSheet.create({
+  text: {
+    color: Platform.select({
+      android: "green",
+      ios: "blue",
+      default: "black",
+    }),
+  },
+});
+```
+
+Using that to conditionally render different components
+
+```jsx
+const MyComponent = Platform.select({
+  ios: () => require("./MyIOSComponent"),
+  android: () => require("./MyAndroidComponent"),
+})();
+
+<MyComponent />;
+```
+
+Having different files `Button.ios.jsx` and `Button.android.jsx` will cause the correct code to be bundled
+
 ## Routing
 
 Install the library
