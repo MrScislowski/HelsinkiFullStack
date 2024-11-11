@@ -312,3 +312,50 @@ return (
   {formik.touched.mass && formik.errors.mass && (<Text style={{ color: 'red' }}>{formik.errors.mass}</Text>)}
 )
 ```
+
+## Fetch API
+
+Lower level than `axios`; need to parse json yourself
+
+```js
+fetch("https://my-api.com/post-end-point", {
+  method: "POST",
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    firstParam: "firstValue",
+    secondParam: "secondValue",
+  }),
+});
+```
+
+NB: 400 & 500 error codes aren't rejected promises => need to inspect response more closely.
+
+See [mdn tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch) for usage.
+
+## graphql
+
+Install pre-requisites
+
+```sh
+npm install @apollo/client graphql
+```
+
+Configure metro bundler to handle `cjs` files used by apollo client:
+
+- ```sh
+  npm install @expo/metro-config@0.17.4
+  ```
+- create `metro.config.js` at project root:
+
+  ```js
+  const { getDefaultConfig } = require("@expo/metro-config");
+
+  const defaultConfig = getDefaultConfig(__dirname);
+
+  defaultConfig.resolver.sourceExts.push("cjs");
+
+  module.exports = defaultConfig;
+  ```
