@@ -386,13 +386,13 @@ See [mdn tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Us
 Install pre-requisites
 
 ```sh
-npm install @apollo/client graphql
+pnpm install @apollo/client graphql
 ```
 
 Configure metro bundler to handle `cjs` files used by apollo client:
 
 - ```sh
-  npm install @expo/metro-config@0.17.4
+  pnpm install @expo/metro-config
   ```
 - create `metro.config.js` at project root:
 
@@ -405,3 +405,128 @@ Configure metro bundler to handle `cjs` files used by apollo client:
 
   module.exports = defaultConfig;
   ```
+
+Create the Apollo Client with required configuration in a `src/utils/apolloClient.js` file:
+
+```js
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+
+const createApolloClient = () => {
+  return new ApolloClient({
+    uri: "http://192.168.0.133:4000/graphql",
+    cache: new InMemoryCache(),
+  });
+};
+
+export default createApolloClient;
+```
+
+Amend `App.js` to create the apollo client, and use an ApolloProvider:
+
+```js
+import { NativeRouter } from "react-router-native";
+
+import { ApolloProvider } from "@apollo/client";
+
+import Main from "./src/components/Main";
+
+import createApolloClient from "./src/utils/apolloClient";
+
+const apolloClient = createApolloClient();
+
+const App = () => {
+  return (
+    <NativeRouter>
+      <ApolloProvider client={apolloClient}>
+        <Main />
+      </ApolloProvider>
+    </NativeRouter>
+  );
+};
+
+export default App;
+```
+
+## environment variables
+
+- react native doesn't have direct support for environment variables :(
+- we can access expo configuration at `app.json` during runtime, using
+  ```js
+  import Constants from "expo-constants";
+  console.log(Constants.expoConfig);
+  ```
+- rename `app.json` to `app.config.js`, which allows javascript inside, and have the configuration file look like:
+  ```js
+  export default {
+    name: "rate-repository-app",
+    // ...
+    extra: {
+      env: process.env.ENV,
+    },
+  };
+  ```
+- you can update the configuration changes with
+
+  ```sh
+  pnpm dlx expo start --clear
+  ```
+
+- now we should have access to `Constants.expoConfig.extra.env`
+
+- we can now use dotenv:
+  - `pnpm install dotenv`
+  - modify `app.config.js`:
+    ```js
+    import "dotenv/config";
+    // rest of file
+    ```
+
+## Local storage
+
+React native's equivalent to `localStorage` on browser is `AsyncStorage`.
+
+Installation:
+
+```sh
+pnpm dlx expo install @react-native-async-storage/async-storage
+```
+
+(Nb `pnpm dlx expo install expo-secure-store` will install a library that encrypts your storage)
+
+### namespace for storage
+
+Since `AsyncStorage` keys are global, it's advisable to add a namespace (prefix) for the keys so they don't collide.
+
+This class abstracts this away:
+
+```js
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+class ShoppingCartStorage {
+  constructor(namespace = "shoppingCart") {
+    this.namespace = namespace;
+  }
+
+  async getProducts() {
+    const rawProducts = await AsyncStorage.getItem(
+      `${this.namespace}:products`
+    );
+
+    return rawProducts ? JSON.parse(rawProducts) : [];
+  }
+
+  async addProduct(productId) {
+    const currentProducts = await this.getProducts();
+    const newProducts = [...currentProducts, productId];
+
+    await AsyncStorage.setItem(
+      `${this.namespace}:products`,
+      JSON.stringify(newProducts)
+    );
+  }
+
+  async clearProducts() {
+    await AsyncStorage.removeItem(`${this.namespace}:products`);
+  }
+}
+```
