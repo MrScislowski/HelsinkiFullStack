@@ -744,3 +744,160 @@ Another of his articles [here](https://kentcdodds.com/blog/application-state-man
   ```
 
 - context is appropriate for user-specific state. For a cache (like, syncing with a server, kent dodds recommends react-query)
+
+## Testing React Native
+
+- ```sh
+  pnpm install --save-dev jest jest-expo eslint-plugin-jest
+  ```
+
+- `package.json`:
+
+  ```json
+  {
+    // ...
+    "scripts": {
+      // other scripts...
+
+      "test": "jest"
+    },
+
+    "jest": {
+      "preset": "jest-expo",
+      "transform": {
+        "^.+\\.jsx?$": "babel-jest"
+      },
+      "transformIgnorePatterns": [
+        "node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|react-router-native)"
+      ]
+    }
+    // ...
+  }
+  ```
+
+- add this to `.eslintrc`:
+
+  ```json
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:jest/recommended"],
+  ```
+
+- create directory `src/__tests__`, and file `example.test.js`:
+
+  ```js
+  describe("Example", () => {
+    it("works", () => {
+      expect(1).toBe(1);
+    });
+  });
+  ```
+
+- there's a site that also tells you how to set it up: https://docs.expo.dev/develop/unit-testing/
+
+### test directory structure
+
+1. Option 1... put everything in `__tests__`, maybe in a parallel directory structure
+
+```txt
+src/
+  __tests__/
+    components/
+      AppBar.js
+      RepositoryList.js
+      ...
+    utils/
+      authStorage.js
+      ...
+    ...
+```
+
+2. Option 2... put all the tests alongside the source files, but add a `.test` or `.spec` suffix:
+
+```txt
+src/
+  components/
+    AppBar/
+      AppBar.test.jsx
+      index.jsx
+    ...
+  ...
+```
+
+### libraries to use
+
+We used React Testing Library previously in course. This is only for React web apps. Now we ust React Native Testing Library.
+
+```sh
+pnpm install --save-dev react-test-renderer @testing-library/react-native @testing-library/jest-native
+```
+
+If this fails due to peer dependency issues:
+
+- check which react version you're using with `pnpm list react --depth=0`, and add that version number to the renderer, e.g.
+  `pnpm install --save-dev react-test-renderer@18.2.0`
+- try adding the `--legacy-peer-deps` flag to the `pnpm install` command
+
+### using libraries
+
+Create `./setupTests.js` (root dir of project, alongside `package.json`) with contents:
+
+```js
+import "@testing-library/jest-native/extend-expect";
+```
+
+and extend `package.json` jest property
+
+```json
+"setupFilesAfterEnv": ["<rootDir>/setupTests.js"]
+```
+
+Example test using queries (e.g. `getByText`):
+
+```js
+import { Text, View } from "react-native";
+import { render, screen } from "@testing-library/react-native";
+
+const Greeting = ({ name }) => {
+  return (
+    <View>
+      <Text>Hello {name}!</Text>
+    </View>
+  );
+};
+
+describe("Greeting", () => {
+  it("renders a greeting message based on the name prop", () => {
+    render(<Greeting name="Kalle" />);
+
+    screen.debug();
+
+    expect(screen.getByText("Hello Kalle!")).toBeDefined();
+  });
+});
+```
+
+Example test using firing events
+
+```js
+describe("Form", () => {
+  it("calls function provided by onSubmit prop after pressing the submit button", () => {
+    const onSubmit = jest.fn();
+    render(<Form onSubmit={onSubmit} />);
+
+    fireEvent.changeText(screen.getByPlaceholderText("Username"), "kalle");
+    fireEvent.changeText(screen.getByPlaceholderText("Password"), "password");
+    fireEvent.press(screen.getByText("Submit"));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+
+    // onSubmit.mock.calls[0][0] contains the first argument of the first call
+    expect(onSubmit.mock.calls[0][0]).toEqual({
+      username: "kalle",
+      password: "password",
+    });
+  });
+});
+```
+
+### testing components with side effects
+
+Apollo Client [documents](https://www.apollographql.com/docs/react/development-testing/testing) that you can mock a response if you want to test a request
