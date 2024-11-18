@@ -751,6 +751,12 @@ Another of his articles [here](https://kentcdodds.com/blog/application-state-man
   pnpm install --save-dev jest jest-expo eslint-plugin-jest
   ```
 
+  ...this gave me warnings about peer dependencies, which then led to jst not running, so I installed an earlier version:
+
+  ```sh
+  pnpm install jest-expo@49.0.0
+  ```
+
 - `package.json`:
 
   ```json
@@ -901,3 +907,179 @@ describe("Form", () => {
 ### testing components with side effects
 
 Apollo Client [documents](https://www.apollographql.com/docs/react/development-testing/testing) that you can mock a response if you want to test a request
+
+## expo go updated, and is no longer functioning with this project.
+
+```sh
+pnpm dlx expo install expo@^52.0.0 --fix
+```
+
+(I had to remove node modules before to make this work)
+
+## linking
+
+`expo-linking` [https://docs.expo.dev/versions/latest/sdk/linking/](https://docs.expo.dev/versions/latest/sdk/linking/) allows interaction with other installed apps
+
+### dropdown menu
+
+I searched for dropdown menus on reddit, and `react-native-element-dropdown` was a common choice.
+
+=>
+
+```sh
+pnpm install react-native-element-dropdown
+```
+
+### debouncing
+
+Technical term for not doing a new request every single time a textinput is changed by a user
+
+### Cursor-based pagination
+
+- pagination is fetching a subset of items
+- when you communicate the position of the subset by a cursor, it's cursor-based pagination
+- cursor is a serialized presentation of an item in an ordered list
+
+This graphql query:
+
+```
+{
+  repositories(first: 2) {
+    totalCount
+    edges {
+      node {
+        id
+        fullName
+        createdAt
+      }
+      cursor
+    }
+    pageInfo {
+      endCursor
+      startCursor
+      hasNextPage
+    }
+  }
+}
+```
+
+returns this:
+
+```json
+{
+  "data": {
+    "repositories": {
+      "totalCount": 10,
+      "edges": [
+        {
+          "node": {
+            "id": "zeit.next.js",
+            "fullName": "zeit/next.js",
+            "createdAt": "2020-05-15T11:59:57.557Z"
+          },
+          "cursor": "WyJ6ZWl0Lm5leHQuanMiLDE1ODk1NDM5OTc1NTdd"
+        },
+        {
+          "node": {
+            "id": "zeit.swr",
+            "fullName": "zeit/swr",
+            "createdAt": "2020-05-15T11:58:53.867Z"
+          },
+          "cursor": "WyJ6ZWl0LnN3ciIsMTU4OTU0MzkzMzg2N10="
+        }
+      ],
+      "pageInfo": {
+        "endCursor": "WyJ6ZWl0LnN3ciIsMTU4OTU0MzkzMzg2N10=",
+        "startCursor": "WyJ6ZWl0Lm5leHQuanMiLDE1ODk1NDM5OTc1NTdd",
+        "hasNextPage": true
+      }
+    }
+  }
+}
+```
+
+- `cursor` is a Base64 encoded representation of the node (in this case, it contains the repository's id and creation date as a timestamp)
+- `atob("WyJ6ZWl0Lm5leHQuanMiLDE1ODk1NDM5OTc1NTdd")` is `["zeit.next.js",1589543997557]`
+- `atob` and `btoa` were named after unix tools... `ascii to binary` and `binary to ascii`
+
+The next page of results can be retrieved with:
+
+```
+{
+  repositories(first: 2, after: "WyJ6ZWl0LnN3ciIsMTU4OTU0MzkzMzg2N10=") {
+    //...
+  }
+}
+```
+
+In apollo graphql, you:
+
+- use the `fetchMore` function (returned by every `useQuery` hook call). It by default executes the same query, but you can re-specify the `variables`, to update e.g. an offset. Any variables not specified on the `fetchMore` are assumed to be the same as on the original call. (It's also possible to execute a completely different shape of query)
+- merge the paginated results by:
+
+  - defining a field policy (affects how your `InMemoryCache` is read and written). Suppose we have a graphQL query that looks like:
+
+    ```
+    type Query {
+      feed(offset: Int, limit: Int): [FeedItem!]
+    }
+
+    type FeedItem {
+      id: String!
+      message: String!
+    }
+    ```
+
+    ```js
+    const cache = new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            feed: {
+              // Don't cache separate results based on any of this field's arguments.
+              keyArgs: false, // suppose we had ['news', 'messages'] feeds... specifying that here would cause those two to not be merged
+
+              // Concatenate the incoming list items with the existing list items.
+              merge(existing = [], incoming) {
+                return [...existing, ...incoming];
+              },
+            },
+          },
+        },
+      },
+    });
+    ```
+
+Instead of manually specifying the merge function in here, you can specify this info by using the `updateQuery` property of `fetchMore`:
+
+```js
+fetchMore({
+  variables: { offset: data.feed.length },
+  updateQuery(previousData, { fetchMoreResult, variables: { offset } }) {
+    const updatedFeed = previousData.feed.slice(0);
+    for (let i = 0; i < fetchMoreResult.feed.length; ++i) {
+      updatedFeed[offset + i] = fetchMoreResult.feed[i];
+    }
+    return { ...previousData, feed: updatedFeed };
+  },
+});
+```
+
+The documentation recommends still defining the `keyArgs` of field policies to prevent fragmenting data unnecessarily in the cache.
+
+- you can also provide a `read` method in the same place as `merge`, for how the cache is read (e.g. sorting it, or re-paginating it)
+- you can also internally store the data, e.g., as a `Map`, as long as the `read` method returns a list
+
+## "Additional Resources"
+
+- React Native Paper is for React Native what Material-UI is for React web applications
+- react-spring is a library that provides a clean API for animating react native components
+- React Navigation is a routing library for react native. It offers more native features like native gestures and animations to transition between views.
+
+## Deploying application
+
+Would need to
+
+- deploy rate-repository-api
+- create iOS or Android builds [documentation here](https://docs.expo.io/distribution/building-standalone-apps/)
+- upload builds to either apple app store or google play store [see here](https://docs.expo.dev/submit/introduction/)
