@@ -1,3 +1,0 @@
-styling using tailwind:
-
-- users view...
